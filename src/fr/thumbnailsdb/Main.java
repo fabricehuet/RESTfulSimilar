@@ -24,7 +24,7 @@ public class Main {
 		ThumbnailGenerator tg = new ThumbnailGenerator(tb);
 		if ("index".equals(args[0])) {
 			String source = args[1];
-			tg.process(source);
+			tg.processMT(source);
 		}
 		if ("fix".equals(args[0])) {
 			tb.fix();

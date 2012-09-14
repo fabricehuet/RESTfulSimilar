@@ -3,15 +3,16 @@ package fr.thumbnailsdb;
 import java.awt.AlphaComposite;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
-import java.security.DigestInputStream;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -27,6 +28,8 @@ public class ThumbnailGenerator {
 	protected boolean debug;
 	protected boolean software = true;
 	protected ThumbStore ts;
+
+	protected ExecutorService executorService = Executors.newFixedThreadPool(5);
 
 	public ThumbnailGenerator(ThumbStore t) {
 		this.ts = t;
@@ -87,36 +90,43 @@ public class ThumbnailGenerator {
 		return complete.digest();
 	}
 
-	protected int[] generateThumbnail(File f) throws IOException {
-		//byte[] data;
-		BufferedImage source = ImageIO.read(f);
-		BufferedImage dest = null;
-		if (software) {
-			dest = this.downScaleImageToGray(source, 10, 10);
+	protected int[] generateThumbnail(File f) {
+		// byte[] data;
+		BufferedImage source;
+		int[] data1 = null;
+		try {
+			source = ImageIO.read(f);
+
+			BufferedImage dest = null;
+			if (software) {
+				dest = this.downScaleImageToGray(source, 10, 10);
+			}
+			// ByteArrayOutputStream baos = new ByteArrayOutputStream();
+			// ImageIO.write(dest, "jpg", baos);
+			// baos.flush();
+			// data = baos.toByteArray();
+			// baos.close();
+
+			data1 = new int[dest.getWidth() * dest.getHeight()];
+			dest.getRGB(0, 0, dest.getWidth(), dest.getHeight(), data1, 0, dest.getWidth());
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
-//		ByteArrayOutputStream baos = new ByteArrayOutputStream();
-//		ImageIO.write(dest, "jpg", baos);
-//		baos.flush();
-//		data = baos.toByteArray();
-//		baos.close();
-		
-		int[] data1 = new int[dest.getWidth() * dest.getHeight()];
-		dest.getRGB(0, 0, dest.getWidth(), dest.getHeight(), data1, 0, dest.getWidth());
-		
 		return data1;
 	}
 
 	public ImageDescriptor generateImageDescriptor(File f) {
 		ImageDescriptor id = new ImageDescriptor();
-	//	long size = f.length();
-	//	long modifiedTime = f.lastModified();
+		// long size = f.length();
+		// long modifiedTime = f.lastModified();
 
 		int[] data;
 		byte[] md5;
 		try {
 			id.setPath(f.getAbsolutePath());
 			id.setMtime(f.lastModified());
-            id.setSize(f.length());
+			id.setSize(f.length());
 			data = generateThumbnail(f);
 			md5 = generateMD5(f);
 			id.setData(data);
@@ -159,7 +169,6 @@ public class ThumbnailGenerator {
 		return matcher.matches();
 	}
 
-	
 	public void process(String path) {
 		try {
 			this.process(new File(path));
@@ -167,11 +176,10 @@ public class ThumbnailGenerator {
 			e.printStackTrace();
 		}
 	}
-	
 
 	public void process(File fd) throws IOException {
 		if (fd.isFile()) {
-			//System.out.println("ThumbnailGenerator.process() " + fd);
+			// System.out.println("ThumbnailGenerator.process() " + fd);
 			if (this.validate(fd.getName())) {
 				// this.testDownscalingOpenCL(f);
 				this.generateAndSave(fd);
@@ -190,6 +198,62 @@ public class ThumbnailGenerator {
 					}
 				}
 			}
+		}
+	}
+
+	public void processMT(String path) {
+		System.out.println("ThumbnailGenerator.processMT()");
+		try {
+			this.processMT(new File(path));
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		executorService.shutdown();
+		try {
+			executorService.awaitTermination(Long.MAX_VALUE, TimeUnit.NANOSECONDS);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+	}
+
+	public void processMT(File fd) throws IOException {
+		if (fd.isFile()) {
+			// System.out.println("ThumbnailGenerator.process() " + fd);
+			if (this.validate(fd.getName())) {
+				// this.testDownscalingOpenCL(f);
+				executorService.execute(new RunnableProcess(fd));
+				// this.generateAndSave(fd);
+			}
+		} else {
+			String entries[] = fd.list();
+			if (entries != null) {
+				for (int i = 0; i < entries.length; i++) {
+					File f = new File(fd.getAbsolutePath() + "/" + entries[i]);
+					if (f.isFile()) {
+						if (this.validate(f.getName())) {
+							executorService.execute(new RunnableProcess(f));
+						}
+					} else {
+						this.processMT(f);
+					}
+				}
+			}
+		}
+	}
+
+	protected class RunnableProcess implements Runnable {
+		protected File fd;
+
+		public RunnableProcess(File fd) {
+			this.fd = fd;
+		}
+
+		@Override
+		public void run() {
+			System.out.println("ThumbnailGenerator.RunnableProcess.run()");
+			generateAndSave(fd);
 		}
 	}
 
@@ -217,7 +281,7 @@ public class ThumbnailGenerator {
 		ThumbnailGenerator tb = new ThumbnailGenerator(ts);
 		File fs = new File(source);
 		try {
-			tb.process(fs);
+			tb.processMT(fs);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
