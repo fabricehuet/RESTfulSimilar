@@ -1,0 +1,61 @@
+09-06 18:14:45 jdbc[2]: exception
+org.h2.jdbc.JdbcSQLException: Database is already closed (to disable automatic closing at VM shutdown, add ";DB_CLOSE_ON_EXIT=FALSE" to the db URL) [90121-168]
+	at org.h2.message.DbException.getJdbcSQLException(DbException.java:329)
+	at org.h2.message.DbException.get(DbException.java:169)
+	at org.h2.message.DbException.get(DbException.java:146)
+	at org.h2.message.DbException.get(DbException.java:135)
+	at org.h2.jdbc.JdbcConnection.checkClosed(JdbcConnection.java:1384)
+	at org.h2.jdbc.JdbcConnection.checkClosed(JdbcConnection.java:1359)
+	at org.h2.jdbc.JdbcConnection.createStatement(JdbcConnection.java:189)
+	at fr.thumbnailsdb.ThumbStore.saveToDB(ThumbStore.java:75)
+	at fr.thumbnailsdb.ThumbnailGenerator.generateAndSave(ThumbnailGenerator.java:131)
+	at fr.thumbnailsdb.ThumbnailGenerator.process(ThumbnailGenerator.java:160)
+	at fr.thumbnailsdb.ThumbnailGenerator.main(ThumbnailGenerator.java:194)
+09-06 18:20:46 jdbc[2]: exception
+org.h2.jdbc.JdbcSQLException: Syntax error in SQL statement "SELECT path FROM IMAGES WHERE path=[*]'/user/fhuet/home/Perso/photos/2010-02-13 (Sortie Raquette Gourdon)/IMG_3836.JPG"; SQL statement:
+SELECT path FROM IMAGES WHERE path='/user/fhuet/home/Perso/photos/2010-02-13 (Sortie Raquette Gourdon)/IMG_3836.JPG [42000-168]
+09-06 18:20:47 jdbc[2]: exception
+org.h2.jdbc.JdbcSQLException: Syntax error in SQL statement "SELECT path FROM IMAGES WHERE path=[*]'/user/fhuet/home/Perso/photos/2010-02-13 (Sortie Raquette Gourdon)/IMG_3868.JPG"; SQL statement:
+SELECT path FROM IMAGES WHERE path='/user/fhuet/home/Perso/photos/2010-02-13 (Sortie Raquette Gourdon)/IMG_3868.JPG [42000-168]
+09-06 18:20:48 jdbc[2]: exception
+org.h2.jdbc.JdbcSQLException: Database is already closed (to disable automatic closing at VM shutdown, add ";DB_CLOSE_ON_EXIT=FALSE" to the db URL) [90121-168]
+	at org.h2.message.DbException.getJdbcSQLException(DbException.java:329)
+	at org.h2.message.DbException.get(DbException.java:169)
+	at org.h2.message.DbException.get(DbException.java:146)
+	at org.h2.message.DbException.get(DbException.java:135)
+	at org.h2.jdbc.JdbcConnection.checkClosed(JdbcConnection.java:1384)
+	at org.h2.jdbc.JdbcConnection.checkClosed(JdbcConnection.java:1359)
+	at org.h2.jdbc.JdbcConnection.prepareStatement(JdbcConnection.java:262)
+	at fr.thumbnailsdb.ThumbStore.saveToDB(ThumbStore.java:75)
+	at fr.thumbnailsdb.ThumbnailGenerator.generateAndSave(ThumbnailGenerator.java:141)
+	at fr.thumbnailsdb.ThumbnailGenerator.process(ThumbnailGenerator.java:171)
+	at fr.thumbnailsdb.ThumbnailGenerator.main(ThumbnailGenerator.java:205)
+09-06 18:20:48 jdbc[2]: exception
+org.h2.jdbc.JdbcSQLException: Database is already closed (to disable automatic closing at VM shutdown, add ";DB_CLOSE_ON_EXIT=FALSE" to the db URL) [90121-168]
+	at org.h2.message.DbException.getJdbcSQLException(DbException.java:329)
+	at org.h2.message.DbException.get(DbException.java:169)
+	at org.h2.message.DbException.get(DbException.java:146)
+	at org.h2.message.DbException.get(DbException.java:135)
+	at org.h2.jdbc.JdbcConnection.checkClosed(JdbcConnection.java:1384)
+	at org.h2.jdbc.JdbcConnection.checkClosed(JdbcConnection.java:1359)
+	at org.h2.jdbc.JdbcConnection.createStatement(JdbcConnection.java:189)
+	at fr.thumbnailsdb.ThumbStore.isInDataBaseBasedOnName(ThumbStore.java:95)
+	at fr.thumbnailsdb.ThumbnailGenerator.generateImageDescriptor(ThumbnailGenerator.java:118)
+	at fr.thumbnailsdb.ThumbnailGenerator.generateAndSave(ThumbnailGenerator.java:139)
+	at fr.thumbnailsdb.ThumbnailGenerator.process(ThumbnailGenerator.java:171)
+	at fr.thumbnailsdb.ThumbnailGenerator.main(ThumbnailGenerator.java:205)
+09-06 18:21:02 jdbc[2]: exception
+org.h2.jdbc.JdbcSQLException: Syntax error in SQL statement "SELECT path FROM IMAGES WHERE path=[*]'/user/fhuet/desktop/home/workspaces/rechercheefficaceimagessimilaires/images/test.png"; SQL statement:
+SELECT path FROM IMAGES WHERE path='/user/fhuet/desktop/home/workspaces/rechercheefficaceimagessimilaires/images/test.png [42000-168]
+09-06 18:21:02 jdbc[2]: exception
+org.h2.jdbc.JdbcSQLException: Syntax error in SQL statement "SELECT path FROM IMAGES WHERE path=[*]'/user/fhuet/desktop/home/workspaces/rechercheefficaceimagessimilaires/images/original.jpg"; SQL statement:
+SELECT path FROM IMAGES WHERE path='/user/fhuet/desktop/home/workspaces/rechercheefficaceimagessimilaires/images/original.jpg [42000-168]
+09-06 18:21:02 jdbc[2]: exception
+org.h2.jdbc.JdbcSQLException: Syntax error in SQL statement "SELECT path FROM IMAGES WHERE path=[*]'/user/fhuet/desktop/home/workspaces/rechercheefficaceimagessimilaires/images/robinson R44-aircraft-for-sale.jpg"; SQL statement:
+SELECT path FROM IMAGES WHERE path='/user/fhuet/desktop/home/workspaces/rechercheefficaceimagessimilaires/images/robinson R44-aircraft-for-sale.jpg [42000-168]
+09-06 18:21:02 jdbc[2]: exception
+org.h2.jdbc.JdbcSQLException: Syntax error in SQL statement "SELECT path FROM IMAGES WHERE path=[*]'/user/fhuet/desktop/home/workspaces/rechercheefficaceimagessimilaires/images/test.jpg"; SQL statement:
+SELECT path FROM IMAGES WHERE path='/user/fhuet/desktop/home/workspaces/rechercheefficaceimagessimilaires/images/test.jpg [42000-168]
+09-06 18:21:02 jdbc[2]: exception
+org.h2.jdbc.JdbcSQLException: Syntax error in SQL statement "SELECT path FROM IMAGES WHERE path=[*]'/user/fhuet/desktop/home/workspaces/rechercheefficaceimagessimilaires/images/original-modifie.jpg"; SQL statement:
+SELECT path FROM IMAGES WHERE path='/user/fhuet/desktop/home/workspaces/rechercheefficaceimagessimilaires/images/original-modifie.jpg [42000-168]
