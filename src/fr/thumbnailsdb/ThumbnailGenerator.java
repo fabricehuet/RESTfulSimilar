@@ -8,32 +8,27 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import javax.imageio.ImageIO;
 
+import org.apache.commons.codec.digest.DigestUtils;
+
 public class ThumbnailGenerator {
 
-	private static final String IMAGE_PATTERN = "(.+(\\.(?i)(jpg|jpeg|png|gif|bmp))$)";
-
-	private Pattern pattern;
-	private Matcher matcher;
-
+	
 	protected boolean debug;
 	protected boolean software = true;
 	protected ThumbStore ts;
 
-	protected ExecutorService executorService = Executors.newFixedThreadPool(5);
+	protected Logger log = Logger.getLogger();
+	
+	protected ExecutorService executorService = Executors.newFixedThreadPool(3);
 
 	public ThumbnailGenerator(ThumbStore t) {
 		this.ts = t;
-		pattern = Pattern.compile(IMAGE_PATTERN);
 	}
 
 	/**
@@ -66,28 +61,29 @@ public class ThumbnailGenerator {
 		return scaledBI;
 	}
 
-	public byte[] generateMD5(File f) throws IOException {
+	public String generateMD5(File f) throws IOException {
 		InputStream fis = new FileInputStream(f);
-
-		byte[] buffer = new byte[1024];
-		MessageDigest complete = null;
-		try {
-			complete = MessageDigest.getInstance("MD5");
-
-			int numRead;
-
-			do {
-				numRead = fis.read(buffer);
-				if (numRead > 0) {
-					complete.update(buffer, 0, numRead);
-				}
-			} while (numRead != -1);
-
-			fis.close();
-		} catch (NoSuchAlgorithmException e) {
-			e.printStackTrace();
-		}
-		return complete.digest();
+		byte[] buffer  = DigestUtils.md5(fis);
+		String s = DigestUtils.md5Hex(buffer);
+		fis.close();
+		return s; 
+//		= new byte[1024];
+//		MessageDigest complete = null;
+//		try {
+//			complete = MessageDigest.getInstance("MD5");
+//			int numRead;
+//			do {
+//				numRead = fis.read(buffer);
+//				if (numRead > 0) {
+//					complete.update(buffer, 0, numRead);
+//				}
+//			} while (numRead != -1);
+//
+//			fis.close();
+//		} catch (NoSuchAlgorithmException e) {
+//			e.printStackTrace();
+//		}
+//		return complete.digest();
 	}
 
 	protected int[] generateThumbnail(File f) {
@@ -116,25 +112,21 @@ public class ThumbnailGenerator {
 		return data1;
 	}
 
-	public ImageDescriptor generateImageDescriptor(File f) {
-		ImageDescriptor id = new ImageDescriptor();
-		// long size = f.length();
-		// long modifiedTime = f.lastModified();
-
+	public MediaFileDescriptor buildMediaDescriptor(File f) {
+		MediaFileDescriptor id = new MediaFileDescriptor();
 		int[] data;
-		byte[] md5;
+		String md5;
 		try {
-			id.setPath(f.getAbsolutePath());
+			id.setPath(f.getCanonicalPath());
 			id.setMtime(f.lastModified());
 			id.setSize(f.length());
-			data = generateThumbnail(f);
+			//generate thumbnails only for images, not video
+			if (Utils.isValideImageName(f.getName())) {
+		     	data = generateThumbnail(f);
+		     	id.setData(data);
+			}
 			md5 = generateMD5(f);
-			id.setData(data);
 			id.setMd5Digest(md5);
-			// id = new ImageDescriptor(f.getAbsolutePath(), size, modifiedTime,
-			// data, md5);
-			// System.out.println("ThumbnailGenerator.generateImageDescriptor() "
-			// + id);
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
@@ -143,31 +135,29 @@ public class ThumbnailGenerator {
 		return id;
 	}
 
-	public void generateAndSave(File f) {
-		System.out.println("ThumbnailGenerator.generateAndSave() processing " + f);
-		System.out.println("checking if in DB");
-		if (ts.isInDataBaseBasedOnName(f.getAbsolutePath())) {
-			System.out.println("ThumbnailGenerator.generateImageDescriptor() Already in DB, aborting");
-
-		} else {
-			ImageDescriptor id = this.generateImageDescriptor(f);
-			if (id != null) {
-				ts.saveToDB(id);
+	public void generateAndSave(String s) {
+		File f = new File(s);
+		if (Utils.isValideImageName(f.getName()) || Utils.isValideVideoName(f.getName())) {
+//			System.out.println("ThumbnailGenerator.generateAndSave() processing " + f);
+//			System.out.println("checking if in DB");
+			try {
+				if (ts.isInDataBaseBasedOnName(f.getCanonicalPath())) {
+					//System.out.println("ThumbnailGenerator.generateImageDescriptor() Already in DB, ignoring");
+					log.log(f.getCanonicalPath() + " already in DB");
+				} else {
+					MediaFileDescriptor id = this.buildMediaDescriptor(f);
+					if (id != null) {
+						ts.saveToDB(id);
+					}
+					log.log(f.getCanonicalPath() + " ..... OK");
+				}
+			} catch (IOException e) {
+				e.printStackTrace();
 			}
 		}
 	}
 
-	/**
-	 * Validate image with regular expression
-	 * 
-	 * @param image
-	 *            image for validation
-	 * @return true valid image, false invalid image
-	 */
-	public boolean validate(final String image) {
-		matcher = pattern.matcher(image);
-		return matcher.matches();
-	}
+	
 
 	public void process(String path) {
 		try {
@@ -179,20 +169,15 @@ public class ThumbnailGenerator {
 
 	public void process(File fd) throws IOException {
 		if (fd.isFile()) {
-			// System.out.println("ThumbnailGenerator.process() " + fd);
-			if (this.validate(fd.getName())) {
-				// this.testDownscalingOpenCL(f);
-				this.generateAndSave(fd);
-			}
+			this.generateAndSave(fd.getCanonicalPath());
+			// }
 		} else {
 			String entries[] = fd.list();
 			if (entries != null) {
 				for (int i = 0; i < entries.length; i++) {
-					File f = new File(fd.getAbsolutePath() + "/" + entries[i]);
+					File f = new File(fd.getCanonicalPath() + "/" + entries[i]);
 					if (f.isFile()) {
-						if (this.validate(f.getName())) {
-							this.generateAndSave(f);
-						}
+						this.generateAndSave(fd.getCanonicalPath() + "/" + entries[i]);
 					} else {
 						this.process(f);
 					}
@@ -202,7 +187,7 @@ public class ThumbnailGenerator {
 	}
 
 	public void processMT(String path) {
-		System.out.println("ThumbnailGenerator.processMT()");
+	//	System.out.println("ThumbnailGenerator.processMT()");
 		try {
 			this.processMT(new File(path));
 		} catch (IOException e) {
@@ -221,20 +206,20 @@ public class ThumbnailGenerator {
 	public void processMT(File fd) throws IOException {
 		if (fd.isFile()) {
 			// System.out.println("ThumbnailGenerator.process() " + fd);
-			if (this.validate(fd.getName())) {
+			//if (this.isValideImageName(fd.getName())) {
 				// this.testDownscalingOpenCL(f);
-				executorService.execute(new RunnableProcess(fd));
+				executorService.execute(new RunnableProcess(fd.getCanonicalPath()));
 				// this.generateAndSave(fd);
-			}
+			//}
 		} else {
 			String entries[] = fd.list();
 			if (entries != null) {
 				for (int i = 0; i < entries.length; i++) {
-					File f = new File(fd.getAbsolutePath() + "/" + entries[i]);
+					File f = new File(fd.getCanonicalPath() + "/" + entries[i]);
 					if (f.isFile()) {
-						if (this.validate(f.getName())) {
-							executorService.execute(new RunnableProcess(f));
-						}
+					//	if (this.isValideImageName(f.getName())) {
+							executorService.execute(new RunnableProcess(fd.getCanonicalPath() + "/" + entries[i]));
+					//	}
 					} else {
 						this.processMT(f);
 					}
@@ -244,15 +229,15 @@ public class ThumbnailGenerator {
 	}
 
 	protected class RunnableProcess implements Runnable {
-		protected File fd;
+		protected String fd;
 
-		public RunnableProcess(File fd) {
+		public RunnableProcess(String fd) {
 			this.fd = fd;
 		}
 
 		@Override
 		public void run() {
-			System.out.println("ThumbnailGenerator.RunnableProcess.run()");
+		//	System.out.println("ThumbnailGenerator.RunnableProcess.run()");
 			generateAndSave(fd);
 		}
 	}

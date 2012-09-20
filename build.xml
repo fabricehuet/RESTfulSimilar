@@ -30,6 +30,7 @@
             <zipfileset excludes="META-INF/*.SF" src="/home/fhuet/workspaces/rechercheefficaceimagessimilaires/socles-read-only/soclesdemo/lib/jogamp2/jocl.jar"/>
             <zipfileset excludes="META-INF/*.SF" src="/home/fhuet/workspaces/rechercheefficaceimagessimilaires/surfjavacl/lib/h2-1.3.168.jar"/>
             <zipfileset excludes="META-INF/*.SF" src="/home/fhuet/workspaces/rechercheefficaceimagessimilaires/surfjavacl/lib/hsqldb.jar"/>
+            <zipfileset excludes="META-INF/*.SF" src="/home/fhuet/workspaces/rechercheefficaceimagessimilaires/surfjavacl/lib/commons-codec-1.7/commons-codec-1.7.jar"/>
         </jar>
     </target>
 </project>

@@ -175,3 +175,20 @@ org.h2.jdbc.JdbcSQLException: Database is already closed (to disable automatic c
 	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1110)
 	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:603)
 	at java.lang.Thread.run(Thread.java:722)
+09-18 17:43:31 jdbc[2]: exception
+org.h2.jdbc.JdbcSQLException: Syntax error in SQL statement "UPDATE IMAGES([*]PATH, SIZE, MTIME, DATA, MD5) VALUES(?,?,?,?,?) "; expected "., AS, SET"; SQL statement:
+UPDATE IMAGES(path, size, mtime, data, md5) values(?,?,?,?,?) [42001-168]
+09-18 17:45:48 jdbc[2]: exception
+org.h2.jdbc.JdbcSQLException: Parameter "#6" is not set; SQL statement:
+UPDATE IMAGES SET path=?, size=?, mtime=?, data=?, md5=? WHERE path=?  [90012-168]
+	at org.h2.message.DbException.getJdbcSQLException(DbException.java:329)
+	at org.h2.message.DbException.get(DbException.java:169)
+	at org.h2.message.DbException.get(DbException.java:146)
+	at org.h2.expression.Parameter.checkSet(Parameter.java:73)
+	at org.h2.command.Prepared.checkParameters(Prepared.java:163)
+	at org.h2.command.CommandContainer.update(CommandContainer.java:74)
+	at org.h2.command.Command.executeUpdate(Command.java:230)
+	at org.h2.jdbc.JdbcPreparedStatement.execute(JdbcPreparedStatement.java:194)
+	at fr.thumbnailsdb.ThumbStore.updateToDB(ThumbStore.java:128)
+	at fr.thumbnailsdb.ThumbStore.test(ThumbStore.java:296)
+	at fr.thumbnailsdb.ThumbStore.main(ThumbStore.java:318)

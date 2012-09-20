@@ -170,8 +170,8 @@ public class ImageComparator {
 		System.out.println("--------------");
 
 
-		ImageDescriptor id1 = tb.generateImageDescriptor(new File(path));
-		ImageDescriptor id4 = tb.generateImageDescriptor(new File(path4));
+		MediaFileDescriptor id1 = tb.buildMediaDescriptor(new File(path));
+		MediaFileDescriptor id4 = tb.buildMediaDescriptor(new File(path4));
 		System.out.println("ImageComparator.main() Comparison of VERY MODIFIED thumbnails using ARGB RMSE " + ImageComparator.compareARGBUsingRMSE(id1.getData(), id4.getData()));
 		
 	}
