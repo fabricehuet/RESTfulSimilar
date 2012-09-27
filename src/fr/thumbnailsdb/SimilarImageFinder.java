@@ -1,19 +1,15 @@
 package fr.thumbnailsdb;
 
-import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.ObjectInputStream;
-import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.TreeSet;
-
-import javax.imageio.ImageIO;
 
 public class SimilarImageFinder {
 
@@ -121,8 +117,17 @@ public class SimilarImageFinder {
 				break;
 			}
 		}
-
 	}
+	
+	public ArrayList<MediaFileDescriptor> findIdenticalMedia(String source) {
+		
+		ThumbnailGenerator tg = new ThumbnailGenerator(null);
+		MediaFileDescriptor id = tg.buildMediaDescriptor(new File(source)); // ImageDescriptor.readFromDisk(s);
+		ResultSet res = thumbstore.getDuplicatesMD5(id);
+		// TODO Auto-generated method stub
+		return null;
+	}
+	
 
 	public void testFindSimilarImages(MediaFileDescriptor id) {
 		System.out.println("ThumbStore.test() reading descriptor from disk ");
@@ -139,5 +144,7 @@ public class SimilarImageFinder {
 		SimilarImageFinder si = new SimilarImageFinder(tb);
 		si.testFindSimilarImages(null);
 	}
+
+	
 
 }

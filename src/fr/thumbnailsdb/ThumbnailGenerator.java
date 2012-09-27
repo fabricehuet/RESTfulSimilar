@@ -8,8 +8,9 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.Semaphore;
+import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
 import javax.imageio.ImageIO;
@@ -18,17 +19,54 @@ import org.apache.commons.codec.digest.DigestUtils;
 
 public class ThumbnailGenerator {
 
-	
 	protected boolean debug;
 	protected boolean software = true;
 	protected ThumbStore ts;
 
 	protected Logger log = Logger.getLogger();
-	
-	protected ExecutorService executorService = Executors.newFixedThreadPool(3);
+
+	// protected ExecutorService executorService =
+	// Executors.newFixedThreadPool(3);
+//	protected final Semaphore semaphore = new Semaphore(1);
+
+	ThreadPoolExecutor executorService = new ThreadPoolExecutor(4, 4, 0L, TimeUnit.MILLISECONDS,
+			new LimitedQueue<Runnable>(50));
 
 	public ThumbnailGenerator(ThumbStore t) {
 		this.ts = t;
+	}
+
+	private class LimitedQueue<E> extends LinkedBlockingQueue<E> {
+		public LimitedQueue(int maxSize) {
+			super(maxSize);
+		}
+
+		@Override
+		public boolean add(E e) {
+			// System.out.println("ThumbnailGenerator.LimitedQueue.add()");
+			return super.add(e);
+		}
+
+		@Override
+		public boolean offer(E e) {
+		//	System.out.println("ThumbnailGenerator.LimitedQueue.offer() " + this.size());
+			// turn offer() and add() into a blocking calls (unless interrupted)
+			try {
+				put(e);
+				return true;
+			} catch (InterruptedException ie) {
+				Thread.currentThread().interrupt();
+			}
+			// System.out.println("ThumbnailGenerator.LimitedQueue.offer()   ... done");
+			return false;
+		}
+
+		@Override
+		public E take() throws InterruptedException {
+	//		System.out.println("ThumbnailGenerator.LimitedQueue.take()");
+			return super.take();
+		}
+
 	}
 
 	/**
@@ -63,27 +101,28 @@ public class ThumbnailGenerator {
 
 	public String generateMD5(File f) throws IOException {
 		InputStream fis = new FileInputStream(f);
-		byte[] buffer  = DigestUtils.md5(fis);
+		byte[] buffer = DigestUtils.md5(fis);
 		String s = DigestUtils.md5Hex(buffer);
+
 		fis.close();
-		return s; 
-//		= new byte[1024];
-//		MessageDigest complete = null;
-//		try {
-//			complete = MessageDigest.getInstance("MD5");
-//			int numRead;
-//			do {
-//				numRead = fis.read(buffer);
-//				if (numRead > 0) {
-//					complete.update(buffer, 0, numRead);
-//				}
-//			} while (numRead != -1);
-//
-//			fis.close();
-//		} catch (NoSuchAlgorithmException e) {
-//			e.printStackTrace();
-//		}
-//		return complete.digest();
+		return s;
+		// = new byte[1024];
+		// MessageDigest complete = null;
+		// try {
+		// complete = MessageDigest.getInstance("MD5");
+		// int numRead;
+		// do {
+		// numRead = fis.read(buffer);
+		// if (numRead > 0) {
+		// complete.update(buffer, 0, numRead);
+		// }
+		// } while (numRead != -1);
+		//
+		// fis.close();
+		// } catch (NoSuchAlgorithmException e) {
+		// e.printStackTrace();
+		// }
+		// return complete.digest();
 	}
 
 	protected int[] generateThumbnail(File f) {
@@ -120,10 +159,10 @@ public class ThumbnailGenerator {
 			id.setPath(f.getCanonicalPath());
 			id.setMtime(f.lastModified());
 			id.setSize(f.length());
-			//generate thumbnails only for images, not video
+			// generate thumbnails only for images, not video
 			if (Utils.isValideImageName(f.getName())) {
-		     	data = generateThumbnail(f);
-		     	id.setData(data);
+				data = generateThumbnail(f);
+				id.setData(data);
 			}
 			md5 = generateMD5(f);
 			id.setMd5Digest(md5);
@@ -135,29 +174,27 @@ public class ThumbnailGenerator {
 		return id;
 	}
 
-	public void generateAndSave(String s) {
-		File f = new File(s);
+	public void generateAndSave(File f) {
 		if (Utils.isValideImageName(f.getName()) || Utils.isValideVideoName(f.getName())) {
-//			System.out.println("ThumbnailGenerator.generateAndSave() processing " + f);
-//			System.out.println("checking if in DB");
+			// System.out.println("ThumbnailGenerator.generateAndSave() processing "
+			// + f);
+			// System.out.println("checking if in DB");
 			try {
 				if (ts.isInDataBaseBasedOnName(f.getCanonicalPath())) {
-					//System.out.println("ThumbnailGenerator.generateImageDescriptor() Already in DB, ignoring");
+					// System.out.println("ThumbnailGenerator.generateImageDescriptor() Already in DB, ignoring");
 					log.log(f.getCanonicalPath() + " already in DB");
 				} else {
 					MediaFileDescriptor id = this.buildMediaDescriptor(f);
 					if (id != null) {
 						ts.saveToDB(id);
 					}
-					log.log(f.getCanonicalPath() + " ..... OK");
+					log.log(f.getCanonicalPath() + " ..... size  " +  (f.length()/1024) + " KiB OK " + executorService.getActiveCount() + " threads running");
 				}
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
 		}
 	}
-
-	
 
 	public void process(String path) {
 		try {
@@ -168,26 +205,32 @@ public class ThumbnailGenerator {
 	}
 
 	public void process(File fd) throws IOException {
-		if (fd.isFile()) {
-			this.generateAndSave(fd.getCanonicalPath());
+		if (isValideFile(fd)) {
+			this.generateAndSave(fd);
 			// }
 		} else {
-			String entries[] = fd.list();
-			if (entries != null) {
-				for (int i = 0; i < entries.length; i++) {
-					File f = new File(fd.getCanonicalPath() + "/" + entries[i]);
-					if (f.isFile()) {
-						this.generateAndSave(fd.getCanonicalPath() + "/" + entries[i]);
-					} else {
-						this.process(f);
+			if (fd.isDirectory()) {
+				String entries[] = fd.list();
+				if (entries != null) {
+					for (int i = 0; i < entries.length; i++) {
+						File f = new File(fd.getCanonicalPath() + "/" + entries[i]);
+						if (isValideFile(fd)) {
+							this.generateAndSave(f);
+						} else {
+							this.process(f);
+						}
 					}
 				}
 			}
 		}
 	}
 
+	public boolean isValideFile(File fd) {
+		return fd.isFile() && (Utils.isValideImageName(fd.getName()) || Utils.isValideVideoName(fd.getName()));
+	}
+
 	public void processMT(String path) {
-	//	System.out.println("ThumbnailGenerator.processMT()");
+		// System.out.println("ThumbnailGenerator.processMT()");
 		try {
 			this.processMT(new File(path));
 		} catch (IOException e) {
@@ -204,40 +247,44 @@ public class ThumbnailGenerator {
 	}
 
 	public void processMT(File fd) throws IOException {
-		if (fd.isFile()) {
-			// System.out.println("ThumbnailGenerator.process() " + fd);
-			//if (this.isValideImageName(fd.getName())) {
-				// this.testDownscalingOpenCL(f);
-				executorService.execute(new RunnableProcess(fd.getCanonicalPath()));
-				// this.generateAndSave(fd);
-			//}
+		if (isValideFile(fd)) {
+			executorService.submit(new RunnableProcess(fd));
 		} else {
-			String entries[] = fd.list();
-			if (entries != null) {
-				for (int i = 0; i < entries.length; i++) {
-					File f = new File(fd.getCanonicalPath() + "/" + entries[i]);
-					if (f.isFile()) {
-					//	if (this.isValideImageName(f.getName())) {
-							executorService.execute(new RunnableProcess(fd.getCanonicalPath() + "/" + entries[i]));
-					//	}
-					} else {
-						this.processMT(f);
+			if (fd.isDirectory()) {
+				String entries[] = fd.list();
+				if (entries != null) {
+					for (int i = 0; i < entries.length; i++) {
+						File f = new File(fd.getCanonicalPath() + "/" + entries[i]);
+						if (isValideFile(fd)) {
+							executorService.submit(new RunnableProcess(f));
+						} else {
+							this.processMT(f);
+						}
 					}
 				}
 			}
 		}
 	}
 
-	protected class RunnableProcess implements Runnable {
-		protected String fd;
+	protected void submit(RunnableProcess rp) {
+//		try {
+		//	semaphore.acquire();
+			executorService.submit(rp);
+		//	semaphore.release();
+//		} catch (InterruptedException e) {
+//			e.printStackTrace();
+//		}
+	}
 
-		public RunnableProcess(String fd) {
+	protected class RunnableProcess implements Runnable {
+		protected File fd;
+
+		public RunnableProcess(File fd) {
 			this.fd = fd;
 		}
 
 		@Override
 		public void run() {
-		//	System.out.println("ThumbnailGenerator.RunnableProcess.run()");
 			generateAndSave(fd);
 		}
 	}

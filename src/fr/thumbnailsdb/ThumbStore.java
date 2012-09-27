@@ -147,9 +147,7 @@ public class ThumbStore {
 		try {
 			st = connexion.createStatement();
 			ResultSet res = st.executeQuery(select);
-			if (res.next()) {
-				result = true;
-			}
+			result = res.next();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -183,6 +181,21 @@ public class ThumbStore {
 
 	}
 
+	public ResultSet getDuplicatesMD5(MediaFileDescriptor mfd) {
+
+		Statement sta;
+		ResultSet res = null;
+		try {
+			sta = connexion.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
+			res = sta
+					.executeQuery("SELECT DISTINCT A.path, A.size, A.md5 from images A JOIN ( SELECT COUNT(*) as Count, B.md5   FROM Images B   GROUP BY B.md5) AS B ON A.md5 = B.md5 WHERE B.Count > 1 ORDER by A.md5;");
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return res;
+
+	}
+	
 	/**
 	 * remove incorrect records from the DB
 	 * 

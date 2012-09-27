@@ -14,6 +14,13 @@ public class Main {
 			String source = args[1];
 			si.prettyPrintSimilarResults(si.findSimilarMedia(source), 5);
 		}
+		
+		if ("identical".equals(args[0])) {
+			SimilarImageFinder si = new SimilarImageFinder(tb);
+			String source = args[1];
+			si.prettyPrintSimilarResults(si.findIdenticalMedia(source));
+		}
+		
 	}
 
 	public static void dbAction(String dbPath, String[] args) {
