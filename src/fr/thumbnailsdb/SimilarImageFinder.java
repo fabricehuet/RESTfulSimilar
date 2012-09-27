@@ -66,25 +66,6 @@ public class SimilarImageFinder {
 				String path = res.getString("path");
 				byte[] d = res.getBytes("data");
 				if (d != null) {
-
-					// ByteArrayInputStream bi = new
-					// ByteArrayInputStream(res.getBytes("data"));
-					// System.out.println("First 4 elements of data array ");
-					// for (int k =0;k<4;k++) {
-					// System.out.print(bi.read()+",");
-					// }
-					// System.out.println();
-					// BufferedImage bf = ImageIO.read(new
-					// ByteArrayInputStream(res.getBytes("data")));
-					// System.out.println("First RGBA values of image data ");
-					// int rgba = bf.getRGB(0, 0);
-					// int a = (rgba >>>26) & 0xFF;
-					// int red1 = (rgba >>> 16) & 0xFF;
-					// int green1 = (rgba >>> 8) & 0xFF;
-					// int blue1 = (rgba >>> 0) & 0xFF;
-					// System.out.printf("   %d,%d,%d,%d\n",a, red1, green1,
-					// blue1);
-
 					ObjectInputStream oi = new ObjectInputStream(new ByteArrayInputStream(d));
 					int[] idata = (int[]) oi.readObject();
 					if (idata != null) {
@@ -94,7 +75,7 @@ public class SimilarImageFinder {
 						imd.setRmse(rmse);
 						list.add(imd);
 					} else {
-						System.err.println("Warning, found null data entry in DB for " + path);
+						//System.err.println("Warning, found null data entry in DB for " + path);
 					}
 				}
 				i++;

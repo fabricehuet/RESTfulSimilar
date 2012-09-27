@@ -73,3 +73,14 @@ org.h2.jdbc.JdbcSQLException: Database is already closed (to disable automatic c
 	at fr.thumbnailsdb.ThumbnailGenerator.process(ThumbnailGenerator.java:170)
 	at fr.thumbnailsdb.Main.dbAction(Main.java:27)
 	at fr.thumbnailsdb.Main.main(Main.java:68)
+09-25 17:46:59 jdbc[2]: exception
+org.h2.jdbc.JdbcSQLException: Column "size" not found [42122-168]
+	at org.h2.message.DbException.getJdbcSQLException(DbException.java:329)
+	at org.h2.message.DbException.get(DbException.java:169)
+	at org.h2.message.DbException.get(DbException.java:146)
+	at org.h2.jdbc.JdbcResultSet.getColumnIndex(JdbcResultSet.java:2918)
+	at org.h2.jdbc.JdbcResultSet.get(JdbcResultSet.java:2979)
+	at org.h2.jdbc.JdbcResultSet.getLong(JdbcResultSet.java:630)
+	at fr.thumbnailsdb.DuplicateMediaFinder.prettyPrintDuplicate(DuplicateMediaFinder.java:75)
+	at fr.thumbnailsdb.Main.dbAction(Main.java:42)
+	at fr.thumbnailsdb.Main.main(Main.java:78)
