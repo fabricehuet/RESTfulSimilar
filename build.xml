@@ -9,28 +9,13 @@
                 <attribute name="Class-Path" value="."/>
             </manifest>
             <fileset dir="/home/fhuet/workspaces/rechercheefficaceimagessimilaires/surfjavacl/bin"/>
-            <fileset dir="/home/fhuet/workspaces/rechercheefficaceimagessimilaires/socles-read-only/socles/bin"/>
-            <zipfileset excludes="META-INF/*.SF" src="/home/fhuet/workspaces/rechercheefficaceimagessimilaires/socles-read-only/socles/lib/CopyLibs/org-netbeans-modules-java-j2seproject-copylibstask.jar"/>
-            <zipfileset excludes="META-INF/*.SF" src="/home/fhuet/workspaces/rechercheefficaceimagessimilaires/socles-read-only/socles/lib/jogamp2/gluegen-rt-natives-linux-amd64.jar"/>
-            <zipfileset excludes="META-INF/*.SF" src="/home/fhuet/workspaces/rechercheefficaceimagessimilaires/socles-read-only/socles/lib/jogamp2/gluegen-rt.jar"/>
-            <zipfileset excludes="META-INF/*.SF" src="/home/fhuet/workspaces/rechercheefficaceimagessimilaires/socles-read-only/socles/lib/jogamp2/joal-natives-linux-amd64.jar"/>
-            <zipfileset excludes="META-INF/*.SF" src="/home/fhuet/workspaces/rechercheefficaceimagessimilaires/socles-read-only/socles/lib/jogamp2/joal.jar"/>
-            <zipfileset excludes="META-INF/*.SF" src="/home/fhuet/workspaces/rechercheefficaceimagessimilaires/socles-read-only/socles/lib/jogamp2/jocl-natives-linux-amd64.jar"/>
-            <zipfileset excludes="META-INF/*.SF" src="/home/fhuet/workspaces/rechercheefficaceimagessimilaires/socles-read-only/socles/lib/jogamp2/jocl.jar"/>
-            <zipfileset excludes="META-INF/*.SF" src="/home/fhuet/workspaces/rechercheefficaceimagessimilaires/socles-read-only/socles/lib/jogamp2/jogl-all-natives-linux-amd64.jar"/>
-            <zipfileset excludes="META-INF/*.SF" src="/home/fhuet/workspaces/rechercheefficaceimagessimilaires/socles-read-only/socles/lib/jogamp2/jogl.all.jar"/>
-            <zipfileset excludes="META-INF/*.SF" src="/home/fhuet/workspaces/rechercheefficaceimagessimilaires/socles-read-only/socles/lib/junit_4/junit-4.5-src.jar"/>
-            <zipfileset excludes="META-INF/*.SF" src="/home/fhuet/workspaces/rechercheefficaceimagessimilaires/socles-read-only/socles/lib/junit_4/junit-4.5.jar"/>
-            <zipfileset excludes="META-INF/*.SF" src="/home/fhuet/workspaces/rechercheefficaceimagessimilaires/socles-read-only/socles/lib/junit/junit-3.8.2.jar"/>
-            <zipfileset excludes="META-INF/*.SF" src="/home/fhuet/workspaces/rechercheefficaceimagessimilaires/socles-read-only/socles/lib/jogamp2/gluegen.jar"/>
-            <zipfileset excludes="META-INF/*.SF" src="/home/fhuet/workspaces/rechercheefficaceimagessimilaires/socles-read-only/socles/lib/jogamp2/gluegen-rt-natives-macosx-universal.jar"/>
-            <zipfileset excludes="META-INF/*.SF" src="/home/fhuet/workspaces/rechercheefficaceimagessimilaires/socles-read-only/socles/lib/jogamp2/joal-natives-macosx-universal.jar"/>
-            <zipfileset excludes="META-INF/*.SF" src="/home/fhuet/workspaces/rechercheefficaceimagessimilaires/socles-read-only/socles/lib/jogamp2/jocl-natives-macosx-universal.jar"/>
-            <zipfileset excludes="META-INF/*.SF" src="/home/fhuet/workspaces/rechercheefficaceimagessimilaires/socles-read-only/socles/lib/jogamp2/jogl-all-natives-macosx-universal.jar"/>
-            <zipfileset excludes="META-INF/*.SF" src="/home/fhuet/workspaces/rechercheefficaceimagessimilaires/socles-read-only/soclesdemo/lib/jogamp2/jocl.jar"/>
             <zipfileset excludes="META-INF/*.SF" src="/home/fhuet/workspaces/rechercheefficaceimagessimilaires/surfjavacl/lib/h2-1.3.168.jar"/>
             <zipfileset excludes="META-INF/*.SF" src="/home/fhuet/workspaces/rechercheefficaceimagessimilaires/surfjavacl/lib/hsqldb.jar"/>
             <zipfileset excludes="META-INF/*.SF" src="/home/fhuet/workspaces/rechercheefficaceimagessimilaires/surfjavacl/lib/commons-codec-1.7/commons-codec-1.7.jar"/>
+            <zipfileset excludes="META-INF/*.SF" src="/home/fhuet/workspaces/rechercheefficaceimagessimilaires/surfjavacl/lib/commons-codec-1.7/commons-codec-1.7-javadoc.jar"/>
+            <zipfileset excludes="META-INF/*.SF" src="/home/fhuet/workspaces/rechercheefficaceimagessimilaires/surfjavacl/lib/commons-codec-1.7/commons-codec-1.7-sources.jar"/>
+            <zipfileset excludes="META-INF/*.SF" src="/home/fhuet/workspaces/rechercheefficaceimagessimilaires/surfjavacl/lib/commons-codec-1.7/commons-codec-1.7-test-sources.jar"/>
+            <zipfileset excludes="META-INF/*.SF" src="/home/fhuet/workspaces/rechercheefficaceimagessimilaires/surfjavacl/lib/commons-codec-1.7/commons-codec-1.7-tests.jar"/>
         </jar>
     </target>
 </project>

@@ -15,10 +15,10 @@ public class Main {
 			si.prettyPrintSimilarResults(si.findSimilarMedia(source), 5);
 		}
 		
-		if ("identical".equals(args[0])) {
+		if ("duplicate".equals(args[0])) {
 			SimilarImageFinder si = new SimilarImageFinder(tb);
 			String source = args[1];
-			si.prettyPrintSimilarResults(si.findIdenticalMedia(source));
+			si.prettyPrintIdenticalResults(si.findIdenticalMedia(source));
 		}
 		
 	}
