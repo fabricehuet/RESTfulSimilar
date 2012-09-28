@@ -71,12 +71,7 @@ public class SimilarImageFinder {
 						imd.setRmse(rmse);
 						list.add(imd);
 					} else {
-<<<<<<< HEAD
-						// System.err.println("Warning, found null data entry in DB for "
-						// + path);
-=======
-						//System.err.println("Warning, found null data entry in DB for " + path);
->>>>>>> b9b7be63ba7ac23f0e8c0cdfbc985a2bf7c8a18d
+
 					}
 				}
 				i++;
