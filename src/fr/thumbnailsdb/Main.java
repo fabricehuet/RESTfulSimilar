@@ -68,6 +68,7 @@ public class Main {
 			System.err.println("   db size");
 			System.err.println("   db duplicate");
 			System.err.println("   media similar folder_or_file_to_process");
+			System.err.println("   media duplicate folder_or_file_to_process");
 			System.exit(-1);
 		} else {
 			int i = 0;
