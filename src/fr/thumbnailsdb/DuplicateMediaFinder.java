@@ -52,14 +52,12 @@ public class DuplicateMediaFinder {
 	}
 
 	public void prettyPrintDuplicate(ResultSet r) {
-		TreeSet<DuplicateGroup> list = new TreeSet<DuplicateGroup>(
-				new Comparator<DuplicateGroup>() {
-					@Override
-					public int compare(DuplicateGroup o1, DuplicateGroup o2) {
-						return Double.compare(o2.getFileSize(),
-								o1.getFileSize());
-					}
-				});
+		TreeSet<DuplicateGroup> list = new TreeSet<DuplicateGroup>(new Comparator<DuplicateGroup>() {
+			@Override
+			public int compare(DuplicateGroup o1, DuplicateGroup o2) {
+				return Double.compare(o2.getFileSize(), o1.getFileSize());
+			}
+		});
 
 		System.out.println("DuplicateMediaFinder.prettyPrintDuplicate() ");
 		// ArrayList<DuplicateGroup> al = new
@@ -76,20 +74,23 @@ public class DuplicateMediaFinder {
 					} else {
 						if (dl.size() > 1) {
 							list.add(dl);
-							dl = new DuplicateGroup();
-							dl.add(r.getLong("size"), r.getString("path"));
 						}
-						currentMd5 = md5;			
+						dl = new DuplicateGroup();
+						dl.add(r.getLong("size"), r.getString("path"));
+						currentMd5 = md5;
+
 					}
 				}
 			}
-			list.add(dl);
+			if (dl.size() > 1) {
+		     	list.add(dl);
+			}
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
 
 		for (DuplicateGroup dg : list) {
-			System.out.println(dg.fileSize + " (" + dg.fileSize*(dg.size()-1) +" to save) ");
+			System.out.println(dg.fileSize + " (" + dg.fileSize * (dg.size() - 1) + " to save) ");
 			System.out.println(dg);
 		}
 

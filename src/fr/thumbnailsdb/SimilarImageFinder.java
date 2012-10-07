@@ -71,6 +71,7 @@ public class SimilarImageFinder {
 						imd.setRmse(rmse);
 						list.add(imd);
 					} else {
+
 					}
 				}
 				i++;
