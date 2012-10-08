@@ -175,7 +175,7 @@ public class ThumbnailGenerator {
 	}
 
 	public void generateAndSave(File f) {
-		if (Utils.isValideImageName(f.getName()) || Utils.isValideVideoName(f.getName())) {
+	//	if (Utils.isValideImageName(f.getName()) || Utils.isValideVideoName(f.getName())) {
 			// System.out.println("ThumbnailGenerator.generateAndSave() processing "
 			// + f);
 			// System.out.println("checking if in DB");
@@ -193,7 +193,7 @@ public class ThumbnailGenerator {
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
-		}
+		//}
 	}
 
 	public void process(String path) {
