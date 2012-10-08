@@ -244,9 +244,10 @@ public class ThumbStore {
 				File tmp = new File(id.getPath());
 				if (!tmp.exists()) {
 					i++;
+					all.deleteRow();
 				}
 			}
-			System.out.println("ThumbStore.shrink() found " + i + " records to delete");
+			System.out.println("ThumbStore.shrink() has deleted  " + i + " records");
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
