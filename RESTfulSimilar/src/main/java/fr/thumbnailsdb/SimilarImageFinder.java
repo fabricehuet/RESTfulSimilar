@@ -43,7 +43,7 @@ public class SimilarImageFinder {
 	protected TreeSet<MediaFileDescriptor> findSimilarImage(MediaFileDescriptor id, ProgressBar pb, int max,
 			int increment, int i, int step) {
 		TreeSet<MediaFileDescriptor> list = new TreeSet<MediaFileDescriptor>(new Comparator<MediaFileDescriptor>() {
-			@Override
+		//	@Override
 			public int compare(MediaFileDescriptor o1, MediaFileDescriptor o2) {
 				return Double.compare(o1.getRmse(), o2.getRmse());
 			}
@@ -129,8 +129,22 @@ public class SimilarImageFinder {
 			MediaFileDescriptor mediaFileDescriptor = (MediaFileDescriptor) it.next();
 			System.out.println(mediaFileDescriptor.getPath() + " " + mediaFileDescriptor.getSize());
 		}
-
 	}
+	
+	public String prettyStringIdenticalResults(ArrayList<MediaFileDescriptor> findIdenticalMedia, int max) {
+		Iterator<MediaFileDescriptor> it = findIdenticalMedia.iterator();
+		String result= "";
+		int i =0;
+		while (it.hasNext() && i<max) {
+			MediaFileDescriptor mediaFileDescriptor = (MediaFileDescriptor) it.next();
+			i++;
+			//System.out.println(mediaFileDescriptor.getPath() + " " + mediaFileDescriptor.getSize());
+			result+=mediaFileDescriptor.getPath() + " " + mediaFileDescriptor.getSize();
+		}
+		
+		return result; 
+	}
+	
 
 	public void testFindSimilarImages(MediaFileDescriptor id) {
 		System.out.println("ThumbStore.test() reading descriptor from disk ");

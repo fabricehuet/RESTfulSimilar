@@ -25,6 +25,7 @@ public class ThumbStore {
 
 	protected static String DEFAULT_DB = "localDB";
 	protected Connection connexion;
+	protected String path; 
 
 	public ThumbStore() {
 		this(DEFAULT_DB);
@@ -33,11 +34,13 @@ public class ThumbStore {
 
 	public ThumbStore(String path) {
 		if (path == null) {
-			path = DEFAULT_DB;
+			this.path = DEFAULT_DB;
+		} else {
+			this.path=path;
 		}
 		System.out.println("ThumbStore.ThumbStore() using " + path + " as DB");
 		try {
-			connectToDB(path);
+			connectToDB(this.path);
 			checkAndCreateTables();
 			// test();
 		} catch (Exception e) {
@@ -369,6 +372,16 @@ public class ThumbStore {
 		}
 	}
 
+	public String getPath() {
+		try {
+			return new File(this.path).getCanonicalPath();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return this.path;
+	}
+	
 	public static void main(String[] args) {
 
 		ThumbStore ts = new ThumbStore("local");

@@ -283,7 +283,7 @@ public class ThumbnailGenerator {
 			this.fd = fd;
 		}
 
-		@Override
+	//	@Override
 		public void run() {
 			generateAndSave(fd);
 		}
