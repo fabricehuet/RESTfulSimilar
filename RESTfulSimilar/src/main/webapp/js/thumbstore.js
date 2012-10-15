@@ -26,6 +26,7 @@ function getDuplicate() {
 	// document.myform.submit();
 	$.get("rest/hello/identical", { max: $("input[name=max]").val() },
 			function(data){
-		alert("Data Loaded: " + data);
+	//	alert("Data Loaded: " + data);
+		document.getElementById('duplicate_result').innerHTML = data
 	   });
 }
