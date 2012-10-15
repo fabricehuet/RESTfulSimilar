@@ -139,14 +139,19 @@ public class ThumbStore {
 
 	public boolean isInDataBaseBasedOnName(String path) {
 		boolean result = false;
-		String select = "SELECT path FROM IMAGES WHERE path=\'" + path + "\'"; // AND
-																				// mtime="
-																				// +
-																				// id.getMtime();
-		Statement st;
+		
+		
+//		String select = "SELECT path FROM IMAGES WHERE path=\'" + path + "\'"; // AND
+//																				// mtime="
+//																				// +
+//																				// id.getMtime();
+//		Statement st;
 		try {
-			st = connexion.createStatement();
-			ResultSet res = st.executeQuery(select);
+			PreparedStatement psmnt= connexion.prepareStatement("SELECT path FROM IMAGES WHERE path=?");
+			psmnt.setString(1, path);
+	//		st = connexion.createStatement();
+			psmnt.execute();
+			ResultSet res = psmnt.getResultSet();
 			result = res.next();
 		} catch (SQLException e) {
 			e.printStackTrace();
