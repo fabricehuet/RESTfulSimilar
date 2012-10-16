@@ -2,9 +2,6 @@ package fr.thumbnailsdb;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.Iterator;
 import java.util.TreeSet;
 
 public class DuplicateMediaFinder {
@@ -19,40 +16,8 @@ public class DuplicateMediaFinder {
 		return thumbstore.getDuplicatesMD5();
 	}
 
-	private class DuplicateGroup {
-		long fileSize;
-		ArrayList<String> al = new ArrayList<String>();
-
-		public DuplicateGroup() {
-			super();
-			// this.individualSize = individualSize;
-		}
-
-		public void add(long size, String path) {
-			this.fileSize = size;
-			al.add(path);
-		}
-
-		public long getFileSize() {
-			return fileSize;
-		}
-
-		public int size() {
-			return al.size();
-		}
-
-		public String toString() {
-			StringBuilder sb = new StringBuilder();
-			for (Iterator iterator = al.iterator(); iterator.hasNext();) {
-				sb.append(iterator.next() + "\n");
-			}
-
-			return sb.toString();
-		}
-	}
-
 	public void prettyPrintDuplicate(ResultSet r) {
-		TreeSet<DuplicateGroup> list = computeDuplicateSets(r);
+		DuplicateList list = computeDuplicateSets(r);
 
 		for (DuplicateGroup dg : list) {
 			System.out.println(dg.fileSize + " (" + dg.fileSize * (dg.size() - 1) + " to save) ");
@@ -60,13 +25,8 @@ public class DuplicateMediaFinder {
 		}
 	}
 
-	protected TreeSet<DuplicateGroup> computeDuplicateSets(ResultSet r) {
-		TreeSet<DuplicateGroup> list = new TreeSet<DuplicateGroup>(new Comparator<DuplicateGroup>() {
-			// @Override
-			public int compare(DuplicateGroup o1, DuplicateGroup o2) {
-				return Double.compare(o2.getFileSize(), o1.getFileSize());
-			}
-		});
+	public DuplicateList computeDuplicateSets(ResultSet r) {
+		DuplicateList list = new DuplicateList();
 		System.out.println("DuplicateMediaFinder.prettyPrintDuplicate() ");
 		// ArrayList<DuplicateGroup> al = new
 		// ArrayList<DuplicateMediaFinder.DuplicateGroup>();
@@ -101,7 +61,7 @@ public class DuplicateMediaFinder {
 
 	// TODO : save result for subsequent requests
 	public String prettyHTMLDuplicate(ResultSet r, int max) {
-		TreeSet<DuplicateGroup> list = computeDuplicateSets(r);
+		DuplicateList list = computeDuplicateSets(r);
 		System.out.println("DuplicateMediaFinder.prettyHTMLDuplicate() " + max);
 		String result = "";
 		int i = 0;
@@ -114,7 +74,7 @@ public class DuplicateMediaFinder {
 				break;
 			}
 		}
-		//System.out.println("DuplicateMediaFinder.prettyHTMLDuplicate() " + result);
+		System.out.println("DuplicateMediaFinder.prettyHTMLDuplicate() " + result);
 		return result;
 	}
 

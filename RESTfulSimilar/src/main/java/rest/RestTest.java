@@ -7,6 +7,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Collection;
 
 import javax.imageio.ImageIO;
 import javax.ws.rs.GET;
@@ -15,6 +16,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
+import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import org.apache.commons.codec.binary.Base64;
@@ -22,8 +24,10 @@ import org.apache.commons.io.FileUtils;
 
 import com.sun.jersey.spi.resource.Singleton;
 
+import fr.thumbnailsdb.DuplicateGroup;
 import fr.thumbnailsdb.DuplicateMediaFinder;
 import fr.thumbnailsdb.SimilarImageFinder;
+import fr.thumbnailsdb.Test;
 import fr.thumbnailsdb.ThumbStore;
 
 @Path("/hello")
@@ -62,14 +66,18 @@ public class RestTest {
 	
 	@GET
 	@Path("/identical")
+	@Produces({ MediaType.APPLICATION_JSON })
 	public Response getDuplicate(@QueryParam("max") String max) {
 
 		SimilarImageFinder si = new SimilarImageFinder(tb);
 		DuplicateMediaFinder df = new DuplicateMediaFinder(tb);
 		// String source = args[1];
-		String r = df.prettyHTMLDuplicate(df.findDuplicateMedia(),Integer.parseInt(max));
-
-		return Response.status(200).entity(r).build();
+	//	String r = df.prettyHTMLDuplicate(df.findDuplicateMedia(),Integer.parseInt(max));
+		Collection dc = (Collection) df.computeDuplicateSets(df.findDuplicateMedia()).toCollection();
+		DuplicateGroup dl =  df.computeDuplicateSets(df.findDuplicateMedia()).getFirst();
+//System.out.println("RestTest.getDuplicate() " + dl);
+		Test t = new Test();
+		return Response.status(200).entity(dc).build();
 	}
 
 	
