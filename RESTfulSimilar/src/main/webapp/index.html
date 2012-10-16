@@ -37,7 +37,7 @@
 		<ul>
 			<li><a href="#tabs-1">ThumbStore info</a></li>
 			<li><a href="#tabs-2">Post</a></li>
-			<li><a href="#tabs-3">Aenean lacinia</a></li>
+			<li><a href="#tabs-3">Contrôle</a></li>
 		</ul>
 		<div id="tabs-1">
 			<p>
@@ -55,15 +55,26 @@
 				</div>
 			</form>
 
-			
-			<div id="accordion"/>
-			   
-			</div>
-			<span id="duplicate_result">results</span>
+
+			<div id="accordion" />
+
 		</div>
-		<div id="tabs-3">
-			<div id="progressbar"></div>
-			
-		</div>
+		<span id="duplicate_result">results</span>
+	</div>
+	<div id="tabs-3">
+		<form name="input">
+
+			<input type="submit" value="Shrink" onClick="javascript: shrink()" />
+
+		</form>
+
+		<form name="input_index">
+			Path: <input type="text" name="index_path"/>
+			      <input type="submit" value="Submit" onClick="javascript: index()"/>
+		</form>
+
+		<!-- <div id="progressbar"></div> -->
+
+	</div>
 	</div>
 </html>

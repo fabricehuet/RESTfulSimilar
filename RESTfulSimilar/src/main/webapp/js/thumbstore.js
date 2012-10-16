@@ -42,7 +42,7 @@ function getDuplicate() {
 						}
 						var data2 = JSON.stringify(data, undefined, 2);
 						// alert("Data Loaded: " + data2);
-					//	console.log(data2);
+					// console.log(data2);
 						// output += '</div>';
 						document.getElementById('duplicate_result').innerHTML = "<div id=\"accordion\">     <h3><a href=\"#\">First header</a></h3>     <div>First content</div>     <h3><a href=\"#\">Second header</a></h3>     <div>Second content</div> </div>";
 						$('#accordion').append(output).accordion('destroy')
@@ -50,4 +50,23 @@ function getDuplicate() {
 
 						// output;
 					});
+}
+
+function shrink() {
+	$.get("rest/hello/shrink", function(data) {
+		alert("shrink done");
+	});
+}
+
+function index() {
+	$.get("rest/hello/index", {path : $("input[name=index_path]").val()}, function(data) {
+		console.log("index done on  ");
+		prettyPrint($("input[name=index_path]").val());
+	});
+}
+
+function prettyPrint(object) {
+	for (i in object) {
+		console.log(i + " " + object[i]);
+	}
 }

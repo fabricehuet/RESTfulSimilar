@@ -80,11 +80,6 @@ public class RestTest {
 		return Response.status(200).entity(dc).build();
 	}
 
-	
-	
-	
-	
-
 	@GET
 	@Path("getImage/{imageId}")
 	@Produces("image/jpg")
@@ -137,5 +132,21 @@ public class RestTest {
 
 		return Response.status(200).entity(result).build();
 	}
-
+	
+	@GET
+	@Path("shrink/")
+	public Response shrink() {
+		tb.shrink();
+		return Response.status(200).entity("Shrink done").build();
+	}
+	
+	
+	@GET
+	@Path("index/")
+	public Response index(@QueryParam("path") String path) {
+		//tb.shrink();
+		System.out.println("RestTest.index() input_path " + path);
+		return Response.status(200).entity("Shrink done").build();
+	}
+	
 }
