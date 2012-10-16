@@ -114,7 +114,7 @@ public class DuplicateMediaFinder {
 				break;
 			}
 		}
-		System.out.println("DuplicateMediaFinder.prettyHTMLDuplicate() " + result);
+		//System.out.println("DuplicateMediaFinder.prettyHTMLDuplicate() " + result);
 		return result;
 	}
 

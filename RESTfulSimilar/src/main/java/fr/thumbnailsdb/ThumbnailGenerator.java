@@ -226,7 +226,7 @@ public class ThumbnailGenerator {
 	}
 
 	public boolean isValideFile(File fd) {
-		return fd.isFile() && (Utils.isValideImageName(fd.getName()) || Utils.isValideVideoName(fd.getName()));
+		return fd.isFile() ; //&& (Utils.isValideImageName(fd.getName()) || Utils.isValideVideoName(fd.getName()));
 	}
 
 	public void processMT(String path) {
