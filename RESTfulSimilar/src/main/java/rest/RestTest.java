@@ -7,9 +7,12 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.Collection;
 
 import javax.imageio.ImageIO;
+import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -21,7 +24,10 @@ import javax.ws.rs.core.Response;
 
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.io.FileUtils;
+import org.codehaus.jettison.json.JSONArray;
 
+import com.sun.jersey.multipart.BodyPartEntity;
+import com.sun.jersey.multipart.MultiPart;
 import com.sun.jersey.spi.resource.Singleton;
 
 import fr.thumbnailsdb.DuplicateGroup;
@@ -34,13 +40,12 @@ import fr.thumbnailsdb.ThumbStore;
 @Singleton
 public class RestTest {
 
-	protected ThumbStore tb ; 
-	
+	protected ThumbStore tb;
+
 	public RestTest() {
 		System.out.println("RestTest.RestTest()");
 		tb = new ThumbStore();
 	}
-	
 
 	@GET
 	@Path("/{param}")
@@ -49,21 +54,22 @@ public class RestTest {
 		return Response.status(200).entity(output).build();
 
 	}
-	
+
 	@GET
 	@Path("/db/{param}")
 	public Response getSize(@PathParam("param") String info) {
+		System.out.println("RestTest.getSize() " + info);
 		if ("size".equals(info)) {
-			return Response.status(200).entity(tb.size()+ "").build();
+			System.out.println("RestTest.getSize() " + tb.size());
+			return Response.status(200).entity(tb.size() + "").build();
 		}
-        if ("path".equals(info)) {
-        	return Response.status(200).entity(tb.getPath()+ "").build();
+		if ("path".equals(info)) {
+			return Response.status(200).entity(tb.getPath() + "").build();
 		}
-//		System.out.println("RestTest.getSize() thumbstore is " + tb);
-        return Response.status(404).build();
+		// System.out.println("RestTest.getSize() thumbstore is " + tb);
+		return Response.status(404).build();
 	}
-	
-	
+
 	@GET
 	@Path("/identical")
 	@Produces({ MediaType.APPLICATION_JSON })
@@ -72,11 +78,12 @@ public class RestTest {
 		SimilarImageFinder si = new SimilarImageFinder(tb);
 		DuplicateMediaFinder df = new DuplicateMediaFinder(tb);
 		// String source = args[1];
-	//	String r = df.prettyHTMLDuplicate(df.findDuplicateMedia(),Integer.parseInt(max));
+		// String r =
+		// df.prettyHTMLDuplicate(df.findDuplicateMedia(),Integer.parseInt(max));
 		Collection dc = (Collection) df.computeDuplicateSets(df.findDuplicateMedia()).toCollection();
-		DuplicateGroup dl =  df.computeDuplicateSets(df.findDuplicateMedia()).getFirst();
-//System.out.println("RestTest.getDuplicate() " + dl);
-		Test t = new Test();
+	//	DuplicateGroup dl = df.computeDuplicateSets(df.findDuplicateMedia()).getFirst();
+		// System.out.println("RestTest.getDuplicate() " + dl);
+	//	Test t = new Test();
 		return Response.status(200).entity(dc).build();
 	}
 
@@ -109,7 +116,7 @@ public class RestTest {
 	@POST
 	@Path("post/")
 	public Response getPostImage(String imageId) {
-	//	System.out.println("RestTest.getImage() " + imageId);
+		// System.out.println("RestTest.getImage() " + imageId);
 		String[] list = new String[] { "/user/fhuet/desktop/home/NOSAVE/img-073020qbs9f.jpg",
 				"/user/fhuet/desktop/home/Perso/photos/DSC00006.JPG" };
 		String result = null;
@@ -132,21 +139,63 @@ public class RestTest {
 
 		return Response.status(200).entity(result).build();
 	}
-	
+
 	@GET
 	@Path("shrink/")
 	public Response shrink() {
 		tb.shrink();
 		return Response.status(200).entity("Shrink done").build();
 	}
-	
-	
+
 	@GET
 	@Path("index/")
 	public Response index(@QueryParam("path") String path) {
-		//tb.shrink();
+		// tb.shrink();
 		System.out.println("RestTest.index() input_path " + path);
-		return Response.status(200).entity("Shrink done").build();
+		return Response.status(200).entity("Indexing in progress").build();
 	}
-	
+
+	@POST
+	@Path("upload/")
+	@Consumes(MediaType.MULTIPART_FORM_DATA)
+	//@Produces({MediaType.APPLICATION_JSON})
+	 @Produces({ MediaType.APPLICATION_JSON })
+	public Response uploadImage(MultiPart multipart) {
+		System.out.println("RestTest.uploadImage() " + multipart);
+		// Image project =
+		// multipart.getBodyParts().get(0).getEntityAs(Image.class);
+		// System.out.println(project);
+		// store image
+		BodyPartEntity bpe = (BodyPartEntity) multipart.getBodyParts().get(0).getEntity();
+
+		String message = null;
+		try {
+			InputStream source = bpe.getInputStream();
+			System.out.println("RestTest.uploadImage() received " + source);
+			BufferedImage bi = ImageIO.read(source);
+
+			System.out.println("RestTest.uploadImage() " + bi);
+			message = "Done";
+
+		} catch (Exception e) {
+			message = e.getMessage();
+			e.printStackTrace();
+		}
+
+		// return
+		// Response.status(Response.Status.ACCEPTED).entity("Attachements processed successfully.")
+		// .type(MediaType.APPLICATION_JSON).build();
+		URI uri = null;
+		try {
+			uri = new URI( "xxx");
+		} catch (URISyntaxException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+//		return Response.created(uri).type(MediaType.TEXT_HTML_TYPE).build();
+		//return Response.ok("All good").type(MediaType.TEXT_HTML_TYPE).build();
+		return Response.status(201).entity("{\"test\" : \"toto\"}").type(MediaType.TEXT_HTML).build();
+
+	}
+
 }

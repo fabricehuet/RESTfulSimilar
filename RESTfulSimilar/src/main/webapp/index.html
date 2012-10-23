@@ -8,7 +8,11 @@
 	href="http://code.jquery.com/ui/1.9.0/themes/base/jquery-ui.css" />
 <script src="http://code.jquery.com/jquery-1.8.2.js"></script>
 <script src="http://code.jquery.com/ui/1.9.0/jquery-ui.js"></script>
+<script src="js/jquery.form.js"></script>
 <script src="js/thumbstore.js"></script>
+<script src="js/vendor/jquery.ui.widget.js"></script>
+<script src="js/jquery.iframe-transport.js"></script>
+<script src="js/jquery.fileupload.js"></script>
 <style>
 .ui-progressbar .ui-progressbar-value {
 	background-image: url(images/pbar-ani.gif);
@@ -19,8 +23,6 @@
 	$(function() {
 		$("#tabs").tabs();
 	});
-	getSize();
-	getPath();
 	$(function() {
 		$("#progressbar").progressbar({
 			value : 59
@@ -35,18 +37,12 @@
 
 	<div id="tabs">
 		<ul>
-			<li><a href="#tabs-1">ThumbStore info</a></li>
+			<li><a href="thumbstore.html">ThumbStore controle</a></li>
 			<li><a href="#tabs-2">Post</a></li>
 			<li><a href="#tabs-3">Contrôle</a></li>
 		</ul>
-		<div id="tabs-1">
-			<p>
-				Path db : <span id="db_path"> <span>
-			</p>
-			<p>
-				Size of db : <span id="db_size"> <span>
-			</p>
-		</div>
+		
+		
 		<div id="tabs-2">
 			<form name="myform" action="rest/hello/identical" method="POST">
 				<div align="center">
@@ -68,11 +64,16 @@
 
 		</form>
 
-		<form name="input_index">
+		<!-- 	  <form name="input_index" method="GET" action="rest/hello/index"> 
 			Path: <input type="text" name="index_path"/>
-			      <input type="submit" value="Submit" onClick="javascript: index()"/>
-		</form>
+			      <input type="submit" value="Submit"/>
+	 	</form> -->
+		<input type="text" id="index_path" />
+		<button onclick='index()'>Click me</button>
 
+		<!--         <p onclick="index()">Select a file</p> -->
+		<!--         <input type="file" id="index_path" name="file" onclick="index()" />  -->
+		<!-- <input type="file" id="input" onchange="index(this.files)"> -->
 		<!-- <div id="progressbar"></div> -->
 
 	</div>

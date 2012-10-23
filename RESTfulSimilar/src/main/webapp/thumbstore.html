@@ -1,0 +1,50 @@
+<script>
+	getSize();
+	getPath();
+	$(function () {
+	    $('#fileupload').fileupload({
+	        dataType: 'json',
+	        forceIframeTransport: true,
+	        fail: function (e, data) {
+	        	 alert("xxx" + e + " " + data);
+	        	 for (i in e) {
+	        			console.log("-"+ i + " " + e[i]);
+	        		}
+	        	 for (i in data) {
+	        			console.log("-"+ i + " " + data[i]);
+	        		}
+// 	           
+               
+	        },
+	        done: function (e,data) {
+	        	 for (i in e) {
+	        			console.log("-"+ i + " " + e[i]);
+	        		}
+	        	 for (i in data) {
+	        			console.log("-"+ i + " " + data[i]);
+	        		}
+// 	        	 $.each(data.result, function (index, file) {
+// 	 	                $('<p/>').text(file.name).appendTo(document.body);
+		               
+// 	 	            });
+	        }
+	      
+	    });
+	});
+</script>
+<div id="tabs-1">
+	<p>
+		Path db : <span id="db_path"> <span>
+	</p>
+	<p>
+		Size of db : <span id="db_size"> <span>
+	</p>
+	<!-- 	<form name="myform" action="rest/hello/identical" method="POST"> -->
+	<!-- 		<input id="fileupload" type="file" name="files[]" multiple> -->
+	<!-- 	</form> -->
+
+	<form id="fileupload" action="rest/hello/upload" method="POST"
+		enctype="multipart/form-data">
+		<input type="file" name="files[]" multiple>
+	</form>
+</div>
