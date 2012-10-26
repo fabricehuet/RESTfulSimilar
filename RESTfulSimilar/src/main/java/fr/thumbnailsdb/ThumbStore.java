@@ -193,7 +193,6 @@ public class ThumbStore {
 	}
 
 	public ResultSet getDuplicatesMD5(MediaFileDescriptor mfd) {
-
 		Statement sta;
 		ResultSet res = null;
 		try {
@@ -313,7 +312,7 @@ public class ThumbStore {
 
 	public void test() {
 		System.out.println("ThumbStore.test() reading descriptor from disk ");
-		ThumbnailGenerator tg = new ThumbnailGenerator(this);
+		MediaIndexer tg = new MediaIndexer(this);
 		String s = "/user/fhuet/desktop/home/workspaces/rechercheefficaceimagessimilaires/images/test.jpg";
 		MediaFileDescriptor id = tg.buildMediaDescriptor(new File(s));
 		System.out.println("ThumbStore.test() writting to database");

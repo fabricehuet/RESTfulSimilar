@@ -29,7 +29,7 @@ public class Main {
 			System.out.println("    " + args[i]);
 		}
 		ThumbStore tb = new ThumbStore(dbPath);
-		ThumbnailGenerator tg = new ThumbnailGenerator(tb);
+		MediaIndexer tg = new MediaIndexer(tb);
 		if ("index".equals(args[0])) {
 			String source = args[1];
 			tg.processMT(source);
@@ -48,6 +48,12 @@ public class Main {
 			// String source = args[1];
 			df.prettyPrintDuplicate(df.findDuplicateMedia());
 		}
+
+        if ("duplicateFolder".equals(args[0])) {
+            DuplicateMediaFinder df = new DuplicateMediaFinder(tb);
+            // String source = args[1];
+            df.prettyPrintDuplicateFolder(df.findDuplicateMedia());
+        }
 
 	}
 

@@ -20,7 +20,7 @@ public class SimilarImageFinder {
 	}
 
 	public TreeSet<MediaFileDescriptor> findSimilarMedia(String source) {
-		ThumbnailGenerator tg = new ThumbnailGenerator(null);
+		MediaIndexer tg = new MediaIndexer(null);
 		MediaFileDescriptor id = tg.buildMediaDescriptor(new File(source)); // ImageDescriptor.readFromDisk(s);
 		return this.findSimilarMedia(id);
 	}
@@ -57,7 +57,9 @@ public class SimilarImageFinder {
 				if (i > increment) {
 					i = 0;
 					step++;
-					pb.update(step, 20);
+                    if (pb!=null) {
+					   pb.update(step, 20);
+                    }
 				}
 				String path = res.getString("path");
 				byte[] d = res.getBytes("data");
@@ -102,8 +104,9 @@ public class SimilarImageFinder {
 
 	public ArrayList<MediaFileDescriptor> findIdenticalMedia(String source) {
 
-		ThumbnailGenerator tg = new ThumbnailGenerator(null);
+		MediaIndexer tg = new MediaIndexer(null);
 		MediaFileDescriptor id = tg.buildMediaDescriptor(new File(source)); // ImageDescriptor.readFromDisk(s);
+        System.out.println(id.md5Digest);
 		ResultSet res = thumbstore.getDuplicatesMD5(id);
 		ArrayList<MediaFileDescriptor> al = new ArrayList<MediaFileDescriptor>();
 		try {
@@ -151,7 +154,7 @@ public class SimilarImageFinder {
 		String s = "/user/fhuet/desktop/home/workspaces/rechercheefficaceimagessimilaires/images/original.jpg";
 		System.out.println("ThumbStore.testFindSimilarImages() Reference Image " + s);
 
-		ThumbnailGenerator tg = new ThumbnailGenerator(null);
+		MediaIndexer tg = new MediaIndexer(null);
 		id = tg.buildMediaDescriptor(new File(s)); // ImageDescriptor.readFromDisk(s);
 		this.prettyPrintSimilarResults(this.findSimilarMedia(id), 2);
 	}

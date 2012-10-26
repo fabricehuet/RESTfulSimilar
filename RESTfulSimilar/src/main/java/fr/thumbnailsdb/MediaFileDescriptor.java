@@ -1,5 +1,7 @@
 package fr.thumbnailsdb;
 
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -7,8 +9,10 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
 
-public class MediaFileDescriptor {
 
+@XmlRootElement
+public class MediaFileDescriptor {
+    @XmlElement
 	protected String path;
 	protected long size;
 	protected long mtime;

@@ -1,6 +1,5 @@
 package fr.thumbnailsdb;
 
-import java.awt.Color;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -141,7 +140,7 @@ public class ImageComparator {
 		int y = 10;
 		
 		System.out.println("ImageComparator.testThumbnailImages()  Thumbnail size is " + x + "x"+ y);
-		ThumbnailGenerator tb = new ThumbnailGenerator(null);
+		MediaIndexer tb = new MediaIndexer(null);
 		String path = "/user/fhuet/desktop/home/workspaces/rechercheefficaceimagessimilaires/images/original.jpg";
 		BufferedImage img = ImageIO.read(new File(path));
 	
