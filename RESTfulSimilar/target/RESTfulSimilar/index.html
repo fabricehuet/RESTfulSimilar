@@ -5,7 +5,7 @@
     <meta charset="utf-8"/>
     <link rel="stylesheet"
           href="http://code.jquery.com/ui/1.9.0/themes/base/jquery-ui.css"/>
-    <link href="js/nailthumb/jquery.nailthumb.1.1.css" type="text/css" rel="stylesheet" />
+    <link href="js/nailthumb/jquery.nailthumb.1.1.css" type="text/css" rel="stylesheet"/>
     <link rel="stylesheet" href="http://blueimp.github.com/cdn/css/bootstrap.min.css">
 
     <script src="http://code.jquery.com/jquery-1.8.2.js"></script>
@@ -15,38 +15,38 @@
     <script src="js/jquery.iframe-transport.js"></script>
     <script src="js/jquery.fileupload.js"></script>
     <script src="js/jquery.fileupload-fp.js"></script>
-
     <script src="js/nailthumb/jquery.nailthumb.1.1.js"></script>
-
-
-
+    <script src="js/mustache.js"></script>
 
     <style>
         .ui-progressbar .ui-progressbar-value {
-        background-image: url(images/pbar-ani.gif);
+            background-image: url(images/pbar-ani.gif);
         }
 
     </style>
     <style type="text/css" media="screen">
         .square {
-        width: 200px;
-        height: 200px;
+            width: 200px;
+            height: 200px;
         }
-        .horiz {
-        width: 150px;
-        height: 90px;
-        }
-        .vert {
-        width:100px;
-        height: 130px;
-        }
-        .nailthumb-image-titles-bigger span.nailthumb-title {
-        background: none repeat scroll 0 0 rgba(0, 125, 0, 0.5);
-        font-size: 15px;
-        height: 30px;}
 
-        .floated_img
-        {
+        .horiz {
+            width: 150px;
+            height: 90px;
+        }
+
+        .vert {
+            width: 100px;
+            height: 130px;
+        }
+
+        .nailthumb-image-titles-bigger span.nailthumb-title {
+            background: none repeat scroll 0 0 rgba(0, 125, 0, 0.5);
+            font-size: 15px;
+            height: 30px;
+        }
+
+        .floated_img {
             /*float: left;*/
             display: inline-block;
             padding-left: 20px
@@ -56,47 +56,46 @@
     </style>
 
     <script>
-        $(function() {
-        $("#tabs").tabs();
+        $(function () {
+            $("#tabs").tabs();
         });
-        $(function() {
-        $("#progressbar").progressbar({
-        value : 59
+        $(function () {
+            $("#progressbar").progressbar({
+                value:59
+            });
         });
-        });
-        $(function() {
-        $("#accordion").accordion();
+        $(function () {
+            $("#accordion").accordion();
         });
         $(function () {
             $('#fileupload').fileupload({
-                dataType: 'json',
-                forceIframeTransport: true,
-                previewSourceFileTypes : '/^image\/(gif|jpeg|png|jpg)$/' ,
-                fail: function (e, data) {
+                dataType:'json',
+                forceIframeTransport:true,
+                previewSourceFileTypes:'/^image\/(gif|jpeg|png|jpg)$/',
+                fail:function (e, data) {
                     alert("xxx" + e + " " + data);
                     for (i in e) {
-                        console.log("-"+ i + " " + e[i]);
+                        console.log("-" + i + " " + e[i]);
                     }
                     for (i in data) {
-                        console.log("-"+ i + " " + data[i]);
+                        console.log("-" + i + " " + data[i]);
                     }
 //
 
                 },
-                done:
-                        function (e,data) {
+                done:function (e, data) {
 //	        	 for (i in e) {
 //	        			console.log("-"+ i + " " + e[i]);
 //	        		}
 //	        	 for (i in data) {
 //	        			console.log("-"+ i + " " + data[i]);
 //	        		}
-                            uploadFinished(data);
+                    uploadFinished(data);
 // 	        	 $.each(data.result, function (index, file) {
 // 	 	                $('<p/>').text(file.name).appendTo(document.body);
 
 // 	 	            });
-                        }
+                }
 
             });
         });
@@ -108,6 +107,7 @@
     <ul>
         <li><a href="thumbstore.html">ThumbStore controle</a></li>
         <li><a href="#tabs-2">Duplicate media</a></li>
+        <li><a href="#tabs-folder">Duplicate folders</a></li>
         <li><a href="#tabs-3">Similar image</a></li>
     </ul>
 
@@ -121,33 +121,41 @@
         </form>
 
 
-        <div id="accordion"/>
+        <div id="accordion"> </div>
+        <span id="duplicate_result"></span>
+
 
     </div>
-    <span id="duplicate_result"></span>
 
-</div>
-<div id="tabs-3">
+    <div id="tabs-folder">
+        <form name="input"  action="javascript:getDuplicateFolder()">
 
-    <form id="fileupload" action="rest/hello/upload" method="POST"                      enctype="multipart/form-data">
-    <!--<form id="fileupload" onsubmit="uploadTest()"-->
+            <input type="submit" value="get Folders"/>
 
-        <input id="file_upload" type="file" name="files[]" multiple>
+        </form>
+        <div id="accordion-duplicate-folders"> </div>
+    </div>
 
-    </form>
-    <div id="duplicate_upload_result"> </div>
+    <div id="tabs-3">
 
-    <!-- 	  <form name="input_index" method="GET" action="rest/hello/index">
-             Path: <input type="text" name="index_path"/>
-                   <input type="submit" value="Submit"/>
-          </form> -->
+        <form id="fileupload" action="rest/hello/findSimilar" method="POST" enctype="multipart/form-data">
+            <!--<form id="fileupload" onsubmit="uploadTest()"-->
+            <input id="file_upload" type="file" name="files[]" multiple>
+        </form>
+        <div id="duplicate_upload_result"></div>
+
+        <!-- 	  <form name="input_index" method="GET" action="rest/hello/index">
+          Path: <input type="text" name="index_path"/>
+                <input type="submit" value="Submit"/>
+       </form> -->
 
 
-    <!--         <p onclick="index()">Select a file</p> -->
-    <!--         <input type="file" id="index_path" name="file" onclick="index()" />  -->
-    <!-- <input type="file" id="input" onchange="index(this.files)"> -->
-    <!-- <div id="progressbar"></div> -->
+        <!--         <p onclick="index()">Select a file</p> -->
+        <!--         <input type="file" id="index_path" name="file" onclick="index()" />  -->
+        <!-- <input type="file" id="input" onchange="index(this.files)"> -->
+        <!-- <div id="progressbar"></div> -->
 
+    </div>
 </div>
 </body>
 </html>

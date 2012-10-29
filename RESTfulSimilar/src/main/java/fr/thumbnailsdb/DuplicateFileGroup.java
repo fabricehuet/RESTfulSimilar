@@ -47,7 +47,7 @@ public class DuplicateFileGroup {
             File file = new File(s);
             //File parentDir = file.getParentFile(); // to get the parent dir
             String parentDirName = file.getParent(); // to get the parent dir name
-            System.out.println("Folder name is " + parentDirName);
+           // System.out.println("Folder name is " + parentDirName);
             l.add(parentDirName);
         }
         return l;

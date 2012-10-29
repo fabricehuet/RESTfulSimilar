@@ -1,36 +1,7 @@
 <script>
 	getSize();
 	getPath();
-	$(function () {
-	    $('#fileupload').fileupload({
-	        dataType: 'json',
-	        forceIframeTransport: true,
-	        fail: function (e, data) {
-	        	 alert("xxx" + e + " " + data);
-	        	 for (i in e) {
-	        			console.log("-"+ i + " " + e[i]);
-	        		}
-	        	 for (i in data) {
-	        			console.log("-"+ i + " " + data[i]);
-	        		}
-// 	           
-               
-	        },
-	        done: function (e,data) {
-	        	 for (i in e) {
-	        			console.log("-"+ i + " " + e[i]);
-	        		}
-	        	 for (i in data) {
-	        			console.log("-"+ i + " " + data[i]);
-	        		}
-// 	        	 $.each(data.result, function (index, file) {
-// 	 	                $('<p/>').text(file.name).appendTo(document.body);
-		               
-// 	 	            });
-	        }
-	      
-	    });
-	});
+
 </script>
 <div id="tabs-1">
 	<p>
@@ -43,21 +14,27 @@
 	<!-- 		<input id="fileupload" type="file" name="files[]" multiple> -->
 	<!-- 	</form> -->
 
-	<form id="fileupload" action="rest/hello/upload" method="POST"
-		enctype="multipart/form-data">
-		<input type="file" name="files[]" multiple>
-	</form>
-    <div class="nailthumb-container  nailthumb-image-titles-animated-onhover square">
-        <img src="http://24.media.tumblr.com/tumblr_lf4rlwrwzF1qflxpwo1_400.jpg" title="xx"/>
-    </div>
+    <!--<input type="text" id="index_path"/>-->
+    <!--<button onclick='index()'>Click me</button>-->
 
-    <div class="nailthumb-container square-thumb nailthumb-image-titles-animated-onhover square">
-            <img src="http://24.media.tumblr.com/tumblr_lf4rlwrwzF1qflxpwo1_400.jpg" title="animated - on over" />
-    </div>
+    <form name="input" action="javascript: shrink()">
 
-        <div class="nailthumb-container  nailthumb-image-titles-onload square">
-        <img src="http://hair-hairstyles-haircuts.com/wp-content/uploads/2011/01/ALO-124957.jpg" title="xyy"/>
-</div>
+        <input type="submit" value="Shrink"/>
+
+    </form>
+
+
+    <!--<div class="nailthumb-container  nailthumb-image-titles-animated-onhover square">-->
+        <!--<img src="http://24.media.tumblr.com/tumblr_lf4rlwrwzF1qflxpwo1_400.jpg" title="xx"/>-->
+    <!--</div>-->
+
+    <!--<div class="nailthumb-container square-thumb nailthumb-image-titles-animated-onhover square">-->
+            <!--<img src="http://24.media.tumblr.com/tumblr_lf4rlwrwzF1qflxpwo1_400.jpg" title="animated - on over" />-->
+    <!--</div>-->
+
+        <!--<div class="nailthumb-container  nailthumb-image-titles-onload square">-->
+        <!--<img src="http://hair-hairstyles-haircuts.com/wp-content/uploads/2011/01/ALO-124957.jpg" title="xyy"/>-->
+<!--</div>-->
     <script type="text/javascript">
 
         jQuery(document).ready(function() {

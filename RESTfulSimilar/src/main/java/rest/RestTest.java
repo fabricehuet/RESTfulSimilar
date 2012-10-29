@@ -20,12 +20,15 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import com.sun.jersey.multipart.FormDataMultiPart;
 import fr.thumbnailsdb.*;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.io.FileUtils;
 
 import com.sun.jersey.multipart.BodyPartEntity;
 import com.sun.jersey.multipart.MultiPart;
+import com.sun.jersey.multipart.FormDataParam;
+
 import com.sun.jersey.spi.resource.Singleton;
 
 @Path("/hello")
@@ -81,6 +84,19 @@ public class RestTest {
         //	DuplicateFileGroup dl = df.computeDuplicateSets(df.findDuplicateMedia()).getFirst();
         // System.out.println("RestTest.getDuplicate() " + dl);
         //	Test t = new Test();
+        return Response.status(200).entity(dc).build();
+    }
+
+
+    @GET
+    @Path("/duplicateFolder")
+    @Produces({MediaType.APPLICATION_JSON})
+    public Response getDuplicateFolder() {
+        System.out.println("RestTest.getDuplicateFolder " );
+        Collection<DuplicateFolderGroup> dc = (Collection) df.computeDuplicateFolderSets(df.findDuplicateMedia()).asSortedCollection();
+        for(DuplicateFolderGroup dfg : dc ){
+            System.out.println(dfg);
+        }
         return Response.status(200).entity(dc).build();
     }
 
@@ -162,18 +178,26 @@ public class RestTest {
     }
 
     @POST
-    @Path("upload/")
+    @Path("findSimilar/")
     @Consumes(MediaType.MULTIPART_FORM_DATA)
     //@Produces({MediaType.APPLICATION_JSON})
     @Produces({MediaType.APPLICATION_JSON})
-    public Response uploadImage(MultiPart multipart) {
-        System.out.println("RestTest.uploadImage() " + multipart);
+    public Response findSimilar( FormDataMultiPart multipart) {
+      //  System.out.println("xxx stream is " + uploadedInputStream);
+        System.out.println("RestTest.findSimilar() " + multipart.getBodyParts().size() + " parts");
+
+        for (String s : multipart.getHeaders().keySet()) {
+            System.out.println("RestTest.findSimilar() Header : " + s + " : " + multipart.getHeaders().get(s));
+        }
+
+
+
         BodyPartEntity bpe = (BodyPartEntity) multipart.getBodyParts().get(0).getEntity();
         Collection<MediaFileDescriptor> c = null;
         String message = null;
         try {
             InputStream source = bpe.getInputStream();
-            System.out.println("RestTest.uploadImage() received " + source);
+            System.out.println("RestTest.findSimilar() received " + source);
             //BufferedImage bi = ImageIO.read(source);
 
             File temp = File.createTempFile("tempImage", ".jpg");
@@ -181,6 +205,7 @@ public class RestTest {
 
             byte[] buffer = new byte[8 * 1024];
 
+            int total = 0;
           //  InputStream input = urlConnect.getInputStream();
 
               //  OutputStream output = new FileOutputStream(filename);
@@ -188,18 +213,18 @@ public class RestTest {
                     int bytesRead;
                     while ((bytesRead = source.read(buffer)) != -1) {
                         fo.write(buffer, 0, bytesRead);
+                        total+=bytesRead;
                     }
                 } finally {
                     fo.close();
                 }
 
+
            // ImageIO.write(bi,"jpg", temp);
-            System.out.println("RestTest.uploadImage()  written to " + temp);
-             c = si.findIdenticalMedia(temp.getAbsolutePath());
-            System.out.println("Found identical files " + c.size());
-
-
-
+            System.out.println("RestTest.findSimilar()  written to " + temp + " with size " + total);
+//             c = si.findIdenticalMedia(temp.getAbsolutePath());
+            c = si.findSimilarMedia(temp.getAbsolutePath());
+            System.out.println("Found similar files " + c.size());
         } catch (Exception e) {
             message = e.getMessage();
             e.printStackTrace();
@@ -212,7 +237,7 @@ public class RestTest {
 //		return Response.created(uri).type(MediaType.TEXT_HTML_TYPE).build();
         //return Response.ok("All good").type(MediaType.TEXT_HTML_TYPE).build();
 //        return Response.status(201).entity("{\"test\" : \"toto\"}").type(MediaType.TEXT_HTML).build();
-        return Response.status(201).entity(c).build();
+        return Response.status(201).entity(c).type(MediaType.APPLICATION_JSON).build();
 
 
     }

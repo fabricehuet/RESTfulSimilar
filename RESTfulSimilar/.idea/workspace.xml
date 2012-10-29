@@ -11,6 +11,11 @@
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
   <component name="ChangesViewManager" flattened_view="true" show_ignored="false" />
+  <component name="Commander">
+    <leftPanel />
+    <rightPanel />
+    <splitter proportion="0.5" />
+  </component>
   <component name="CreatePatchCommitExecutor">
     <option name="PATCH_PATH" value="" />
   </component>
@@ -58,37 +63,10 @@
   </component>
   <component name="FileEditorManager">
     <leaf>
-      <file leaf-file-name="DuplicateFileList.java" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/java/fr/thumbnailsdb/DuplicateFileList.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="34" column="40" selection-start="754" selection-end="772" vertical-scroll-proportion="0.0">
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="DuplicateFileGroup.java" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/java/fr/thumbnailsdb/DuplicateFileGroup.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="13" column="15" selection-start="294" selection-end="305" vertical-scroll-proportion="0.0">
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="ThumbStore.java" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/java/fr/thumbnailsdb/ThumbStore.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="194" column="64" selection-start="5502" selection-end="5502" vertical-scroll-proportion="0.0">
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
       <file leaf-file-name="RestTest.java" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/java/rest/RestTest.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="214" column="46" selection-start="7464" selection-end="7464" vertical-scroll-proportion="0.0">
+            <state line="225" column="35" selection-start="7795" selection-end="7811" vertical-scroll-proportion="0.0">
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
@@ -96,19 +74,28 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="MediaFileDescriptor.java" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/java/fr/thumbnailsdb/MediaFileDescriptor.java">
+      <file leaf-file-name="SimilarImageFinder.java" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/java/fr/thumbnailsdb/SimilarImageFinder.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="14" column="15" selection-start="380" selection-end="380" vertical-scroll-proportion="0.0">
+            <state line="21" column="40" selection-start="491" selection-end="491" vertical-scroll-proportion="0.0">
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="thumbstore.js" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/webapp/js/thumbstore.js">
+      <file leaf-file-name="ImageComparator.java" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/java/fr/thumbnailsdb/ImageComparator.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="144" column="6" selection-start="5868" selection-end="5868" vertical-scroll-proportion="-17.84">
+            <state line="69" column="25" selection-start="2110" selection-end="2110" vertical-scroll-proportion="0.0">
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="MediaFileDescriptor.java" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/java/fr/thumbnailsdb/MediaFileDescriptor.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="20" column="15" selection-start="517" selection-end="517" vertical-scroll-proportion="0.0">
               <folding />
             </state>
           </provider>
@@ -117,16 +104,52 @@
       <file leaf-file-name="index.html" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/webapp/index.html">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="19" column="2" selection-start="814" selection-end="814" vertical-scroll-proportion="-11.875">
+            <state line="142" column="62" selection-start="4192" selection-end="4200" vertical-scroll-proportion="-21.875">
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="thumbstore.html" pinned="false" current="true" current-in-tab="true">
+      <file leaf-file-name="web.xml" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/webapp/WEB-INF/web.xml">
+          <provider editor-type-id="com.intellij.javaee.module.view.web.viewlets.WebModuleAssemblyDescriptorReferencesProvider">
+            <state />
+          </provider>
+          <provider editor-type-id="com.intellij.javaee.module.view.web.viewlets.WebModuleGeneralEditorProvider">
+            <state />
+          </provider>
+          <provider editor-type-id="com.intellij.javaee.module.view.web.viewlets.WebModuleAssemblyDescriptorProvider">
+            <state />
+          </provider>
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="30" column="28" selection-start="1033" selection-end="1033" vertical-scroll-proportion="-21.428572">
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="pom.xml" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/pom.xml">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="55" column="38" selection-start="1947" selection-end="1947" vertical-scroll-proportion="-23.16">
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="thumbstore.js" pinned="false" current="true" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/src/main/webapp/js/thumbstore.js">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="150" column="62" selection-start="5157" selection-end="5157" vertical-scroll-proportion="0.41534713">
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="thumbstore.html" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/webapp/thumbstore.html">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="17" column="51" selection-start="336" selection-end="434" vertical-scroll-proportion="0.3148148">
+            <state line="16" column="122" selection-start="382" selection-end="382" vertical-scroll-proportion="-10.0">
               <folding />
             </state>
           </provider>
@@ -149,22 +172,22 @@
   <component name="IdeDocumentHistory">
     <option name="changedFiles">
       <list>
-        <option value="$PROJECT_DIR$/src/main/java/fr/thumbnailsdb/DuplicateFolderList.java" />
-        <option value="$PROJECT_DIR$/src/main/java/fr/thumbnailsdb/DuplicateFolderGroup.java" />
-        <option value="$PROJECT_DIR$/src/main/java/fr/thumbnailsdb/ThumbnailGenerator.java" />
-        <option value="$PROJECT_DIR$/src/main/java/fr/thumbnailsdb/MediaIndexer.java" />
-        <option value="$PROJECT_DIR$/src/main/java/fr/thumbnailsdb/Logger.java" />
-        <option value="$PROJECT_DIR$/pom.xml" />
-        <option value="$PROJECT_DIR$/src/main/java/fr/thumbnailsdb/DuplicateMediaFinder.java" />
-        <option value="$PROJECT_DIR$/src/main/java/fr/thumbnailsdb/SimilarImageFinder.java" />
         <option value="$PROJECT_DIR$/src/main/java/fr/thumbnailsdb/DuplicateFileList.java" />
-        <option value="$PROJECT_DIR$/src/main/java/fr/thumbnailsdb/MediaFileDescriptor.java" />
-        <option value="$PROJECT_DIR$/src/main/java/rest/RestTest.java" />
         <option value="$PROJECT_DIR$/src/main/java/fr/thumbnailsdb/ThumbStore.java" />
         <option value="$PROJECT_DIR$/src/main/webapp/js/load-image.min.js" />
-        <option value="$PROJECT_DIR$/src/main/webapp/index.html" />
-        <option value="$PROJECT_DIR$/src/main/webapp/js/thumbstore.js" />
+        <option value="$PROJECT_DIR$/src/main/java/fr/thumbnailsdb/SimilarImageFinder.java" />
+        <option value="$PROJECT_DIR$/src/main/java/fr/thumbnailsdb/DuplicateMediaFinder.java" />
+        <option value="$PROJECT_DIR$/src/main/java/fr/thumbnailsdb/Main.java" />
+        <option value="$PROJECT_DIR$/src/main/java/fr/thumbnailsdb/DuplicateFileGroup.java" />
         <option value="$PROJECT_DIR$/src/main/webapp/thumbstore.html" />
+        <option value="$PROJECT_DIR$/src/main/java/fr/thumbnailsdb/DuplicateFolderList.java" />
+        <option value="$PROJECT_DIR$/src/main/java/fr/thumbnailsdb/DuplicateFolderGroup.java" />
+        <option value="$PROJECT_DIR$/src/main/java/fr/thumbnailsdb/MediaFileDescriptor.java" />
+        <option value="$PROJECT_DIR$/src/main/webapp/WEB-INF/web.xml" />
+        <option value="$PROJECT_DIR$/src/main/webapp/index.html" />
+        <option value="$PROJECT_DIR$/pom.xml" />
+        <option value="$PROJECT_DIR$/src/main/webapp/js/thumbstore.js" />
+        <option value="$PROJECT_DIR$/src/main/java/rest/RestTest.java" />
       </list>
     </option>
   </component>
@@ -503,6 +526,10 @@
               <option name="myItemId" value="RESTfulSimilar" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
             </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="External Libraries" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ExternalLibrariesNode" />
+            </PATH_ELEMENT>
           </PATH>
           <PATH>
             <PATH_ELEMENT>
@@ -654,7 +681,37 @@
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
+              <option name="myItemId" value="fr" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
               <option name="myItemId" value="thumbnailsdb" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="RESTfulSimilar" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="RESTfulSimilar" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="src" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="main" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="java" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="fr" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
@@ -931,20 +988,20 @@
       <window_info id="Changes" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="JetGradle" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32940108" sideWeight="0.6707504" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Palette" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.16509435" sideWeight="0.49786323" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.16509435" sideWeight="0.4957265" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="IDEtalk Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.16509435" sideWeight="0.49839744" order="7" side_tool="true" content_ui="tabs" />
+      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.16509435" sideWeight="0.5005342" order="7" side_tool="true" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
       <window_info id="IDEtalk" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Web" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
-      <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.23717949" sideWeight="0.46886793" order="1" side_tool="true" content_ui="tabs" />
+      <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.23717949" sideWeight="0.31415093" order="1" side_tool="true" content_ui="tabs" />
       <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32940108" sideWeight="0.6707504" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.23717949" sideWeight="0.35943395" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.39957264" sideWeight="0.8349057" order="0" side_tool="false" content_ui="tabs" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.23717949" sideWeight="0.5141509" order="0" side_tool="false" content_ui="combo" />
       <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
@@ -1012,118 +1069,133 @@
     <option name="FILTER_TARGETS" value="false" />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/pom.xml">
+    <entry file="file://$PROJECT_DIR$/src/main/java/fr/thumbnailsdb/Main.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="116" column="38" selection-start="4110" selection-end="4110" vertical-scroll-proportion="0.7673031">
+        <state line="75" column="53" selection-start="2348" selection-end="2348" vertical-scroll-proportion="0.0">
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/fr/surfjavacl/Resample.java">
+    <entry file="file://$PROJECT_DIR$/src/main/webapp/index2.html">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="21" column="71" selection-start="580" selection-end="580" vertical-scroll-proportion="-0.9322289">
+        <state line="24" column="79" selection-start="724" selection-end="724" vertical-scroll-proportion="0.44226044">
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/fr/thumbnailsdb/Logger.java">
+    <entry file="file://$PROJECT_DIR$/src/main/java/fr/thumbnailsdb/DuplicateFileGroup.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="16" column="8" selection-start="210" selection-end="210" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/fr/thumbnailsdb/MediaIndexer.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="157" column="31" selection-start="4101" selection-end="4101" vertical-scroll-proportion="0.33293557">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/fr/thumbnailsdb/SimilarImageFinder.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="104" column="42" selection-start="3187" selection-end="3187" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/fr/thumbnailsdb/DuplicateMediaFinder.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="40" column="28" selection-start="1235" selection-end="1252" vertical-scroll-proportion="0.0">
+        <state line="10" column="0" selection-start="227" selection-end="243" vertical-scroll-proportion="0.0">
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/fr/thumbnailsdb/DuplicateFileList.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="34" column="40" selection-start="754" selection-end="772" vertical-scroll-proportion="0.0">
+        <state line="42" column="45" selection-start="805" selection-end="1067" vertical-scroll-proportion="0.0">
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/fr/thumbnailsdb/MediaFileDescriptor.java">
+    <entry file="file://$PROJECT_DIR$/src/main/java/fr/thumbnailsdb/DuplicateFolderList.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="14" column="15" selection-start="380" selection-end="380" vertical-scroll-proportion="0.0">
-          <folding />
+        <state line="65" column="0" selection-start="2500" selection-end="2500" vertical-scroll-proportion="0.0">
+          <folding>
+            <element signature="e#306#336#0" expanded="true" />
+            <element signature="e#1862#1884#0" expanded="true" />
+            <element signature="e#1885#2126#0" expanded="true" />
+            <element signature="e#2115#2116#0" expanded="true" />
+            <element signature="e#2293#2315#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/rest/RestTest.java">
+    <entry file="file://$PROJECT_DIR$/src/main/java/fr/thumbnailsdb/DuplicateFolderGroup.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="214" column="46" selection-start="7464" selection-end="7464" vertical-scroll-proportion="0.0">
+        <state line="18" column="12" selection-start="409" selection-end="409" vertical-scroll-proportion="0.0">
           <folding>
             <element signature="imports" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/fr/thumbnailsdb/DuplicateFileGroup.java">
+    <entry file="file://$PROJECT_DIR$/src/main/java/fr/thumbnailsdb/MediaFileDescriptor.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="13" column="15" selection-start="294" selection-end="305" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/fr/thumbnailsdb/ThumbStore.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="194" column="64" selection-start="5502" selection-end="5502" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/webapp/js/load-image.min.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="19" column="47" selection-start="1342" selection-end="1342" vertical-scroll-proportion="0.34545454">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/webapp/js/jquery.fileupload-ui.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="466" column="58" selection-start="19874" selection-end="19874" vertical-scroll-proportion="1.8646986">
-          <folding>
-            <element signature="n#!!doc" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/webapp/index.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="19" column="2" selection-start="814" selection-end="814" vertical-scroll-proportion="-11.875">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/webapp/js/thumbstore.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="144" column="6" selection-start="5868" selection-end="5868" vertical-scroll-proportion="-17.84">
+        <state line="20" column="15" selection-start="517" selection-end="517" vertical-scroll-proportion="0.0">
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/webapp/thumbstore.html">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="17" column="51" selection-start="336" selection-end="434" vertical-scroll-proportion="0.3148148">
+        <state line="16" column="122" selection-start="382" selection-end="382" vertical-scroll-proportion="-10.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/webapp/WEB-INF/web.xml">
+      <provider editor-type-id="com.intellij.javaee.module.view.web.viewlets.WebModuleAssemblyDescriptorReferencesProvider">
+        <state />
+      </provider>
+      <provider editor-type-id="com.intellij.javaee.module.view.web.viewlets.WebModuleGeneralEditorProvider">
+        <state />
+      </provider>
+      <provider editor-type-id="com.intellij.javaee.module.view.web.viewlets.WebModuleAssemblyDescriptorProvider">
+        <state />
+      </provider>
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="30" column="28" selection-start="1033" selection-end="1033" vertical-scroll-proportion="-21.428572">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar://$MAVEN_REPOSITORY$/com/sun/jersey/contribs/jersey-multipart/1.0.1/jersey-multipart-1.0.1.jar!/com/sun/jersey/multipart/MultiPart.class">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="5" column="13" selection-start="162" selection-end="162" vertical-scroll-proportion="0.073800735">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/fr/thumbnailsdb/ImageComparator.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="69" column="25" selection-start="2110" selection-end="2110" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/pom.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="55" column="38" selection-start="1947" selection-end="1947" vertical-scroll-proportion="-23.16">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/webapp/index.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="142" column="62" selection-start="4192" selection-end="4200" vertical-scroll-proportion="-21.875">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/rest/RestTest.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="225" column="35" selection-start="7795" selection-end="7811" vertical-scroll-proportion="0.0">
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/fr/thumbnailsdb/SimilarImageFinder.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="21" column="40" selection-start="491" selection-end="491" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/webapp/js/thumbstore.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="150" column="62" selection-start="5157" selection-end="5157" vertical-scroll-proportion="0.41534713">
           <folding />
         </state>
       </provider>
