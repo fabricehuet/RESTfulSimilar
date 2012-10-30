@@ -1,15 +1,12 @@
 package rest;
 
-import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.URI;
-import java.net.URISyntaxException;
+import java.util.ArrayList;
 import java.util.Collection;
 
-import javax.imageio.ImageIO;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -19,6 +16,8 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
 
 import com.sun.jersey.multipart.FormDataMultiPart;
 import fr.thumbnailsdb.*;
@@ -26,17 +25,19 @@ import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.io.FileUtils;
 
 import com.sun.jersey.multipart.BodyPartEntity;
-import com.sun.jersey.multipart.MultiPart;
-import com.sun.jersey.multipart.FormDataParam;
 
 import com.sun.jersey.spi.resource.Singleton;
+import org.codehaus.jackson.map.ObjectMapper;
+import org.codehaus.jettison.json.JSONArray;
+import org.codehaus.jettison.json.JSONException;
+import org.codehaus.jettison.json.JSONObject;
 
 @Path("/hello")
 @Singleton
 public class RestTest {
 
     protected ThumbStore tb;
-    protected SimilarImageFinder si ;
+    protected SimilarImageFinder si;
     protected DuplicateMediaFinder df;
 
 
@@ -92,9 +93,9 @@ public class RestTest {
     @Path("/duplicateFolder")
     @Produces({MediaType.APPLICATION_JSON})
     public Response getDuplicateFolder() {
-        System.out.println("RestTest.getDuplicateFolder " );
+        System.out.println("RestTest.getDuplicateFolder ");
         Collection<DuplicateFolderGroup> dc = (Collection) df.computeDuplicateFolderSets(df.findDuplicateMedia()).asSortedCollection();
-        for(DuplicateFolderGroup dfg : dc ){
+        for (DuplicateFolderGroup dfg : dc) {
             System.out.println(dfg);
         }
         return Response.status(200).entity(dc).build();
@@ -141,17 +142,7 @@ public class RestTest {
         System.out.println("imageID " + imageId);
 //		for (int i = 0; i < duplicateFileList.length; i++) {
         //  int i= Integer.parseInt(imageId)%2;
-        try {
-            File f = new File(imageId);
-            img = "{\"data\" : \"" + Base64.encodeBase64String(FileUtils.readFileToByteArray(f)) + "\", \"title\" : \"" + f.getParent() + "\" }";
-
-//				img = "<img src=\"data:image/jpg;base64,"
-//						+ Base64.encodeBase64String(FileUtils.readFileToByteArray(f)) + "\" title=\""+  f.getParent()  + "\"/>";
-//				;
-//				System.out.println("RestTest.getPostImage() " + duplicateFileList[i]);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        img = getImageAsHTMLImg(imageId);
 //        if (result == null) {
 //            result = img;
 //        } else {
@@ -160,6 +151,18 @@ public class RestTest {
 //		}
 
         return Response.status(200).entity(img).build();
+    }
+
+    protected String getImageAsHTMLImg(String imageId) {
+        String img = "";
+        try {
+            File f = new File(imageId);
+            img = "{\"data\" : \"" + Base64.encodeBase64String(FileUtils.readFileToByteArray(f)) + "\", \"title\" : \"" + f.getParent() + "\" }";
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return img;
     }
 
     @GET
@@ -182,8 +185,8 @@ public class RestTest {
     @Consumes(MediaType.MULTIPART_FORM_DATA)
     //@Produces({MediaType.APPLICATION_JSON})
     @Produces({MediaType.APPLICATION_JSON})
-    public Response findSimilar( FormDataMultiPart multipart) {
-      //  System.out.println("xxx stream is " + uploadedInputStream);
+    public Response findSimilar(FormDataMultiPart multipart) {
+        //  System.out.println("xxx stream is " + uploadedInputStream);
         System.out.println("RestTest.findSimilar() " + multipart.getBodyParts().size() + " parts");
 
         for (String s : multipart.getHeaders().keySet()) {
@@ -191,10 +194,11 @@ public class RestTest {
         }
 
 
-
+//        String json = " {\"images\" : [";
         BodyPartEntity bpe = (BodyPartEntity) multipart.getBodyParts().get(0).getEntity();
         Collection<MediaFileDescriptor> c = null;
-        String message = null;
+//        String message = null;
+        ArrayList<SimilarImage> al = null;
         try {
             InputStream source = bpe.getInputStream();
             System.out.println("RestTest.findSimilar() received " + source);
@@ -206,40 +210,85 @@ public class RestTest {
             byte[] buffer = new byte[8 * 1024];
 
             int total = 0;
-          //  InputStream input = urlConnect.getInputStream();
-
-              //  OutputStream output = new FileOutputStream(filename);
-                try {
-                    int bytesRead;
-                    while ((bytesRead = source.read(buffer)) != -1) {
-                        fo.write(buffer, 0, bytesRead);
-                        total+=bytesRead;
-                    }
-                } finally {
-                    fo.close();
+            try {
+                int bytesRead;
+                while ((bytesRead = source.read(buffer)) != -1) {
+                    fo.write(buffer, 0, bytesRead);
+                    total += bytesRead;
                 }
+            } finally {
+                fo.close();
+            }
 
 
-           // ImageIO.write(bi,"jpg", temp);
+            // ImageIO.write(bi,"jpg", temp);
             System.out.println("RestTest.findSimilar()  written to " + temp + " with size " + total);
 //             c = si.findIdenticalMedia(temp.getAbsolutePath());
             c = si.findSimilarMedia(temp.getAbsolutePath());
             System.out.println("Found similar files " + c.size());
+
+            al = new ArrayList<SimilarImage>(c.size());
+            for (MediaFileDescriptor mdf : c) {
+
+                String path = mdf.getPath();
+
+                String data = Base64.encodeBase64String(FileUtils.readFileToByteArray(new File(path)));
+
+                SimilarImage si = new SimilarImage(path, data, mdf.getRmse());
+                al.add(si);
+                System.out.println(si);
+//                String img = this.getImageAsHTMLImg(mdf.getPath());
+//                json+=img; //"{\"path\" : " + mdf.getPath()+ ", \"data\" : "+  img +" },";
+            }
+
+
         } catch (Exception e) {
-            message = e.getMessage();
+            // message = e.getMessage();
             e.printStackTrace();
         }
+//        json+="]}";
+//        System.out.println(json);
+        System.out.println("RestTest.findSimilar sending " + al.size() + " elements");
 
-        // return
-        // Response.status(Response.Status.ACCEPTED).entity("Attachements processed successfully.")
-        // .type(MediaType.APPLICATION_JSON).build();
+        JSONArray mJSONArray = new JSONArray();
+        for (int i = 0; i < al.size(); i++) {
+             JSONObject json = new JSONObject();
+            try {
+                json.put("path", al.get(i).path);
+                json.put("base64Data", al.get(i).base64Data);
+                json.put("rmse", al.get(i).rmse);
+                mJSONArray.put(json);
+            } catch (JSONException e) {
+                e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+            }
+        }
+        JSONObject responseDetailsJson = new JSONObject();
+        try {
+            responseDetailsJson.put("success", true);
 
-//		return Response.created(uri).type(MediaType.TEXT_HTML_TYPE).build();
-        //return Response.ok("All good").type(MediaType.TEXT_HTML_TYPE).build();
-//        return Response.status(201).entity("{\"test\" : \"toto\"}").type(MediaType.TEXT_HTML).build();
-        return Response.status(201).entity(c).type(MediaType.APPLICATION_JSON).build();
-
-
+            responseDetailsJson.put("images", mJSONArray);
+        } catch (JSONException e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        }
+        return Response.status(200).entity(responseDetailsJson).type(MediaType.APPLICATION_JSON).build();
     }
+
+
+    @XmlRootElement
+    public class SimilarImage {
+        @XmlElement
+        public String path;
+        @XmlElement
+        public String base64Data;
+        @XmlElement
+        public double rmse;
+
+        public SimilarImage(String path, String base64Data, double rmse) {
+            this.rmse = rmse;
+            this.path = path;
+            this.base64Data = base64Data;
+        }
+    }
+
 
 }

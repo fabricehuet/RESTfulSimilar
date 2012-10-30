@@ -141,15 +141,31 @@ function prettyPrint(object) {
 }
 
 function uploadFinished(object) {
-    //console.log(object);
+  //  console.log(object);
     //var output = "";
     $('#duplicate_upload_result').children().remove();
-    for (f in object.result)  {
+    for (f in object)  {
         //console.log(f);
         //output+= object.result[f].path+"<br>";
-        var rmse  = (object.result[f].rmse);
-        console.log("Requesting file " + object.result[f].path);
-        getWithRMSE(object.result[f], rmse);
+        var image = object[f];
+        var rmse  = (image.rmse);
+      //  console.log("Requesting file " + object.result[f].path);
+       // getWithRMSE(object.result[f], rmse);
+
+        var template = '<img src="data:image;base64,{{base64Data}}" title=" {{path}} "/>';
+        var imgTag = Mustache.to_html(template, image);
+
+
+        description = '<div class="description"> Score:' + rmse + '<br>Path:'+ image.path +'</div>'
+
+//        $("#duplicate_upload_result").append('<div class="floated_img"><div class="nailthumb-container nailthumb-image-titles-animated-onhover square">' + imgTag + "</div>" + rmse +  "  " + image.path+ "</div>");
+        $("#duplicate_upload_result").append('<div class="floated_img"><div class="nailthumb-container nailthumb-image-titles-animated-onhover square">' + imgTag + "</div>"+  description +"</div>");
+
+        jQuery(document).ready(function () {
+            jQuery('.nailthumb-container').nailthumb();
+            jQuery('.nailthumb-image-titles-animated-onhover').nailthumb();
+        });
+
     }
 }
 
@@ -168,13 +184,7 @@ function getWithRMSE(param, rmse ) {
         jQuery(document).ready(function () {
             jQuery('.nailthumb-container').nailthumb();
             jQuery('.nailthumb-image-titles-animated-onhover').nailthumb();
-        })
+        }) ;
 
     });
 }
-
-
-   // $("#duplicate_upload_result").append(output);
-
-//        $.post("rest/hello/upload", object);
-
