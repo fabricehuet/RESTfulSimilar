@@ -1,21 +1,24 @@
 package fr.thumbnailsdb;
 
+import fr.thumbnailsdb.bktree.BKTree;
+import fr.thumbnailsdb.bktree.LevenshteinDistance;
+import fr.thumbnailsdb.bktree.RMSEDistance;
+
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.Iterator;
-import java.util.TreeSet;
+import java.util.*;
 
 public class SimilarImageFinder {
 
 	protected ThumbStore thumbstore;
 
-    protected ArrayList<MediaFileDescriptor> preloadedDescriptors;
+    //protected ArrayList<MediaFileDescriptor> preloadedDescriptors;
+
+    protected BKTree<MediaFileDescriptor> bkTree ;// = new BKTree<String>(new RMSEDistance());
 
 	public SimilarImageFinder(ThumbStore c) {
 		this.thumbstore = c;
@@ -42,10 +45,11 @@ public class SimilarImageFinder {
 		return list;
 	}
 
-    protected ArrayList<MediaFileDescriptor> getPreloadedDescriptors() {
-        if (preloadedDescriptors == null) {
+    protected BKTree<MediaFileDescriptor> getPreloadedDescriptors() {
+        if (bkTree == null) {
             int size = thumbstore.size();
-            preloadedDescriptors=new ArrayList<MediaFileDescriptor>(size);
+//            preloadedDescriptors=new ArrayList<MediaFileDescriptor>(size);
+            bkTree  = new BKTree<MediaFileDescriptor>(new RMSEDistance());
             ResultSet res = thumbstore.getAllInDataBase();
             try {
                 while (res.next()) {
@@ -59,8 +63,8 @@ public class SimilarImageFinder {
                             MediaFileDescriptor imd = new MediaFileDescriptor();
                             imd.setPath(path);
                             imd.setData(idata);
-                            preloadedDescriptors.add(imd);
-
+//                            preloadedDescriptors.add(imd);
+                            bkTree.add(imd);
                         }
                     }
                 }
@@ -73,7 +77,7 @@ public class SimilarImageFinder {
             }
         }
 //        System.out.println("SimilarImageFinder.getPreloadedDescriptors records in array : " + preloadedDescriptors.size());
-        return preloadedDescriptors;
+        return bkTree;
 
 
     }
@@ -86,59 +90,63 @@ public class SimilarImageFinder {
 				return Double.compare(o1.getRmse(), o2.getRmse());
 			}
 		});
-		try {
-			// BufferedImage source = ImageIO.read(new
-			// ByteArrayInputStream(id.getData()));
-			//System.out.println("SimilarImageFinder.findSimilarImages() Number of max records requested " + max);
-			//ResultSet res = thumbstore.getAllInDataBase();
-            //System.out.println("SimilarImageFinder.findSimilarImage number of records " + getPreloadedDescriptors().size());
-            Iterator<MediaFileDescriptor> it = getPreloadedDescriptors().iterator();
-            int found = 0;
-			while (it.hasNext()) {
-                MediaFileDescriptor current = it.next();
-				if (i > increment) {
-					i = 0;
-					step++;
-                    if (pb!=null) {
-					   pb.update(step, 20);
-                    }
-				}
-				String path = current.getPath();
-//                System.out.println("SimilarImageFinder.findSimilarImage path " + path);
-				byte[] d = current.getDataAsByte();
-				if (d != null) {
-					ObjectInputStream oi = new ObjectInputStream(new ByteArrayInputStream(d));
-					int[] idata = (int[]) oi.readObject();
-					if (idata != null) {
-						double rmse = ImageComparator.compareARGBUsingRMSE(id.getData(), idata);
-						MediaFileDescriptor imd = new MediaFileDescriptor();
-						imd.setPath(path);
-						imd.setRmse(rmse);
+		//try {
 
-                        if (tree.size()==max) {
-                            MediaFileDescriptor df = tree.last();
-                            if (df.rmse>imd.rmse) {
-                               tree.remove(df);
-                                tree.add(imd);
-                            }
-                        }else {
-                            //System.out.println("SimilarImageFinder.findSimilarImage adding " + imd );
-						   tree.add(imd);
-                        }
+            BKTree<MediaFileDescriptor> bktree = getPreloadedDescriptors();
+            HashMap<MediaFileDescriptor,Integer> result = bktree.query(id, 50);
+            for (Iterator<MediaFileDescriptor> iterator = result.keySet().iterator(); iterator.hasNext(); ) {
+                MediaFileDescriptor next =  iterator.next();
+                                      tree.add(next);
 
-					} else {
+            }
 
-					}
-				}
-				i++;
-			}
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (ClassNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+//            Iterator<MediaFileDescriptor> it = getPreloadedDescriptors().iterator();
+//            int found = 0;
+//			while (it.hasNext()) {
+//                MediaFileDescriptor current = it.next();
+//				if (i > increment) {
+//					i = 0;
+//					step++;
+//                    if (pb!=null) {
+//					   pb.update(step, 20);
+//                    }
+//				}
+//				String path = current.getPath();
+////                System.out.println("SimilarImageFinder.findSimilarImage path " + path);
+//				byte[] d = current.getDataAsByte();
+//				if (d != null) {
+//					ObjectInputStream oi = new ObjectInputStream(new ByteArrayInputStream(d));
+//					int[] idata = (int[]) oi.readObject();
+//					if (idata != null) {
+//						double rmse = ImageComparator.compareARGBUsingRMSE(id.getData(), idata);
+//						MediaFileDescriptor imd = new MediaFileDescriptor();
+//						imd.setPath(path);
+//						imd.setRmse(rmse);
+//
+//                        if (tree.size()==max) {
+//                            MediaFileDescriptor df = tree.last();
+//                            if (df.rmse>imd.rmse) {
+//                               tree.remove(df);
+//                                tree.add(imd);
+//                            }
+//                        }else {
+//                            //System.out.println("SimilarImageFinder.findSimilarImage adding " + imd );
+//						   tree.add(imd);
+//                        }
+//
+//					} else {
+//
+//					}
+//				}
+//				i++;
+//			}
+//		} catch (IOException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		} catch (ClassNotFoundException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
 		return tree;
 	}
 
