@@ -134,12 +134,31 @@ public class SimilarImageFinder {
 
     protected ArrayList<MediaFileDescriptor> getPreloadedDescriptors() {
         if (preloadedDescriptors == null) {
+            ProgressBar pb = new ProgressBar();
+            //int max = getPreloadedDescriptors().size();
+            //int max = 80000;
             int size = thumbstore.size();
             preloadedDescriptors = new ArrayList<MediaFileDescriptor>(size);
+            int increment = size / 20;
+            int i = 0;
+            int step = 0;
+            if (increment == 0) {
+                increment = 1;
+            }
 
             ResultSet res = thumbstore.getAllInDataBase();
             try {
                 while (res.next()) {
+                    i++;
+                    if (i > increment) {
+                        i = 0;
+                        step++;
+                        if (pb != null) {
+                            pb.update(step, 20);
+                        }
+                    }
+
+
                     String path = res.getString("path");
                     byte[] d = res.getBytes("data");
                     if (d != null) {
@@ -203,13 +222,13 @@ public class SimilarImageFinder {
         int found = 0;
         while (it.hasNext()) {
             MediaFileDescriptor current = it.next();
-            if (i > increment) {
-                i = 0;
-                step++;
-                if (pb != null) {
-                    pb.update(step, 20);
-                }
-            }
+//            if (i > increment) {
+//                i = 0;
+//                step++;
+//                if (pb != null) {
+//                    pb.update(step, 20);
+//                }
+//            }
             String path = current.getPath();
             int[] idata = current.getData();
 
