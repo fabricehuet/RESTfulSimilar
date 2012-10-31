@@ -15,6 +15,8 @@ public class SimilarImageFinder {
 
 	protected ThumbStore thumbstore;
 
+    protected ArrayList<MediaFileDescriptor> preloadedDescriptors;
+
 	public SimilarImageFinder(ThumbStore c) {
 		this.thumbstore = c;
 	}
@@ -27,7 +29,7 @@ public class SimilarImageFinder {
 
 	public TreeSet<MediaFileDescriptor> findSimilarMedia(MediaFileDescriptor id) {
 		ProgressBar pb = new ProgressBar();
-		int max = 5; //thumbstore.size();
+		int max =getPreloadedDescriptors().size();
 		int increment = max / 20;
 		int i = 0;
 		int step = 0;
@@ -36,13 +38,49 @@ public class SimilarImageFinder {
 		}
 		// System.out.println("SimilarImageFinder.findSimilarImages() increment is "
 		// + increment);
-		TreeSet<MediaFileDescriptor> list = findSimilarImage(id, pb, max, increment, i, step);
+		TreeSet<MediaFileDescriptor> list = findSimilarImage(id, pb, 5, increment, i, step);
 		return list;
 	}
 
+    protected ArrayList<MediaFileDescriptor> getPreloadedDescriptors() {
+        if (preloadedDescriptors == null) {
+            int size = thumbstore.size();
+            preloadedDescriptors=new ArrayList<MediaFileDescriptor>(size);
+            ResultSet res = thumbstore.getAllInDataBase();
+            try {
+                while (res.next()) {
+                    String path = res.getString("path");
+                    byte[] d = res.getBytes("data");
+                    if (d != null) {
+                        ObjectInputStream oi = new ObjectInputStream(new ByteArrayInputStream(d));
+                        int[] idata = (int[]) oi.readObject();
+                        if (idata != null) {
+
+                            MediaFileDescriptor imd = new MediaFileDescriptor();
+                            imd.setPath(path);
+                            imd.setData(idata);
+                            preloadedDescriptors.add(imd);
+
+                        }
+                    }
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+            } catch (ClassNotFoundException e) {
+                e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+            } catch (IOException e) {
+                e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+            }
+        }
+//        System.out.println("SimilarImageFinder.getPreloadedDescriptors records in array : " + preloadedDescriptors.size());
+        return preloadedDescriptors;
+
+
+    }
+
 	protected TreeSet<MediaFileDescriptor> findSimilarImage(MediaFileDescriptor id, ProgressBar pb, int max,
 			int increment, int i, int step) {
-		TreeSet<MediaFileDescriptor> list = new TreeSet<MediaFileDescriptor>(new Comparator<MediaFileDescriptor>() {
+		TreeSet<MediaFileDescriptor> tree = new TreeSet<MediaFileDescriptor>(new Comparator<MediaFileDescriptor>() {
 		//	@Override
 			public int compare(MediaFileDescriptor o1, MediaFileDescriptor o2) {
 				return Double.compare(o1.getRmse(), o2.getRmse());
@@ -51,10 +89,13 @@ public class SimilarImageFinder {
 		try {
 			// BufferedImage source = ImageIO.read(new
 			// ByteArrayInputStream(id.getData()));
-			System.out.println("SimilarImageFinder.findSimilarImages() Number of records " + max);
-			ResultSet res = thumbstore.getAllInDataBase();
+			//System.out.println("SimilarImageFinder.findSimilarImages() Number of max records requested " + max);
+			//ResultSet res = thumbstore.getAllInDataBase();
+            //System.out.println("SimilarImageFinder.findSimilarImage number of records " + getPreloadedDescriptors().size());
+            Iterator<MediaFileDescriptor> it = getPreloadedDescriptors().iterator();
             int found = 0;
-			while (res.next() && found<max) {
+			while (it.hasNext()) {
+                MediaFileDescriptor current = it.next();
 				if (i > increment) {
 					i = 0;
 					step++;
@@ -62,8 +103,9 @@ public class SimilarImageFinder {
 					   pb.update(step, 20);
                     }
 				}
-				String path = res.getString("path");
-				byte[] d = res.getBytes("data");
+				String path = current.getPath();
+//                System.out.println("SimilarImageFinder.findSimilarImage path " + path);
+				byte[] d = current.getDataAsByte();
 				if (d != null) {
 					ObjectInputStream oi = new ObjectInputStream(new ByteArrayInputStream(d));
 					int[] idata = (int[]) oi.readObject();
@@ -72,16 +114,24 @@ public class SimilarImageFinder {
 						MediaFileDescriptor imd = new MediaFileDescriptor();
 						imd.setPath(path);
 						imd.setRmse(rmse);
-						list.add(imd);
-                        found++;
+
+                        if (tree.size()==max) {
+                            MediaFileDescriptor df = tree.last();
+                            if (df.rmse>imd.rmse) {
+                               tree.remove(df);
+                                tree.add(imd);
+                            }
+                        }else {
+                            //System.out.println("SimilarImageFinder.findSimilarImage adding " + imd );
+						   tree.add(imd);
+                        }
+
 					} else {
 
 					}
 				}
 				i++;
 			}
-		} catch (SQLException e) {
-			e.printStackTrace();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -89,7 +139,7 @@ public class SimilarImageFinder {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		return list;
+		return tree;
 	}
 
 	public void prettyPrintSimilarResults(TreeSet<MediaFileDescriptor> ts, int maxResults) {

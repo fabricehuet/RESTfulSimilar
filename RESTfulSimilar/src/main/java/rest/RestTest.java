@@ -199,12 +199,13 @@ public class RestTest {
         Collection<MediaFileDescriptor> c = null;
 //        String message = null;
         ArrayList<SimilarImage> al = null;
+        File temp = null;
         try {
             InputStream source = bpe.getInputStream();
             System.out.println("RestTest.findSimilar() received " + source);
             //BufferedImage bi = ImageIO.read(source);
 
-            File temp = File.createTempFile("tempImage", ".jpg");
+           temp = File.createTempFile("tempImage", ".jpg");
             FileOutputStream fo = new FileOutputStream(temp);
 
             byte[] buffer = new byte[8 * 1024];
@@ -219,20 +220,33 @@ public class RestTest {
             } finally {
                 fo.close();
             }
+            System.out.println("RestTest.findSimilar()  written to " + temp + " with size " + total);
+        } catch (Exception e) {
+            // message = e.getMessage();
+            e.printStackTrace();
 
+        }
 
             // ImageIO.write(bi,"jpg", temp);
-            System.out.println("RestTest.findSimilar()  written to " + temp + " with size " + total);
+
 //             c = si.findIdenticalMedia(temp.getAbsolutePath());
+        long t1 = System.currentTimeMillis();
             c = si.findSimilarMedia(temp.getAbsolutePath());
-            System.out.println("Found similar files " + c.size());
+        long t2 = System.currentTimeMillis();
+            System.out.println("Found similar files " + c.size() + " took " + (t2-t1) + "ms");
 
             al = new ArrayList<SimilarImage>(c.size());
             for (MediaFileDescriptor mdf : c) {
 
                 String path = mdf.getPath();
 
-                String data = Base64.encodeBase64String(FileUtils.readFileToByteArray(new File(path)));
+                String data = null;
+                try {
+                    data = Base64.encodeBase64String(FileUtils.readFileToByteArray(new File(path)));
+                } catch (IOException e) {
+                   // e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+                    System.err.println("Err: File " + path + " not found");
+                }
 
                 SimilarImage si = new SimilarImage(path, data, mdf.getRmse());
                 al.add(si);
@@ -242,10 +256,7 @@ public class RestTest {
             }
 
 
-        } catch (Exception e) {
-            // message = e.getMessage();
-            e.printStackTrace();
-        }
+
 //        json+="]}";
 //        System.out.println(json);
         System.out.println("RestTest.findSimilar sending " + al.size() + " elements");
