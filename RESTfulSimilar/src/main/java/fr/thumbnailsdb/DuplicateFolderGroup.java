@@ -1,5 +1,8 @@
 package fr.thumbnailsdb;
 
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
+
 /**
  * Created with IntelliJ IDEA.
  * User: fhuet
@@ -7,10 +10,13 @@ package fr.thumbnailsdb;
  * Time: 16:56
  * To change this template use File | Settings | File Templates.
  */
+@XmlRootElement
 public class DuplicateFolderGroup {
+    @XmlElement
     String folder1;
+    @XmlElement
     String folder2;
-
+    @XmlElement
      int occurences;
 
 
@@ -22,7 +28,7 @@ public class DuplicateFolderGroup {
 
     public void increase(){
        occurences++;
-       System.out.println("occurences was "+ (occurences-1) + " now " +occurences);
+       //System.out.println("occurences was "+ (occurences-1) + " now " +occurences);
     }
 
 }

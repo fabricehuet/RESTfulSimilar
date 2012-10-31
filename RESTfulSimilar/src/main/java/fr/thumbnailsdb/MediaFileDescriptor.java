@@ -18,6 +18,7 @@ public class MediaFileDescriptor {
 	protected long mtime;
 	protected String md5Digest;
 	protected int[] data;
+    @XmlElement
 	protected double rmse;
 
 	public static MediaFileDescriptor readFromDisk(String path) {

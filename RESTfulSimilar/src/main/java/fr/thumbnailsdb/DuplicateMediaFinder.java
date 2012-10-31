@@ -2,6 +2,8 @@ package fr.thumbnailsdb;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Collection;
+import java.util.Iterator;
 import java.util.Map;
 
 public class DuplicateMediaFinder {
@@ -27,9 +29,12 @@ public class DuplicateMediaFinder {
     }
 
     public void prettyPrintDuplicateFolder(ResultSet r) {
-        Map<String, DuplicateFolderGroup> map = computeDuplicateFolderSets(r).folderWithDuplicates;
-        for (String k : map.keySet()) {
-            System.out.println(k + "  have " + map.get(k).occurences + " common files");
+       Collection<DuplicateFolderGroup> map = computeDuplicateFolderSets(r).asSortedCollection();
+        Iterator<DuplicateFolderGroup> it = map.iterator();
+            //System.out.println(k + "  have " + map.get(k).occurences + " common files");
+        while (it.hasNext()) {
+        DuplicateFolderGroup df = it.next();
+           System.out.println(df.occurences + " " + df.folder1 +   "  " + df.folder2);
         }
 //        for (DuplicateFileGroup dg : tree) {
 //            System.out.println(dg.fileSize + " (" + dg.fileSize * (dg.size() - 1) + " to save) ");

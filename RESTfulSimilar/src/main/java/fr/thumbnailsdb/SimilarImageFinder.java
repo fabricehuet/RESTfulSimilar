@@ -27,7 +27,7 @@ public class SimilarImageFinder {
 
 	public TreeSet<MediaFileDescriptor> findSimilarMedia(MediaFileDescriptor id) {
 		ProgressBar pb = new ProgressBar();
-		int max = thumbstore.size();
+		int max = 5; //thumbstore.size();
 		int increment = max / 20;
 		int i = 0;
 		int step = 0;
@@ -53,7 +53,8 @@ public class SimilarImageFinder {
 			// ByteArrayInputStream(id.getData()));
 			System.out.println("SimilarImageFinder.findSimilarImages() Number of records " + max);
 			ResultSet res = thumbstore.getAllInDataBase();
-			while (res.next()) {
+            int found = 0;
+			while (res.next() && found<max) {
 				if (i > increment) {
 					i = 0;
 					step++;
@@ -72,6 +73,7 @@ public class SimilarImageFinder {
 						imd.setPath(path);
 						imd.setRmse(rmse);
 						list.add(imd);
+                        found++;
 					} else {
 
 					}
@@ -125,6 +127,8 @@ public class SimilarImageFinder {
 		}
 		return al;
 	}
+
+
 
 	public void prettyPrintIdenticalResults(ArrayList<MediaFileDescriptor> findIdenticalMedia) {
 		Iterator<MediaFileDescriptor> it = findIdenticalMedia.iterator();

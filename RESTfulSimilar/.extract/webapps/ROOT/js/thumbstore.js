@@ -36,12 +36,12 @@ function getDuplicate() {
                 for (f in data[i].al) {
                     // <p>" + i + "</p>"" +
                     //console.log(data[i].al[f]);
-                    output += "<div id=\"imagePath\">";
-                    output += data[i].al[f] + "</div><br>";
+                    output += "<div class=\"floated_img\" id=\"imagePath\">";
+                    output += data[i].al[f] + "</div>";
                 }
                 output += "</div>";
             }
-            var data2 = JSON.stringify(data, undefined, 2);
+            // var data2 = JSON.stringify(data, undefined, 2);
             // alert("Data Loaded: " + data2);
             // console.log(data2);
             // output += '</div>';
@@ -54,45 +54,23 @@ function getDuplicate() {
         });
 }
 
-//function updateCoverFlip(output) {
-//                      $('#accordion').append(output).accordion('destroy')
-//                      								.accordion({
-//                      									collapsible : true,
-//                      									autoHeight : false,
-//                      									change : function (event, ui) {
-//                      										  var activeIndex = $("#accordion").accordion("option", "active");
-//                      										  //arrayOfLines = ui.newContent.text().split("\n");
-//                      										  ui.newContent.children().wrapAll('<ul id="flip">')
-//                      										  $.each($("[id=imagePath]",ui.newContent), function (index,data ){
-//                      											  console.log($(data).html());
-//                                                                   $.get("rest/hello/getImage/"+index, function(image) {
-//                                                                          $(data).replaceWith('<li><div class="nailthumb-container square">' + image + "</div></li>");
-//                                                                          jQuery(document).ready(function() {
-//                                                                           $('#flip').jcoverflip();
-//                                                                                jQuery('.nailthumb-container').nailthumb();
-//                                                                                  jQuery('.nailthumb-image-titles-animated-onhover').nailthumb();
-//
-//                                                                          })
-//                                                                  });
-//                      										  });
-//                      									}
-//
-//                      								});
-//}
-
 function updateAccordion(output) {
-    $('#accordion').append(output).accordion('destroy')
-        .accordion({
-            collapsible:true,
-            autoHeight:false,
-            active:false,
-            change:function (event, ui) {
-                var activeIndex = $("#accordion").accordion("option", "active");
-                arrayOfLines = $("div", ui.newContent).contents(); //ui.newContent.text().split("\n");
+    $('#accordion').children().remove();
+
+    $('#accordion').append(output).accordion('destroy').accordion({
+        collapsible:true,
+        autoHeight:false,
+        active:false,
+        change:function (event, ui) {
+            //  var activeIndex = $("#accordion").accordion("option", "active");
+            //   var arrayOfLines = $("div", ui.newContent).contents(); //ui.newContent.text().split("\n");
+            if ($(".nailthumb-container", ui.newContent).length == 0) {
                 $.each($("[id=imagePath]", ui.newContent), function (index, data) {
                     console.log($(data).html());
                     $.post("rest/hello/getImage/", $(data).html(), function (image) {
-                        $(data).replaceWith('<div class="nailthumb-container  nailthumb-image-titles-animated-onhover square">' + image + "</div>");
+                        var template = "<img src=\"data:image;base64,{{data}}\" title=\" {{title}} \"/>";
+                        var imgTag = Mustache.to_html(template, image);
+                        $(data).prepend('<div class="nailthumb-container nailthumb-image-titles-animated-onhover square">' + imgTag + "</div>");
                         jQuery(document).ready(function () {
                             jQuery('.nailthumb-container').nailthumb();
                             jQuery('.nailthumb-image-titles-animated-onhover').nailthumb();
@@ -100,8 +78,35 @@ function updateAccordion(output) {
                     });
                 });
             }
+        }
 
+    });
+}
+
+
+function getDuplicateFolder() {
+    console.log("get duplicate folder");
+    $.getJSON('rest/hello/duplicateFolder', function (data) {
+
+        $.each(data, function(key,val) {
+            console.log("data is back");
+                   console.log(val);
+                   //var test = ""
+                   console.log(JSON.stringify(data));
+                   var template = "<h3>{{occurences}}</h3><div><div>{{folder1}}</div> <div>{{folder2}}</div></div>";
+                   var html = Mustache.to_html(template, val);
+            $('#accordion-duplicate-folders').append(html);
         });
+        $('#accordion-duplicate-folders').accordion({
+            collapsible:true,
+            autoHeight:false,
+            active:false
+        });
+        //$('#accordion-duplicate-folders').html(html);
+
+
+
+    });
 }
 
 function shrink() {
@@ -133,9 +138,42 @@ function prettyPrint(object) {
     for (i in object) {
         console.log(i + " " + object[i]);
     }
-
-    function uploadxx(object) {
-        $.post("rest/hello/upload", object);
-    }
-
 }
+
+function uploadFinished(object) {
+    //console.log(object);
+    //var output = "";
+    $('#duplicate_upload_result').children().remove();
+    for (f in object.result)  {
+        //console.log(f);
+        //output+= object.result[f].path+"<br>";
+        var rmse  = (object.result[f].rmse);
+        getWithRMSE(object.result[f], rmse);
+    }
+}
+
+function getWithRMSE(param, rmse ) {
+    $.post("rest/hello/getImage/", param.path, function (image) {
+        //$('[title]',image);
+        var template = "<img src=\"data:image;base64,{{data}}\" title=\" {{title}} \"/>";
+        var imgTag = Mustache.to_html(template, image);
+        //var imgTag = "<img src=\"data:image;base64," + image.data + "\" title=\"" + image.title + "\"/>";
+        $("#duplicate_upload_result").prepend('<div class="floated_img"><div class="nailthumb-container nailthumb-image-titles-animated-onhover square">' + imgTag + "</div>" + rmse +  "  " + image.title+ "</div>");
+//        Array.prototype.sort.call($("#floated_img"), function(a,b){
+//            var av = $(a).find("rmse"+sortby).text();
+//            var bv = $(b).find("rmse"+sortby).text();
+//            return av-bv;
+//        }).appendTo("#hotels");
+        jQuery(document).ready(function () {
+            jQuery('.nailthumb-container').nailthumb();
+            jQuery('.nailthumb-image-titles-animated-onhover').nailthumb();
+        })
+
+    });
+}
+
+
+   // $("#duplicate_upload_result").append(output);
+
+//        $.post("rest/hello/upload", object);
+
