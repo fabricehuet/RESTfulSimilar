@@ -156,7 +156,7 @@ function uploadFinished(object) {
         var imgTag = Mustache.to_html(template, image);
 
 
-        description = '<div class="description"> Score:' + rmse + '<br>Path:'+ image.path +'</div>'
+        description = '<div class="description"> Distance:' + rmse + '<br>Path:'+ image.path +'</div>'
 
 //        $("#duplicate_upload_result").append('<div class="floated_img"><div class="nailthumb-container nailthumb-image-titles-animated-onhover square">' + imgTag + "</div>" + rmse +  "  " + image.path+ "</div>");
         $("#duplicate_upload_result").append('<div class="floated_img"><div class="nailthumb-container nailthumb-image-titles-animated-onhover square">' + imgTag + "</div>"+  description +"</div>");

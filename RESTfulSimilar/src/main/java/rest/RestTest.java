@@ -101,32 +101,6 @@ public class RestTest {
         return Response.status(200).entity(dc).build();
     }
 
-//	@GET
-//	@Path("getImage/{imageId}")
-//	@Produces("image/jpg")
-//	public Response getImage(@PathParam(value = "imageId") String imageId) {
-//		Image image = null;
-//		System.out.println("RestTest.getImage() " + imageId);
-//		try {
-//			image = ImageIO.read(new File("/user/fhuet/desktop/home/Perso/photos/DSC00012.JPG"));
-//		} catch (IOException e1) {
-//			// TODO Auto-generated catch block
-//			e1.printStackTrace();
-//		}
-//		if (image != null) {
-//			final ByteArrayOutputStream out = new ByteArrayOutputStream();
-//			try {
-//				ImageIO.write((BufferedImage) image, "jpg", out);
-//				final byte[] imgData = out.toByteArray();
-//				final InputStream bigInputStream = new ByteArrayInputStream(imgData);
-//				return Response.ok(bigInputStream).build();
-//			} catch (final IOException e) {
-//				return Response.noContent().build();
-//			}
-//		}
-//		return Response.noContent().build();
-//	}
-
     @POST
 //	@Path("getImage/{imageId}")
     @Path("getImage/")
@@ -134,22 +108,10 @@ public class RestTest {
     @Produces({MediaType.APPLICATION_JSON})
 //	public Response getPostImage(@PathParam(value = "imageId") String imageId) {
     public Response getPostImage(String imageId) {
-        // System.out.println("RestTest.getImage() " + imageId);
-//		String[] duplicateFileList = new String[] { "/user/fhuet/desktop/home/NOSAVE/img-073020qbs9f.jpg",
-//				"/user/fhuet/desktop/home/Perso/photos/DSC00006.JPG" };
-        String result = null;
+      //  String result = null;
         String img = null;
         System.out.println("imageID " + imageId);
-//		for (int i = 0; i < duplicateFileList.length; i++) {
-        //  int i= Integer.parseInt(imageId)%2;
         img = getImageAsHTMLImg(imageId);
-//        if (result == null) {
-//            result = img;
-//        } else {
-//            result += img;
-//        }
-//		}
-
         return Response.status(200).entity(img).build();
     }
 
@@ -175,7 +137,6 @@ public class RestTest {
     @GET
     @Path("index/")
     public Response index(@QueryParam("path") String path) {
-        // tb.shrink();
         System.out.println("RestTest.index() input_path " + path);
         return Response.status(200).entity("Indexing in progress").build();
     }
@@ -183,21 +144,12 @@ public class RestTest {
     @POST
     @Path("findSimilar/")
     @Consumes(MediaType.MULTIPART_FORM_DATA)
-    //@Produces({MediaType.APPLICATION_JSON})
     @Produces({MediaType.APPLICATION_JSON})
     public Response findSimilar(FormDataMultiPart multipart) {
-        //  System.out.println("xxx stream is " + uploadedInputStream);
-        System.out.println("RestTest.findSimilar() " + multipart.getBodyParts().size() + " parts");
-
-        for (String s : multipart.getHeaders().keySet()) {
-            System.out.println("RestTest.findSimilar() Header : " + s + " : " + multipart.getHeaders().get(s));
-        }
 
 
-//        String json = " {\"images\" : [";
         BodyPartEntity bpe = (BodyPartEntity) multipart.getBodyParts().get(0).getEntity();
         Collection<MediaFileDescriptor> c = null;
-//        String message = null;
         ArrayList<SimilarImage> al = null;
         File temp = null;
         try {
@@ -224,7 +176,6 @@ public class RestTest {
         } catch (Exception e) {
             // message = e.getMessage();
             e.printStackTrace();
-
         }
 
             // ImageIO.write(bi,"jpg", temp);
@@ -244,15 +195,12 @@ public class RestTest {
                 try {
                     data = Base64.encodeBase64String(FileUtils.readFileToByteArray(new File(path)));
                 } catch (IOException e) {
-                   // e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
                     System.err.println("Err: File " + path + " not found");
                 }
 
                 SimilarImage si = new SimilarImage(path, data, mdf.getRmse());
                 al.add(si);
                 System.out.println(si);
-//                String img = this.getImageAsHTMLImg(mdf.getPath());
-//                json+=img; //"{\"path\" : " + mdf.getPath()+ ", \"data\" : "+  img +" },";
             }
 
 

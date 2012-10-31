@@ -2,16 +2,11 @@ package fr.thumbnailsdb;
 
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.ObjectOutputStream;
+import java.io.*;
 
 
 @XmlRootElement
-public class MediaFileDescriptor {
+public class MediaFileDescriptor implements Serializable {
     @XmlElement
 	protected String path;
 	protected long size;

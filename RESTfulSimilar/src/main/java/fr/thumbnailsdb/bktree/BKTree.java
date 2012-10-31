@@ -107,7 +107,7 @@ public class BKTree <E> {
 
 		public void add(E term) {
 			int score = distance.getDistance(term, this.term);
-
+            //System.out.println("BKTree$Node.add distance :" + score);
 			Node child = children.get(score);
 			if(child != null) {
 				child.add(term);
