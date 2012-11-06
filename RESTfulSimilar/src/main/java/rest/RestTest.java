@@ -134,6 +134,14 @@ public class RestTest {
         return Response.status(200).entity("Shrink done").build();
     }
 
+
+    @GET
+    @Path("folder/")
+    public Response getFolder(@QueryParam("path") String path) {
+        System.out.println("RestTest.getFolder() input_path " + path);
+        return Response.status(200).entity(path).type("application/folder").build();
+    }
+
     @GET
     @Path("index/")
     public Response index(@QueryParam("path") String path) {

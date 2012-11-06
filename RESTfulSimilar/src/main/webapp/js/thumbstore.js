@@ -12,6 +12,14 @@ function getPath() {
     });
 }
 
+
+//function getFolder() {
+//    $.get("rest/hello/folder/", {path: "tototo"}, function (data) {
+//        // alert('page content: ' + data);
+//        document.getElementById('folder_test').innerHTML = '<a href="file:////user/local">local</a>';
+//    });
+//}
+
 function getDuplicate() {
     // alert( $("input[name=max]").val() );
     // document.myform.submit();
@@ -93,7 +101,8 @@ function getDuplicateFolder() {
                    console.log(val);
                    //var test = ""
                    console.log(JSON.stringify(data));
-                   var template = "<h3>{{occurences}}</h3><div><div>{{folder1}}</div> <div>{{folder2}}</div></div>";
+
+                   var template = '<h3>{{occurences}}</h3><div><div><a href="rest/hello/folder/?path={{folder1}}">{{folder1}}</a></div> <div><a href="rest/hello/folder/?path={{folder2}}">{{folder2}}</div></div>';
                    var html = Mustache.to_html(template, val);
             $('#accordion-duplicate-folders').append(html);
         });
