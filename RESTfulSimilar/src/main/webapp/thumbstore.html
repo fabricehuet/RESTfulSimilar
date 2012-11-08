@@ -1,6 +1,7 @@
 <script>
 	getSize();
 	getPath();
+    getIndexedPaths();
    // getFolder();
 
 </script>
@@ -12,6 +13,7 @@
 		Size of db : <span id="db_size"> </span>
 	</p>
 
+    <span id="db_paths"></span>
 
 
 	<!-- 	<form name="myform" action="rest/hello/identical" method="POST"> -->
@@ -22,9 +24,7 @@
     <!--<button onclick='index()'>Click me</button>-->
 
     <form name="input" action="javascript: shrink()">
-
         <input type="submit" value="Shrink"/>
-
     </form>
 
 

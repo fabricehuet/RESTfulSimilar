@@ -32,7 +32,7 @@ public class Main {
 		MediaIndexer tg = new MediaIndexer(tb);
 		if ("index".equals(args[0])) {
 			String source = args[1];
-			tg.processMT(source);
+			tg.processMTRoot(source);
 		}
 		if ("fix".equals(args[0])) {
 			tb.fix();

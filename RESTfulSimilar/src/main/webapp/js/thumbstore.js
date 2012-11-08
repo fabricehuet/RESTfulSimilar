@@ -12,13 +12,28 @@ function getPath() {
     });
 }
 
+function getIndexedPaths() {
+    $.get("rest/hello/paths", function (data) {
+        // alert('page content: ' + data);
+        result='<div id="index_paths">'
+        for (i in data ){
+              result+='<p>'+ data[i] + '</p>';
+        }
+        result+="</div>"
+        document.getElementById('db_paths').innerHTML = result;
+    });
+}
 
-//function getFolder() {
-//    $.get("rest/hello/folder/", {path: "tototo"}, function (data) {
-//        // alert('page content: ' + data);
-//        document.getElementById('folder_test').innerHTML = '<a href="file:////user/local">local</a>';
-//    });
-//}
+
+function getStatus() {
+    $.get("rest/hello/status", function (data) {
+        // alert('page content: ' + data);
+        document.getElementById('db_status').innerHTML = data["stringStatus"];
+    });
+}
+
+
+
 
 function getDuplicate() {
     // alert( $("input[name=max]").val() );

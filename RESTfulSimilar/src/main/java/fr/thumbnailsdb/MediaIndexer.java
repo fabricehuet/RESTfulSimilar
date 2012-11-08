@@ -179,10 +179,10 @@ public class MediaIndexer {
 	}
 
 	public void generateAndSave(File f) {
-	//	if (Utils.isValideImageName(f.getName()) || Utils.isValideVideoName(f.getName())) {
-			// System.out.println("MediaIndexer.generateAndSave() processing "
-			// + f);
-			// System.out.println("checking if in DB");
+	//first check if it is in DB
+
+
+
 			try {
 				if (ts.isInDataBaseBasedOnName(f.getCanonicalPath())) {
 					// System.out.println("MediaIndexer.generateImageDescriptor() Already in DB, ignoring");
@@ -234,11 +234,12 @@ public class MediaIndexer {
 		return fd.isFile() ; //&& (Utils.isValideImageName(fd.getName()) || Utils.isValideVideoName(fd.getName()));
 	}
 
-	public void processMT(String path) {
+	public void processMTRoot(String path) {
         DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
         Date date = new Date();
         //System.out.println(dateFormat.format(date));
-		System.out.println("MediaIndexer.processMT() started at time " + dateFormat.format(date));
+        ts.addIndexPath(path);
+		System.out.println("MediaIndexer.processMTRoot() started at time " + dateFormat.format(date));
 		try {
 			this.processMT(new File(path));
 		} catch (IOException e) {
@@ -253,8 +254,8 @@ public class MediaIndexer {
 		}
 
         date = new Date();
-        System.out.println("MediaIndexer.processMT() finished at time " + dateFormat.format(date));
-        System.out.println("MediaIndexer.processMT() found "+ newFiles + " new files");
+        System.out.println("MediaIndexer.processMTRoot() finished at time " + dateFormat.format(date));
+        System.out.println("MediaIndexer.processMTRoot() found "+ newFiles + " new files");
 
 	}
 

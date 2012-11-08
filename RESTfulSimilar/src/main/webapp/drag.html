@@ -13,13 +13,9 @@
     }
 
     function localSubmit(id, name, json) {
-        $('.qq-upload-list').children().remove()
-    }
-
-    function localFinished(id, name, json) {
-
+        $('.qq-upload-list').children().remove();
         var img = document.createElement("img");
-       // li.appendChild(img);
+        // li.appendChild(img);
         reader = new FileReader();
         reader.onload = (function (theImg) {
 
@@ -40,6 +36,17 @@
         div_t.appendChild(img);
 
         $("#duplicate_upload_source").append(div_t);
+        jQuery(document).ready(function () {
+            jQuery('.nailthumb-container').nailthumb();
+            jQuery('.nailthumb-image-titles-animated-onhover').nailthumb();
+        });
+
+
+    }
+
+    function localFinished(id, name, json) {
+
+
 //        append('<div class="nailthumb-container nailthumb-image-titles-animated-onhover square">');
 //        $("#duplicate_upload_source").append(img);
 //        $("#duplicate_upload_source").append('</div>');//
