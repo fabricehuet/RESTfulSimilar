@@ -10,6 +10,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
@@ -259,6 +260,8 @@ public class MediaIndexer {
 
 	}
 
+
+
 	public void processMT(File fd) throws IOException {
 		if (isValideFile(fd)) {
 			executorService.submit(new RunnableProcess(fd));
@@ -278,6 +281,16 @@ public class MediaIndexer {
 			}
 		}
 	}
+
+
+    public void updateDB() {
+        ArrayList<String> al = ts.getIndexedPaths();
+        for (String s : al) {
+            Status.getStatus().setStringStatus("Updating folder " + s);
+            processMTRoot(s);
+        }
+        Status.getStatus().setStringStatus(Status.IDLE);
+    }
 
 	protected void submit(RunnableProcess rp) {
 //		try {

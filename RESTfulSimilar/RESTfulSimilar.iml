@@ -19,6 +19,7 @@
       <sourceFolder url="file://$MODULE_DIR$/src/main/java" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/src/main/resources" isTestSource="false" />
       <excludeFolder url="file://$MODULE_DIR$/blueimp-jQuery-File-Upload-d45deb1" />
+      <excludeFolder url="file://$MODULE_DIR$/src/main/java/fr/surfjavacl" />
       <excludeFolder url="file://$MODULE_DIR$/target" />
     </content>
     <orderEntry type="inheritedJdk" />

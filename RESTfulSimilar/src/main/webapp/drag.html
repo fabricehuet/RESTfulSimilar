@@ -1,12 +1,12 @@
 <script>
-    function createUploader(){
+    function createUploader() {
         var uploader = new qq.FileUploader({
-            element: document.getElementById('file-uploader-demo1'),
-            action: 'rest/hello/findSimilar',
-            forceMultipart : true,
-            debug: true,
-            onSubmit: localSubmit,
-            onComplete:  localFinished
+            element:document.getElementById('file-uploader-demo1'),
+            action:'rest/hello/findSimilar',
+            forceMultipart:true,
+            debug:false,
+            onSubmit:localSubmit,
+            onComplete:localFinished
 //            ,
 //            extraDropzones: [qq.getByClass(document, 'qq-upload-extra-drop-area')[0]]
         });
@@ -29,10 +29,10 @@
 
         }(img));
         reader.readAsDataURL(this._handler._files[id]);
-
+        // display the source image
         $("#duplicate_upload_source").children().remove();
         div_t = document.createElement("div");
-        div_t.className="nailthumb-container nailthumb-image-titles-animated-onhover square" ;
+        div_t.className = "nailthumb-container nailthumb-image-titles-animated-onhover square";
         div_t.appendChild(img);
 
         $("#duplicate_upload_source").append(div_t);
@@ -45,26 +45,16 @@
     }
 
     function localFinished(id, name, json) {
-
-
-//        append('<div class="nailthumb-container nailthumb-image-titles-animated-onhover square">');
-//        $("#duplicate_upload_source").append(img);
-//        $("#duplicate_upload_source").append('</div>');//
-
-        //var imgTag = "<img src=\"data:image;base64," + image.data + "\" title=\"" + image.title + "\"/>";
-
-
-
         uploadFinished(json.images);
+        $(".qq-upload-list").children().remove();
     }
 
-    // in your app create uploader as soon as the DOM is ready
-    // don't wait for the window to load
-    jQuery(document).ready(function() {
-       createUploader();
-    });
-</script>
 
+    jQuery(document).ready(function () {
+        createUploader();
+    });
+
+</script>
 
 <div id="file-uploader-demo1">
     <noscript>
@@ -73,7 +63,7 @@
     </noscript>
 </div>
 
-<!--<div class="qq-upload-extra-drop-area">Drop files here too</div>-->
+
 
 
 <div id="duplicate_upload_source" style="margin:10px 0px"></div>

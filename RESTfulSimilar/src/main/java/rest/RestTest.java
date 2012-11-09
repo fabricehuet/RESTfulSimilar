@@ -159,6 +159,13 @@ public class RestTest {
 
 
     @GET
+    @Path("update/")
+    public Response update() {
+       new MediaIndexer(tb).updateDB();
+        return Response.status(200).entity("Update done").build();
+    }
+
+    @GET
     @Path("folder/")
     public Response getFolder(@QueryParam("path") String path) {
         System.out.println("RestTest.getFolder() input_path " + path);

@@ -1,52 +1,60 @@
 <script>
-	getSize();
-	getPath();
+    getSize();
+    getPath();
     getIndexedPaths();
-   // getFolder();
+    // getFolder();
 
 </script>
 <div id="tabs-1">
-	<p>
-		Path db : <span id="db_path"> </span>
-	</p>
-	<p>
-		Size of db : <span id="db_size"> </span>
-	</p>
+    <p>
+        Path db : <span id="db_path"> </span>
+    </p>
 
-    <span id="db_paths"></span>
+    <p>
+        Size of db : <span id="db_size"> </span>
+    </p>
+
+    <div id="db_paths" style="margin-bottom: 0"></div>
 
 
-	<!-- 	<form name="myform" action="rest/hello/identical" method="POST"> -->
-	<!-- 		<input id="fileupload" type="file" name="files[]" multiple> -->
-	<!-- 	</form> -->
+    <!-- 	<form name="myform" action="rest/hello/identical" method="POST"> -->
+    <!-- 		<input id="fileupload" type="file" name="files[]" multiple> -->
+    <!-- 	</form> -->
 
     <!--<input type="text" id="index_path"/>-->
     <!--<button onclick='index()'>Click me</button>-->
-
-    <form name="input" action="javascript: shrink()">
-        <input type="submit" value="Shrink"/>
-    </form>
-
+    <p>
+    <div style="float: left; padding-right: 20px">
+        <form name="input" action="javascript: shrink()">
+            <input type="submit" value="Shrink"/>
+        </form>
+    </div>
+    <div style="float: left">
+        <form name="input" action="javascript: update()">
+            <input type="submit" value="Update"/>
+        </form>
+    </div>
+    </p>
 
     <!--<div class="nailthumb-container  nailthumb-image-titles-animated-onhover square">-->
-        <!--<img src="http://24.media.tumblr.com/tumblr_lf4rlwrwzF1qflxpwo1_400.jpg" title="xx"/>-->
+    <!--<img src="http://24.media.tumblr.com/tumblr_lf4rlwrwzF1qflxpwo1_400.jpg" title="xx"/>-->
     <!--</div>-->
 
     <!--<div class="nailthumb-container square-thumb nailthumb-image-titles-animated-onhover square">-->
-            <!--<img src="http://24.media.tumblr.com/tumblr_lf4rlwrwzF1qflxpwo1_400.jpg" title="animated - on over" />-->
+    <!--<img src="http://24.media.tumblr.com/tumblr_lf4rlwrwzF1qflxpwo1_400.jpg" title="animated - on over" />-->
     <!--</div>-->
 
-        <!--<div class="nailthumb-container  nailthumb-image-titles-onload square">-->
-        <!--<img src="http://hair-hairstyles-haircuts.com/wp-content/uploads/2011/01/ALO-124957.jpg" title="xyy"/>-->
-<!--</div>-->
+    <!--<div class="nailthumb-container  nailthumb-image-titles-onload square">-->
+    <!--<img src="http://hair-hairstyles-haircuts.com/wp-content/uploads/2011/01/ALO-124957.jpg" title="xyy"/>-->
+    <!--</div>-->
     <script type="text/javascript">
 
-        jQuery(document).ready(function() {
-        jQuery('.nailthumb-image-titles-animated-onhover').nailthumb();
-        jQuery('.nailthumb-image-titles-animated-onload').nailthumb({titleWhen:'load'});
-        jQuery('.nailthumb-image-titles-onhover').nailthumb({animateTitle:false});
-        jQuery('.nailthumb-image-titles-onload').nailthumb({titleWhen:'load',animateTitle:false});
-        jQuery('.nailthumb-image-titles-bigger').nailthumb({titleWhen:'load'});
+        jQuery(document).ready(function () {
+            jQuery('.nailthumb-image-titles-animated-onhover').nailthumb();
+            jQuery('.nailthumb-image-titles-animated-onload').nailthumb({titleWhen:'load'});
+            jQuery('.nailthumb-image-titles-onhover').nailthumb({animateTitle:false});
+            jQuery('.nailthumb-image-titles-onload').nailthumb({titleWhen:'load', animateTitle:false});
+            jQuery('.nailthumb-image-titles-bigger').nailthumb({titleWhen:'load'});
         })
     </script>
-    </div>
+</div>
