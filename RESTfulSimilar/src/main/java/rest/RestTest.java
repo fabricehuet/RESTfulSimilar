@@ -27,7 +27,6 @@ import org.apache.commons.io.FileUtils;
 import com.sun.jersey.multipart.BodyPartEntity;
 
 import com.sun.jersey.spi.resource.Singleton;
-import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
@@ -59,18 +58,42 @@ public class RestTest {
 
     @GET
     @Path("/db/{param}")
-    public Response getSize(@PathParam("param") String info) {
-        System.out.println("RestTest.getSize() " + info);
+    public Response getDBInfo(@PathParam("param") String info) {
+        System.out.println("RestTest.getDBInfo() " + info);
         if ("size".equals(info)) {
-            System.out.println("RestTest.getSize() " + tb.size());
+            System.out.println("RestTest.getDBInfo() " + tb.size());
             return Response.status(200).entity(tb.size() + "").build();
         }
         if ("path".equals(info)) {
             return Response.status(200).entity(tb.getPath() + "").build();
         }
-        // System.out.println("RestTest.getSize() thumbstore is " + tb);
+        if ("status".equals(info)) {
+            return Response.status(200).entity("idle").build();
+        }
+         // System.out.println("RestTest.getDBInfo() thumbstore is " + tb);
         return Response.status(404).build();
     }
+
+    @GET
+    @Path("/status")
+    @Produces({MediaType.APPLICATION_JSON})
+    public Response getStatus() {
+        System.out.println("status " + Status.getStatus());
+            return Response.status(200).entity(Status.getStatus()).build();
+
+    }
+
+    @GET
+    @Path("/paths")
+    @Produces({MediaType.APPLICATION_JSON})
+    public Response getPaths() {
+//        System.out.println("status " + Status.getStatus());
+        System.out.println("Found the paths " + tb.getIndexedPaths());
+        return Response.status(200).entity(tb.getIndexedPaths()).build();
+
+    }
+
+
 
     @GET
     @Path("/identical")
@@ -136,6 +159,13 @@ public class RestTest {
 
 
     @GET
+    @Path("update/")
+    public Response update() {
+       new MediaIndexer(tb).updateDB();
+        return Response.status(200).entity("Update done").build();
+    }
+
+    @GET
     @Path("folder/")
     public Response getFolder(@QueryParam("path") String path) {
         System.out.println("RestTest.getFolder() input_path " + path);
@@ -148,6 +178,8 @@ public class RestTest {
         System.out.println("RestTest.index() input_path " + path);
         return Response.status(200).entity("Indexing in progress").build();
     }
+
+
 
     @POST
     @Path("findSimilar/")

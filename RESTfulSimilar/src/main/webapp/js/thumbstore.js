@@ -12,13 +12,28 @@ function getPath() {
     });
 }
 
+function getIndexedPaths() {
+    $.get("rest/hello/paths", function (data) {
+        // alert('page content: ' + data);
+        result='<div id="index_paths">'
+        for (i in data ){
+              result+= data[i] + '<br>';
+        }
+        result+="</div>"
+        document.getElementById('db_paths').innerHTML = result;
+    });
+}
 
-//function getFolder() {
-//    $.get("rest/hello/folder/", {path: "tototo"}, function (data) {
-//        // alert('page content: ' + data);
-//        document.getElementById('folder_test').innerHTML = '<a href="file:////user/local">local</a>';
-//    });
-//}
+
+function getStatus() {
+    $.get("rest/hello/status", function (data) {
+        // alert('page content: ' + data);
+        document.getElementById('db_status').innerHTML = data["stringStatus"];
+    });
+}
+
+
+
 
 function getDuplicate() {
     // alert( $("input[name=max]").val() );
@@ -120,9 +135,16 @@ function getDuplicateFolder() {
 
 function shrink() {
     $.get("rest/hello/shrink", function (data) {
-        alert("shrink done");
+        //alert("shrink done");
     });
 }
+
+function update() {
+    $.get("rest/hello/update", function (data) {
+        //alert("shrink done");
+    });
+}
+
 
 function index(currentForm) {
 
@@ -164,11 +186,11 @@ function uploadFinished(object) {
         var template = '<img src="data:image;base64,{{base64Data}}" title=" {{path}} "/>';
         var imgTag = Mustache.to_html(template, image);
 
-
-        description = '<div class="description"> Distance:' + rmse + '<br>Path:'+ image.path +'</div>'
+        //console.log($(imgTag).exifPretty());
+        description = '<div class="description flt"> Distance:' + rmse + '<br>  '+ image.path +'</div>'
 
 //        $("#duplicate_upload_result").append('<div class="floated_img"><div class="nailthumb-container nailthumb-image-titles-animated-onhover square">' + imgTag + "</div>" + rmse +  "  " + image.path+ "</div>");
-        $("#duplicate_upload_result").append('<div class="floated_img"><div class="nailthumb-container nailthumb-image-titles-animated-onhover square">' + imgTag + "</div>"+  description +"</div>");
+        $("#duplicate_upload_result").append('<div class="floated_img cls"><div class="nailthumb-container nailthumb-image-titles-animated-onhover square flt">' + imgTag + "</div>"+  description +"</div>");
 
         jQuery(document).ready(function () {
             jQuery('.nailthumb-container').nailthumb();

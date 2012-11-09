@@ -48,9 +48,6 @@ public class DuplicateMediaFinder {
             return duplicateFileList;
         }
         duplicateFileList = new DuplicateFileList();
-        System.out.println("DuplicateMediaFinder.prettyPrintDuplicate() ");
-        // ArrayList<DuplicateFileGroup> al = new
-        // ArrayList<DuplicateMediaFinder.DuplicateFileGroup>();
         DuplicateFileGroup dg = new DuplicateFileGroup();
         String currentMd5 = "";
         try {

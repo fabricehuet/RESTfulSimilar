@@ -230,7 +230,7 @@ public class ThumbnailGenerator {
 	}
 
 	public void processMT(String path) {
-		// System.out.println("ThumbnailGenerator.processMT()");
+		// System.out.println("ThumbnailGenerator.processMTRoot()");
 		try {
 			this.processMT(new File(path));
 		} catch (IOException e) {

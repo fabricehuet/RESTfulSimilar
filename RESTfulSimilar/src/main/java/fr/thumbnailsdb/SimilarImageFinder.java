@@ -134,6 +134,7 @@ public class SimilarImageFinder {
 
     protected ArrayList<MediaFileDescriptor> getPreloadedDescriptors() {
         if (preloadedDescriptors == null) {
+            Status.getStatus().setStringStatus("Building descriptors list");
             ProgressBar pb = new ProgressBar();
             //int max = getPreloadedDescriptors().size();
             //int max = 80000;
@@ -156,6 +157,7 @@ public class SimilarImageFinder {
                         if (pb != null) {
                             pb.update(step, 20);
                         }
+                        Status.getStatus().setStringStatus("Building descriptors list " + (step+1*5) + "%");
                     }
 
 
@@ -184,6 +186,8 @@ public class SimilarImageFinder {
             }
         }
 
+
+        Status.getStatus().setStringStatus(Status.IDLE);
 
         return preloadedDescriptors;
 
@@ -220,8 +224,12 @@ public class SimilarImageFinder {
 
         Iterator<MediaFileDescriptor> it = getPreloadedDescriptors().iterator();
         int found = 0;
+        Status.getStatus().setStringStatus(Status.FIND_SIMILAR);
+        int size = getPreloadedDescriptors().size();
+        int processed =0;
         while (it.hasNext()) {
             MediaFileDescriptor current = it.next();
+            processed++;
 //            if (i > increment) {
 //                i = 0;
 //                step++;
@@ -236,6 +244,8 @@ public class SimilarImageFinder {
             MediaFileDescriptor imd = new MediaFileDescriptor();
             imd.setPath(path);
             imd.setRmse(rmse);
+
+            Status.getStatus().setStringStatus(Status.FIND_SIMILAR + " " + (processed/size) + "%");
 
             if (tree.size() == max) {
                 MediaFileDescriptor df = tree.last();
@@ -252,6 +262,9 @@ public class SimilarImageFinder {
         }
 
         System.out.println("SimilarImageFinder.findSimilarImage resulting tree has size " + tree.size());
+
+        Status.getStatus().setStringStatus(Status.IDLE);
+
         return tree;
     }
 
@@ -307,7 +320,7 @@ public class SimilarImageFinder {
         while (it.hasNext() && i < max) {
             MediaFileDescriptor mediaFileDescriptor = (MediaFileDescriptor) it.next();
             i++;
-            //System.out.println(mediaFileDescriptor.getPath() + " " + mediaFileDescriptor.getSize());
+            //System.out.println(mediaFileDescriptor.getPath() + " " + mediaFileDescriptor.getDBInfo());
             result += mediaFileDescriptor.getPath() + " " + mediaFileDescriptor.getSize();
         }
 
