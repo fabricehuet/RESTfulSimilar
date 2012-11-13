@@ -78,7 +78,7 @@ public class RestTest {
     @Path("/status")
     @Produces({MediaType.APPLICATION_JSON})
     public Response getStatus() {
-        System.out.println("status " + Status.getStatus());
+//        System.out.println("status " + Status.getStatus());
             return Response.status(200).entity(Status.getStatus()).build();
 
     }

@@ -31,6 +31,7 @@
         reader.readAsDataURL(this._handler._files[id]);
         // display the source image
         $("#duplicate_upload_source").children().remove();
+        $("#duplicate_upload_result").children().remove();
         div_t = document.createElement("div");
         div_t.className = "nailthumb-container nailthumb-image-titles-animated-onhover square";
         div_t.appendChild(img);

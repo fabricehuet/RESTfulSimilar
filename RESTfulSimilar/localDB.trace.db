@@ -218,3 +218,37 @@ SELECT path FROM PATH WHERE path=? [42102-159]
 11-08 18:01:46 jdbc[2]: exception
 org.h2.jdbc.JdbcSQLException: Syntax error in SQL statement "INSERT INTO PATHS(PATH) "; expected "DIRECT, SORTED, DEFAULT, VALUES, SET, (, SELECT, FROM"; SQL statement:
 insert into PATHS(path) [42001-159]
+11-12 16:20:13 jdbc[2]: exception
+org.h2.jdbc.JdbcSQLException: Database is already closed (to disable automatic closing at VM shutdown, add ";DB_CLOSE_ON_EXIT=FALSE" to the db URL) [90121-159]
+	at org.h2.message.DbException.getJdbcSQLException(DbException.java:329)
+	at org.h2.message.DbException.get(DbException.java:169)
+	at org.h2.message.DbException.get(DbException.java:146)
+	at org.h2.message.DbException.get(DbException.java:135)
+	at org.h2.jdbc.JdbcConnection.checkClosed(JdbcConnection.java:1394)
+	at org.h2.jdbc.JdbcStatement.checkClosed(JdbcStatement.java:924)
+	at org.h2.jdbc.JdbcStatement.checkClosed(JdbcStatement.java:898)
+	at org.h2.jdbc.JdbcResultSet.checkClosed(JdbcResultSet.java:2932)
+	at org.h2.jdbc.JdbcResultSet.getColumnIndex(JdbcResultSet.java:2856)
+	at org.h2.jdbc.JdbcResultSet.get(JdbcResultSet.java:2963)
+	at org.h2.jdbc.JdbcResultSet.getString(JdbcResultSet.java:283)
+	at fr.thumbnailsdb.SimilarImageFinder.getPreloadedDescriptors(SimilarImageFinder.java:164)
+	at fr.thumbnailsdb.SimilarImageFinder.findSimilarImage(SimilarImageFinder.java:224)
+	at fr.thumbnailsdb.SimilarImageFinder.findSimilarMedia(SimilarImageFinder.java:32)
+	at fr.thumbnailsdb.Main.mediaAction(Main.java:15)
+	at fr.thumbnailsdb.Main.main(Main.java:103)
+11-12 17:04:40 jdbc[2]: exception
+org.h2.jdbc.JdbcSQLException: Database is already closed (to disable automatic closing at VM shutdown, add ";DB_CLOSE_ON_EXIT=FALSE" to the db URL) [90121-159]
+	at org.h2.message.DbException.getJdbcSQLException(DbException.java:329)
+	at org.h2.message.DbException.get(DbException.java:169)
+	at org.h2.message.DbException.get(DbException.java:146)
+	at org.h2.message.DbException.get(DbException.java:135)
+	at org.h2.jdbc.JdbcConnection.checkClosed(JdbcConnection.java:1394)
+	at org.h2.jdbc.JdbcStatement.checkClosed(JdbcStatement.java:924)
+	at org.h2.jdbc.JdbcStatement.checkClosed(JdbcStatement.java:898)
+	at org.h2.jdbc.JdbcResultSet.checkClosed(JdbcResultSet.java:2932)
+	at org.h2.jdbc.JdbcResultSet.next(JdbcResultSet.java:115)
+	at fr.thumbnailsdb.SimilarImageFinder.getPreloadedDescriptors(SimilarImageFinder.java:152)
+	at fr.thumbnailsdb.SimilarImageFinder.findSimilarImage(SimilarImageFinder.java:224)
+	at fr.thumbnailsdb.SimilarImageFinder.findSimilarMedia(SimilarImageFinder.java:32)
+	at fr.thumbnailsdb.Main.mediaAction(Main.java:15)
+	at fr.thumbnailsdb.Main.main(Main.java:103)

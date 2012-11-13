@@ -43,6 +43,9 @@ public class Main {
 		if ("size".equals(args[0])) {
 			System.out.println("DB has size " + tb.size());
 		}
+        if ("update".equals(args[0])) {
+           tg.updateDB();
+        }
 		if ("duplicate".equals(args[0])) {
 			DuplicateMediaFinder df = new DuplicateMediaFinder(tb);
 			// String source = args[1];

@@ -34,8 +34,8 @@ public class MediaIndexer {
 	// Executors.newFixedThreadPool(3);
 //	protected final Semaphore semaphore = new Semaphore(1);
 
-	ThreadPoolExecutor executorService = new ThreadPoolExecutor(4, 4, 0L, TimeUnit.MILLISECONDS,
-			new LimitedQueue<Runnable>(50));
+	ThreadPoolExecutor executorService ; //= new ThreadPoolExecutor(4, 4, 0L, TimeUnit.MILLISECONDS,
+//			new LimitedQueue<Runnable>(50));
 
 	public MediaIndexer(ThumbStore t) {
 		this.ts = t;
@@ -241,6 +241,8 @@ public class MediaIndexer {
         //System.out.println(dateFormat.format(date));
         ts.addIndexPath(path);
 		System.out.println("MediaIndexer.processMTRoot() started at time " + dateFormat.format(date));
+        executorService =  new ThreadPoolExecutor(4, 4, 0L, TimeUnit.MILLISECONDS,
+                new LimitedQueue<Runnable>(50));
 		try {
 			this.processMT(new File(path));
 		} catch (IOException e) {
@@ -287,6 +289,7 @@ public class MediaIndexer {
         ArrayList<String> al = ts.getIndexedPaths();
         for (String s : al) {
             Status.getStatus().setStringStatus("Updating folder " + s);
+
             processMTRoot(s);
         }
         Status.getStatus().setStringStatus(Status.IDLE);

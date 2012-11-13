@@ -29,24 +29,24 @@ public class SimilarImageFinder {
     public TreeSet<MediaFileDescriptor> findSimilarMedia(String source) {
         MediaIndexer tg = new MediaIndexer(null);
         MediaFileDescriptor id = tg.buildMediaDescriptor(new File(source)); // ImageDescriptor.readFromDisk(s);
-        return this.findSimilarMedia(id);
+        return this.findSimilarImage(id, 5);
     }
 
-    public TreeSet<MediaFileDescriptor> findSimilarMedia(MediaFileDescriptor id) {
-        ProgressBar pb = new ProgressBar();
-        int max = getPreloadedDescriptors().size();
-        //int max = 80000;
-        int increment = max / 20;
-        int i = 0;
-        int step = 0;
-        if (increment == 0) {
-            increment = 1;
-        }
-        // System.out.println("SimilarImageFinder.findSimilarImages() increment is "
-        // + increment);
-        TreeSet<MediaFileDescriptor> list = findSimilarImage(id, pb, 5, increment, i, step);
-        return list;
-    }
+//    public TreeSet<MediaFileDescriptor> findSimilarMedia(MediaFileDescriptor id) {
+//        ProgressBar pb = new ProgressBar();
+//        int max = getPreloadedDescriptors().size();
+//        //int max = 80000;
+//        int increment = max / 20;
+//        int i = 0;
+//        int step = 0;
+//        if (increment == 0) {
+//            increment = 1;
+//        }
+//        // System.out.println("SimilarImageFinder.findSimilarImages() increment is "
+//        // + increment);
+//        TreeSet<MediaFileDescriptor> list = findSimilarImage(id, pb, 5, increment, i, step);
+//        return list;
+//    }
 
     protected BKTree<MediaFileDescriptor> getPreloadedDescriptorsBKTree() {
         if (bkTree == null) {
@@ -157,10 +157,8 @@ public class SimilarImageFinder {
                         if (pb != null) {
                             pb.update(step, 20);
                         }
-                        Status.getStatus().setStringStatus("Building descriptors list " + (step+1*5) + "%");
+                        Status.getStatus().setStringStatus("Building descriptors list " + ((step+1)*5) + "%");
                     }
-
-
                     String path = res.getString("path");
                     byte[] d = res.getBytes("data");
                     if (d != null) {
@@ -195,8 +193,7 @@ public class SimilarImageFinder {
     }
 
 
-    protected TreeSet<MediaFileDescriptor> findSimilarImage(MediaFileDescriptor id, ProgressBar pb, int max,
-                                                            int increment, int i, int step) {
+    protected TreeSet<MediaFileDescriptor> findSimilarImage(MediaFileDescriptor id, int max) {
         TreeSet<MediaFileDescriptor> tree = new TreeSet<MediaFileDescriptor>(new Comparator<MediaFileDescriptor>() {
             //	@Override
             public int compare(MediaFileDescriptor o1, MediaFileDescriptor o2) {
@@ -227,44 +224,51 @@ public class SimilarImageFinder {
         Status.getStatus().setStringStatus(Status.FIND_SIMILAR);
         int size = getPreloadedDescriptors().size();
         int processed =0;
+        ProgressBar pb = new ProgressBar();
+        int increment = size / 20;
+        int i = 0;
+        int step = 0;
+        if (increment == 0) {
+            increment = 1;
+        }
+
+
         while (it.hasNext()) {
             MediaFileDescriptor current = it.next();
             processed++;
-//            if (i > increment) {
-//                i = 0;
-//                step++;
-//                if (pb != null) {
-//                    pb.update(step, 20);
-//                }
-//            }
             String path = current.getPath();
             int[] idata = current.getData();
-
             double rmse = ImageComparator.compareARGBUsingRMSE(id.getData(), idata);
-            MediaFileDescriptor imd = new MediaFileDescriptor();
-            imd.setPath(path);
-            imd.setRmse(rmse);
-
-            Status.getStatus().setStringStatus(Status.FIND_SIMILAR + " " + (processed/size) + "%");
+            if (i > increment) {
+                i = 0;
+                step++;
+                if (pb != null) {
+                    pb.update(step, 20);
+                }
+                Status.getStatus().setStringStatus(Status.FIND_SIMILAR + " " + (processed*100/size) + "%");
+            }
+            //System.out.println("Processed " + processed);
 
             if (tree.size() == max) {
                 MediaFileDescriptor df = tree.last();
-                if (df.rmse > imd.rmse) {
+                if (df.rmse > rmse) {
+                    MediaFileDescriptor imd = new MediaFileDescriptor();
+                    imd.setPath(path);
+                    imd.setRmse(rmse);
                     tree.remove(df);
                     tree.add(imd);
                 }
             } else {
+                MediaFileDescriptor imd = new MediaFileDescriptor();
+                imd.setPath(path);
+                imd.setRmse(rmse);
                 tree.add(imd);
             }
-
-
             i++;
         }
 
         System.out.println("SimilarImageFinder.findSimilarImage resulting tree has size " + tree.size());
-
         Status.getStatus().setStringStatus(Status.IDLE);
-
         return tree;
     }
 
@@ -335,7 +339,7 @@ public class SimilarImageFinder {
 
         MediaIndexer tg = new MediaIndexer(null);
         id = tg.buildMediaDescriptor(new File(s)); // ImageDescriptor.readFromDisk(s);
-        this.prettyPrintSimilarResults(this.findSimilarMedia(id), 2);
+        this.prettyPrintSimilarResults(this.findSimilarImage(id,2), 2);
     }
 
     public static void main(String[] args) {
