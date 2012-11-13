@@ -37,7 +37,7 @@ public class Status {
     }
 
     public void setStringStatus(String status) {
-        System.out.println("Status changed to " + status);
+        //System.out.println("Status changed to " + status);
         this.stringStatus = status;
     }
 }
