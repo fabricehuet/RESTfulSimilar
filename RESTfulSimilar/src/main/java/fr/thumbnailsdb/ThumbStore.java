@@ -61,13 +61,15 @@ public class ThumbStore {
         DatabaseMetaData dbm = connexion.getMetaData();
         // check if "employee" table is there
         ResultSet tables = dbm.getTables(null, null, "IMAGES", null);
+
         if (tables.next()) {
             System.out.println("ThumbStore.checkAndCreateTables() table IMAGES exists!");
+            checkOrAddColumns(dbm);
             // Table exists
         } else {
-            System.out.println("ThumbStore.checkAndCreateTables() table does not exist, should create it");
+            System.out.println("ThumbStore.checkAndCreateTables() table IMAGES does not exist, should create it");
             // Table does not exist
-            String table = "CREATE TABLE IMAGES(path varchar(256), size long, mtime long, md5 varchar(256), data blob,   PRIMARY KEY ( path ))";
+            String table = "CREATE TABLE IMAGES(path varchar(256), size long, mtime long, md5 varchar(256), data blob,  lat double, lon double,  PRIMARY KEY ( path ))";
             Statement st = connexion.createStatement();
             st.execute(table);
             System.out.println("ThumbStore.checkAndCreateTables() table created!");
@@ -84,6 +86,24 @@ public class ThumbStore {
             Statement st = connexion.createStatement();
             st.execute(table);
             System.out.println("ThumbStore.checkAndCreateTables() table created!");
+        }
+    }
+
+    private void checkOrAddColumns(DatabaseMetaData dbm) throws SQLException {
+
+        ResultSet rs = dbm.getColumns(null, null, "IMAGES", "LAT");
+//        while (rs.next()) {
+//            System.out.println(rs.getString("COLUMN_NAME"));
+//        }
+//
+        if (rs.next()) {
+            //Column in table exist
+        } else {
+            System.out.println("Lat/Long not found, updating table");
+            Statement st = connexion.createStatement();
+            st.executeUpdate("ALTER TABLE IMAGES ADD lat double");
+            st.executeUpdate("ALTER TABLE IMAGES ADD lon double") ;
+
         }
     }
 
@@ -121,11 +141,12 @@ public class ThumbStore {
         try {
 
             Statement st;
-            psmnt = connexion.prepareStatement("insert into IMAGES(path, size, mtime, md5, data) "
-                    + "values(?,?,?,?,?)");
+            psmnt = connexion.prepareStatement("insert into IMAGES(path, size, mtime, md5, data, lat, lon) "
+                    + "values(?,?,?,?,?,?,?)");
             psmnt.setString(1, id.getPath());
             psmnt.setLong(2, id.getSize());
             psmnt.setLong(3, id.getMtime());
+
             // convert the int[] array to byte[] array
             ByteArrayOutputStream ba = new ByteArrayOutputStream();
             ObjectOutputStream oi = new ObjectOutputStream(ba);
@@ -134,6 +155,8 @@ public class ThumbStore {
 
             psmnt.setString(4, id.getMD5());
             psmnt.setBytes(5, ba.toByteArray());
+            psmnt.setDouble(6, id.getLat());
+            psmnt.setDouble(7, id.getLon());
             psmnt.execute();
         } catch (SQLException e) {
             e.printStackTrace();
@@ -225,6 +248,18 @@ public class ThumbStore {
         return paths;
     }
 
+
+    public ResultSet getAllWithGPS() {
+        Statement sta;
+        ResultSet res = null;
+        try {
+            sta = connexion.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
+            res = sta.executeQuery("SELECT * FROM IMAGES WHERE lat > 0");
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return res;
+    }
 
     public ResultSet getAllInDataBase() {
         Statement sta;
@@ -445,10 +480,19 @@ public class ThumbStore {
 
     public static void main(String[] args) {
 
-        ThumbStore ts = new ThumbStore("local");
+        ThumbStore ts = new ThumbStore("localDB");
 
         // ts.test();
-        ts.testDuplicate();
+        //ts.testDuplicate();
+        ResultSet rs = ts.getAllWithGPS();
+        try {
+            while (rs.next()) {
+                System.out.println(rs.getString("path") + " {"+rs.getDouble("lat") + "," + rs.getDouble("lon")+ "}");
+
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        }
 
     }
 

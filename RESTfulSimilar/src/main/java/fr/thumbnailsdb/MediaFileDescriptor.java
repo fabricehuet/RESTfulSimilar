@@ -13,6 +13,9 @@ public class MediaFileDescriptor implements Serializable {
 	protected long mtime;
 	protected String md5Digest;
 	protected int[] data;
+protected double lat;
+    protected double lon;
+
     @XmlElement
 	protected double rmse;
 
@@ -45,7 +48,24 @@ public class MediaFileDescriptor implements Serializable {
 
 	}
 
-	/**
+    public void setLat(double lat) {
+        this.lat = lat;
+    }
+
+    public void setLon(double lon) {
+        this.lon = lon;
+    }
+
+    public double getLat() {
+
+        return lat;
+    }
+
+    public double getLon() {
+        return lon;
+    }
+
+    /**
 	 * int[] data will be converted to argb byte[]
 	 * 
 	 * @param path
@@ -57,6 +77,7 @@ public class MediaFileDescriptor implements Serializable {
 	public MediaFileDescriptor(String path, long size, long mtime, int[] data, String md5) {
 		super();
 		this.path = path;
+
 		this.size = size;
 		this.mtime = mtime;
 

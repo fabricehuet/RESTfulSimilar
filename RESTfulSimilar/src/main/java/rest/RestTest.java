@@ -218,9 +218,6 @@ public class RestTest {
             e.printStackTrace();
         }
 
-            // ImageIO.write(bi,"jpg", temp);
-
-//             c = si.findIdenticalMedia(temp.getAbsolutePath());
         long t1 = System.currentTimeMillis();
             c = si.findSimilarMedia(temp.getAbsolutePath());
         long t2 = System.currentTimeMillis();
@@ -242,11 +239,6 @@ public class RestTest {
                 al.add(si);
                 System.out.println(si);
             }
-
-
-
-//        json+="]}";
-//        System.out.println(json);
         System.out.println("RestTest.findSimilar sending " + al.size() + " elements");
 
         JSONArray mJSONArray = new JSONArray();
@@ -270,6 +262,50 @@ public class RestTest {
             e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
         }
         return Response.status(200).entity(responseDetailsJson).type(MediaType.APPLICATION_JSON).build();
+    }
+
+
+
+    @POST
+    @Path("findGPS/")
+    @Consumes(MediaType.MULTIPART_FORM_DATA)
+    @Produces({MediaType.APPLICATION_JSON})
+    public Response findGPS(FormDataMultiPart multipart) {
+        BodyPartEntity bpe = (BodyPartEntity) multipart.getBodyParts().get(0).getEntity();
+        Collection<MediaFileDescriptor> c = null;
+        ArrayList<SimilarImage> al = null;
+        File temp = null;
+        try {
+            InputStream source = bpe.getInputStream();
+            System.out.println("RestTest.findGPS() received " + source);
+            //BufferedImage bi = ImageIO.read(source);
+
+            temp = File.createTempFile("tempImage", ".jpg");
+            FileOutputStream fo = new FileOutputStream(temp);
+
+            byte[] buffer = new byte[8 * 1024];
+
+            int total = 0;
+            try {
+                int bytesRead;
+                while ((bytesRead = source.read(buffer)) != -1) {
+                    fo.write(buffer, 0, bytesRead);
+                    total += bytesRead;
+                }
+            } finally {
+                fo.close();
+            }
+            System.out.println("RestTest.findGPS()  written to " + temp + " with size " + total);
+        } catch (Exception e) {
+            // message = e.getMessage();
+            e.printStackTrace();
+        }
+
+        MetaDataFinder mdf = new MetaDataFinder();
+        double[] coo=mdf.getLatLong(temp);
+
+        return Response.status(200).entity(coo).type(MediaType.APPLICATION_JSON).build();
+
     }
 
 

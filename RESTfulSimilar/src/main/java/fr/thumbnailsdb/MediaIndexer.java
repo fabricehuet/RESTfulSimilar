@@ -26,6 +26,8 @@ public class MediaIndexer {
 	protected boolean software = true;
 	protected ThumbStore ts;
 
+    protected MetaDataFinder mdf = new MetaDataFinder();
+
 	protected Logger log = Logger.getLogger();
 
     protected int newFiles=0;
@@ -168,6 +170,12 @@ public class MediaIndexer {
 			if (Utils.isValideImageName(f.getName())) {
 				data = generateThumbnail(f);
 				id.setData(data);
+
+                double[] latLon = mdf.getLatLong(f);
+                if (latLon != null) {
+                    id.setLat(latLon[0]);
+                    id.setLon(latLon[1]);
+                }
 			}
 			md5 = generateMD5(f);
 			id.setMd5Digest(md5);
