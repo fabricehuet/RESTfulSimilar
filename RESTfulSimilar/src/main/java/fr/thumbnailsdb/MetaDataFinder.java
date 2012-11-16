@@ -159,7 +159,6 @@ public class MetaDataFinder {
 
 
     public static void main(String[] args) {
-
         MetaDataFinder mdf = new MetaDataFinder();
         if (args.length > 0) {
             mdf.processMT(new File(args[0]));

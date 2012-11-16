@@ -96,15 +96,19 @@ public class ThumbStore {
 //            System.out.println(rs.getString("COLUMN_NAME"));
 //        }
 //
-        if (rs.next()) {
+        if (!rs.next()) {
             //Column in table exist
-        } else {
-            System.out.println("Lat/Long not found, updating table");
+            System.out.println("Lat not found, updating table");
             Statement st = connexion.createStatement();
             st.executeUpdate("ALTER TABLE IMAGES ADD lat double");
-            st.executeUpdate("ALTER TABLE IMAGES ADD lon double") ;
 
         }
+
+        rs = dbm.getColumns(null, null, "IMAGES", "LON");
+        System.out.println("Lon not found, updating table");
+        Statement st = connexion.createStatement();
+        st.executeUpdate("ALTER TABLE IMAGES ADD lon double") ;
+
     }
 
 
