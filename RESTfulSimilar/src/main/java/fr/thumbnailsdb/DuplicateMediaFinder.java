@@ -79,7 +79,7 @@ public class DuplicateMediaFinder {
 
     /**
      *
-     * @param r the set of files with sorted by md5 value
+     * @param r the set of files sorted by md5 value
      * @return
      */
     public DuplicateFolderList computeDuplicateFolderSets(ResultSet r) {

@@ -1,12 +1,11 @@
 package rest;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
+import java.awt.image.BufferedImage;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.Collection;
 
+import javax.imageio.ImageIO;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -70,7 +69,7 @@ public class RestTest {
         if ("status".equals(info)) {
             return Response.status(200).entity("idle").build();
         }
-         // System.out.println("RestTest.getDBInfo() thumbstore is " + tb);
+        // System.out.println("RestTest.getDBInfo() thumbstore is " + tb);
         return Response.status(404).build();
     }
 
@@ -79,7 +78,7 @@ public class RestTest {
     @Produces({MediaType.APPLICATION_JSON})
     public Response getStatus() {
 //        System.out.println("status " + Status.getStatus());
-            return Response.status(200).entity(Status.getStatus()).build();
+        return Response.status(200).entity(Status.getStatus()).build();
 
     }
 
@@ -92,7 +91,6 @@ public class RestTest {
         return Response.status(200).entity(tb.getIndexedPaths()).build();
 
     }
-
 
 
     @GET
@@ -116,19 +114,62 @@ public class RestTest {
         return Response.status(200).entity(dc).build();
     }
 
-    @POST
-//	@Path("getImage/{imageId}")
+//    @POST
+////	@Path("getImage/{imageId}")
+//    @Path("getImage/")
+//    //@Produces("image/jpg")
+//    @Produces({MediaType.APPLICATION_JSON})
+////	public Response getPostImage(@PathParam(value = "imageId") String imageId) {
+//    public Response getPostImage(String imageId) {
+//      //  String result = null;
+//        String img = null;
+//        System.out.println("imageID " + imageId);
+//        img = getImageAsHTMLImg(imageId);
+//        return Response.status(200).entity(img).build();
+//    }
+
+    @GET
     @Path("getImage/")
-    //@Produces("image/jpg")
-    @Produces({MediaType.APPLICATION_JSON})
-//	public Response getPostImage(@PathParam(value = "imageId") String imageId) {
-    public Response getPostImage(String imageId) {
-      //  String result = null;
-        String img = null;
+    @Produces("images/*")
+    public Response getImage(@QueryParam("path") String imageId) {
+        //    String img = null;
         System.out.println("imageID " + imageId);
-        img = getImageAsHTMLImg(imageId);
-        return Response.status(200).entity(img).build();
+        // img = getImageAsHTMLImg(imageId);
+        //   BufferedImage img = null;
+        BufferedInputStream source = null;
+        ByteArrayOutputStream out = null;
+        try {
+            source = new BufferedInputStream(new FileInputStream(new File(imageId)));
+            out = new ByteArrayOutputStream();
+            byte[] buffer = new byte[8 * 1024];
+
+            int total = 0;
+            try {
+                int bytesRead;
+                while ((bytesRead = source.read(buffer)) != -1) {
+                    out.write(buffer, 0, bytesRead);
+                    total += bytesRead;
+                }
+            } catch (IOException e) {
+                e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+            } finally {
+                source.close();
+            }
+
+
+            final byte[] imgData = out.toByteArray();
+
+            final InputStream bigInputStream =
+                    new ByteArrayInputStream(imgData);
+            return Response.status(200).entity(bigInputStream).build();
+        } catch (IOException e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        }
+
+        return Response.status(404).build();
+
     }
+
 
     protected String getImageAsHTMLImg(String imageId) {
         String img = "";
@@ -153,7 +194,7 @@ public class RestTest {
     @GET
     @Path("update/")
     public Response update() {
-       new MediaIndexer(tb).updateDB();
+        new MediaIndexer(tb).updateDB();
         return Response.status(200).entity("Update done").build();
     }
 
@@ -172,7 +213,6 @@ public class RestTest {
     }
 
 
-
     @POST
     @Path("findSimilar/")
     @Consumes(MediaType.MULTIPART_FORM_DATA)
@@ -189,7 +229,7 @@ public class RestTest {
             System.out.println("RestTest.findSimilar() received " + source);
             //BufferedImage bi = ImageIO.read(source);
 
-           temp = File.createTempFile("tempImage", ".jpg");
+            temp = File.createTempFile("tempImage", ".jpg");
             FileOutputStream fo = new FileOutputStream(temp);
 
             byte[] buffer = new byte[8 * 1024];
@@ -211,31 +251,31 @@ public class RestTest {
         }
 
         long t1 = System.currentTimeMillis();
-            c = si.findSimilarMedia(temp.getAbsolutePath());
+        c = si.findSimilarMedia(temp.getAbsolutePath());
         long t2 = System.currentTimeMillis();
-            System.out.println("Found similar files " + c.size() + " took " + (t2-t1) + "ms");
+        System.out.println("Found similar files " + c.size() + " took " + (t2 - t1) + "ms");
 
-            al = new ArrayList<SimilarImage>(c.size());
-            for (MediaFileDescriptor mdf : c) {
+        al = new ArrayList<SimilarImage>(c.size());
+        for (MediaFileDescriptor mdf : c) {
 
-                String path = mdf.getPath();
+            String path = mdf.getPath();
 
-                String data = null;
-                try {
-                    data = Base64.encodeBase64String(FileUtils.readFileToByteArray(new File(path)));
-                } catch (IOException e) {
-                    System.err.println("Err: File " + path + " not found");
-                }
-
-                SimilarImage si = new SimilarImage(path, data, mdf.getRmse());
-                al.add(si);
-                System.out.println(si);
+            String data = null;
+            try {
+                data = Base64.encodeBase64String(FileUtils.readFileToByteArray(new File(path)));
+            } catch (IOException e) {
+                System.err.println("Err: File " + path + " not found");
             }
+
+            SimilarImage si = new SimilarImage(path, data, mdf.getRmse());
+            al.add(si);
+            System.out.println(si);
+        }
         System.out.println("RestTest.findSimilar sending " + al.size() + " elements");
 
         JSONArray mJSONArray = new JSONArray();
         for (int i = 0; i < al.size(); i++) {
-             JSONObject json = new JSONObject();
+            JSONObject json = new JSONObject();
             try {
                 json.put("path", al.get(i).path);
                 json.put("base64Data", al.get(i).base64Data);
@@ -255,7 +295,6 @@ public class RestTest {
         }
         return Response.status(200).entity(responseDetailsJson).type(MediaType.APPLICATION_JSON).build();
     }
-
 
 
     @POST
@@ -294,7 +333,7 @@ public class RestTest {
         }
 
         MetaDataFinder mdf = new MetaDataFinder();
-        double[] coo=mdf.getLatLong(temp);
+        double[] coo = mdf.getLatLong(temp);
 
         return Response.status(200).entity(coo).type(MediaType.APPLICATION_JSON).build();
 
@@ -304,10 +343,9 @@ public class RestTest {
     @Path("getAllGPS/")
     @Produces({MediaType.APPLICATION_JSON})
     public Response getAllGPS() {
-       ArrayList<String> al = tb.getAllWithGPS();
+        ArrayList<String> al = tb.getAllWithGPS();
         return Response.status(200).entity(al).type(MediaType.APPLICATION_JSON).build();
     }
-
 
 
     @XmlRootElement

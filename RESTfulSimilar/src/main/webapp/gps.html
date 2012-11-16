@@ -40,22 +40,22 @@
     }
 
     function localFinished(id, name, json) {
-       // uploadFinished(json.images);
+        // uploadFinished(json.images);
         //debugger
         $(".qq-upload-list").children().remove();
         if (!jQuery.isEmptyObject(json)) {
-                  //   console.log(json);
-            lat=json[0];
-            lon=json[1];
-           // initialize();
+            //   console.log(json);
+            lat = json[0];
+            lon = json[1];
+            // initialize();
             var marker = new google.maps.Marker({
-                position: new google.maps.LatLng(lat, lon),
-                title : "{"+lat + ", " + lon+ "}",
-                map: map
+                position:new google.maps.LatLng(lat, lon),
+                title:"{" + lat + ", " + lon + "}",
+                map:map
             });
-            map.setCenter(new google.maps.LatLng(lat, lon))                  ;
+            map.setCenter(new google.maps.LatLng(lat, lon));
             google.maps.event.trigger(map, 'resize');
-            map.setZoom( map.getZoom() );
+            map.setZoom(map.getZoom());
         }
     }
 
@@ -68,7 +68,7 @@
     // GOOGLE MAPS V3
     var map;                    //google map
     var lat = 0;
-    var lon =0;
+    var lon = 0;
 
 
     function initialize() {
@@ -102,10 +102,30 @@
 
 <div id="gps_list"></div>
 
-<div id="thumbs">
+<!--<div id="thumbs" class="navigation">       </div>-->
 
 
 <div id="duplicate_gps_source" class="flt" style="margin:10px 0px"></div>
-<div class="flt" style="width:300px; height:500px"> </div>
+<div class="flt" style="width:300px; height:500px"></div>
 
 <div id="map_canvas" class="flt" style="width:500px; height:500px"></div>
+
+
+<!-- Start Minimal Gallery Html Containers -->
+<div id="gallery" class="content">
+    <div id="controls" class="controls"></div>
+    <div class="slideshow-container">
+        <div id="loading" class="loader"></div>
+        <div id="slideshow" class="slideshow"></div>
+    </div>
+</div>
+<div id="thumbs" class="navigation"> </div>
+
+<script type="text/javascript">
+    // We only want these styles applied when javascript is enabled
+    $('div.navigation').css({'width':'300px', 'float':'left'});
+    $('div.content').css('display', 'block');
+
+
+</script>
+
