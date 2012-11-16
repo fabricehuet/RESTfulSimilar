@@ -84,8 +84,6 @@
             //map.setCenter(mapOptions.center);
         });
     }
-
-
 </script>
 
 
@@ -96,7 +94,18 @@
     </noscript>
 </div>
 
-<div id="duplicate_gps_source" style="margin:10px 0px"></div>
+<div style="padding-right: 20px">
+    <form name="input" action="javascript: getAllGPS()">
+        <input type="submit" value="Get All"/>
+    </form>
+</div>
+
+<div id="gps_list"></div>
+
+<div id="thumbs">
 
 
-<div id="map_canvas" style="width:500px; height:500px"></div>
+<div id="duplicate_gps_source" class="flt" style="margin:10px 0px"></div>
+<div class="flt" style="width:300px; height:500px"> </div>
+
+<div id="map_canvas" class="flt" style="width:500px; height:500px"></div>

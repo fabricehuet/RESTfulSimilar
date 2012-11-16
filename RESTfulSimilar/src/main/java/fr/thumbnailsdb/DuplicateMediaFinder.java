@@ -77,6 +77,11 @@ public class DuplicateMediaFinder {
         return duplicateFileList;
     }
 
+    /**
+     *
+     * @param r the set of files with sorted by md5 value
+     * @return
+     */
     public DuplicateFolderList computeDuplicateFolderSets(ResultSet r) {
         DuplicateFileList list = new DuplicateFileList();
         DuplicateFileGroup dg = new DuplicateFileGroup();

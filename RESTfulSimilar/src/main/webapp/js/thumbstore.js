@@ -59,7 +59,7 @@ function getDuplicate() {
                 for (f in data[i].al) {
                     // <p>" + i + "</p>"" +
                     //console.log(data[i].al[f]);
-                    output += "<div class=\"floated_img\" id=\"imagePath\">";
+                    output += '<div id="imagePath">';
                     output += data[i].al[f] + "</div>";
                 }
                 output += "</div>";
@@ -142,6 +142,21 @@ function shrink() {
 function update() {
     $.get("rest/hello/update", function (data) {
         //alert("shrink done");
+    });
+}
+
+
+function getAllGPS() {
+    $.get("rest/hello/getAllGPS", function (data) {
+        //alert("shrink done");
+        console.log(data);
+        var output="";
+        for (i in data) {
+           output+=data[i]+'<br>'
+        }
+        $('#gps_list').children().remove();
+        $('#gps_list').append(output);
+
     });
 }
 

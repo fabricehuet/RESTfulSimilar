@@ -99,15 +99,7 @@ public class RestTest {
     @Path("/identical")
     @Produces({MediaType.APPLICATION_JSON})
     public Response getDuplicate(@QueryParam("max") String max) {
-
-
-        // String source = args[1];
-        // String r =
-        // df.prettyHTMLDuplicate(df.findDuplicateMedia(),Integer.parseInt(max));
         Collection dc = (Collection) df.computeDuplicateSets(df.findDuplicateMedia()).toCollection(Integer.parseInt(max));
-        //	DuplicateFileGroup dl = df.computeDuplicateSets(df.findDuplicateMedia()).getFirst();
-        // System.out.println("RestTest.getDuplicate() " + dl);
-        //	Test t = new Test();
         return Response.status(200).entity(dc).build();
     }
 
@@ -307,6 +299,15 @@ public class RestTest {
         return Response.status(200).entity(coo).type(MediaType.APPLICATION_JSON).build();
 
     }
+
+    @GET
+    @Path("getAllGPS/")
+    @Produces({MediaType.APPLICATION_JSON})
+    public Response getAllGPS() {
+       ArrayList<String> al = tb.getAllWithGPS();
+        return Response.status(200).entity(al).type(MediaType.APPLICATION_JSON).build();
+    }
+
 
 
     @XmlRootElement

@@ -17,6 +17,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.Iterator;
 
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
@@ -92,10 +93,6 @@ public class ThumbStore {
     private void checkOrAddColumns(DatabaseMetaData dbm) throws SQLException {
 
         ResultSet rs = dbm.getColumns(null, null, "IMAGES", "LAT");
-//        while (rs.next()) {
-//            System.out.println(rs.getString("COLUMN_NAME"));
-//        }
-//
         if (!rs.next()) {
             //Column in table exist
             System.out.println("Lat not found, updating table");
@@ -103,11 +100,12 @@ public class ThumbStore {
             st.executeUpdate("ALTER TABLE IMAGES ADD lat double");
 
         }
-
         rs = dbm.getColumns(null, null, "IMAGES", "LON");
-        System.out.println("Lon not found, updating table");
-        Statement st = connexion.createStatement();
-        st.executeUpdate("ALTER TABLE IMAGES ADD lon double") ;
+        if (!rs.next()) {
+            System.out.println("Lon not found, updating table");
+            Statement st = connexion.createStatement();
+            st.executeUpdate("ALTER TABLE IMAGES ADD lon double");
+        }
 
     }
 
@@ -235,10 +233,7 @@ public class ThumbStore {
         try {
             sta = connexion.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
             res = sta.executeQuery("SELECT * FROM PATHS");
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        try {
+
             while (res.next()) {
                 String s = res.getString("path");
                 paths.add(s);
@@ -253,16 +248,25 @@ public class ThumbStore {
     }
 
 
-    public ResultSet getAllWithGPS() {
+    public ArrayList<String> getAllWithGPS() {
         Statement sta;
         ResultSet res = null;
+        ArrayList<String> al = null;
         try {
             sta = connexion.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
             res = sta.executeQuery("SELECT * FROM IMAGES WHERE lat > 0");
+
+            al = new ArrayList<String>();
+            while (res.next()) {
+                System.out.println("getAllWithGPS adding  " + res);
+                al.add(res.getString("path"));
+            }
+
+
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return res;
+        return al;
     }
 
     public ResultSet getAllInDataBase() {
@@ -486,16 +490,12 @@ public class ThumbStore {
 
         ThumbStore ts = new ThumbStore("localDB");
 
-        // ts.test();
-        //ts.testDuplicate();
-        ResultSet rs = ts.getAllWithGPS();
-        try {
-            while (rs.next()) {
-                System.out.println(rs.getString("path") + " {"+rs.getDouble("lat") + "," + rs.getDouble("lon")+ "}");
-
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        ts.test();
+        ts.testDuplicate();
+        ArrayList<String> al = ts.getAllWithGPS();
+        for (Iterator<String> iterator = al.iterator(); iterator.hasNext(); ) {
+            String next = iterator.next();
+            System.out.println(next);
         }
 
     }

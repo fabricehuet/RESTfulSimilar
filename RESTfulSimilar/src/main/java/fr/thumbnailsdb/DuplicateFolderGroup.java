@@ -19,7 +19,7 @@ public class DuplicateFolderGroup {
     @XmlElement
      int occurences;
     @XmlElement
-    int totalSize;
+    long totalSize;
 
 
      public DuplicateFolderGroup(String f1, String f2) {
@@ -33,8 +33,8 @@ public class DuplicateFolderGroup {
        //System.out.println("occurences was "+ (occurences-1) + " now " +occurences);
     }
 
-    public void addSize(int s){
-        totalSize++;
+    public void addSize(long s){
+        totalSize+=s;
     }
 
 }
