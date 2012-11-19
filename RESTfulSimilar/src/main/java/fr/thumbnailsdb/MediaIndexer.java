@@ -196,11 +196,12 @@ public class MediaIndexer {
 
 			try {
 				if (ts.isInDataBaseBasedOnName(f.getCanonicalPath())) {
+                    System.out.println("MediaIndexer.generateAndSave " + f);
 					// System.out.println("MediaIndexer.generateImageDescriptor() Already in DB, ignoring");
                     if (forceGPSUpdate) {
                         MediaFileDescriptor  mfd = ts.getMediaFileDescriptor(f.getCanonicalPath()) ;
                         double latLon[] = mdf.getLatLong(f.getCanonicalFile());
-                        System.out.println("MediaIndexer.generateAndSave working on " + f);
+                       // System.out.println("MediaIndexer.generateAndSave working on " + f);
                         if (latLon != null) {
                             mfd.setLat(latLon[0]);
                             mfd.setLon(latLon[1]);

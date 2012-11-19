@@ -57,7 +57,7 @@ public class MetaDataFinder {
             }
             double lat = getAsDecimalDegree(directory.getDescription(2));
             double lon = getAsDecimalDegree(directory.getDescription(4));
-        //    System.out.println(lat+", " +lon );
+            System.out.println(lat+", " +lon );
             return new double[] {lat, lon};
         } else {
 

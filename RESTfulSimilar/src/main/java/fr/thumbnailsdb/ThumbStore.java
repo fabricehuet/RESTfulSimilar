@@ -407,7 +407,7 @@ public class ThumbStore {
     public MediaFileDescriptor getMediaFileDescriptor(String path) {
         MediaFileDescriptor id = null;
         try {
-            System.out.println("path is " + path);
+           // System.out.println("path is " + path);
             ResultSet res = get(path);
             res.next();
 //            ResultSetMetaData md = res.getMetaData();
