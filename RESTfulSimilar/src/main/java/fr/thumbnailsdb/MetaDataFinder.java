@@ -46,6 +46,7 @@ public class MetaDataFinder {
         try {
             metadata = ImageMetadataReader.readMetadata(file);
         } catch (Exception e) {
+            e.printStackTrace();
             return null;
         }
         Directory directory = metadata.getDirectory(GpsDirectory.class);

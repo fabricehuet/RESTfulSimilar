@@ -167,14 +167,19 @@ public class ThumbStore {
         try {
             Statement st;
             psmnt = connexion
-                    .prepareStatement("UPDATE IMAGES SET path=?, size=?, mtime=?, data=?, md5=? WHERE path=? ");
+                    .prepareStatement("UPDATE IMAGES SET path=?, size=?, mtime=?, data=?, md5=? , lat=?, lon=? WHERE path=? ");
             psmnt.setString(1, id.getPath());
             psmnt.setLong(2, id.getSize());
             psmnt.setLong(3, id.getMtime());
 
             psmnt.setBytes(4, id.getDataAsByte());
             psmnt.setString(5, id.getMD5());
-            psmnt.setString(6, id.getPath());
+
+            System.out.println("ThumbStore.updateToDB lat : " + id.getLat());
+            psmnt.setDouble(6, id.getLat());
+            psmnt.setDouble(7,id.getLon());
+            psmnt.setString(8, id.getPath());
+
             psmnt.execute();
         } catch (SQLException e) {
             e.printStackTrace();
@@ -393,7 +398,7 @@ public class ThumbStore {
             // TODO Auto-generated catch block
             e.printStackTrace();
         } catch (ClassNotFoundException e) {
-            // TODO Auto-generated catch block
+            // TODO Auto-generated catch block             get
             e.printStackTrace();
         }
         return id;
@@ -404,14 +409,15 @@ public class ThumbStore {
         try {
             System.out.println("path is " + path);
             ResultSet res = get(path);
-            ResultSetMetaData md = res.getMetaData();
-            int col = md.getColumnCount();
-            System.out.println("Number of Column : "+ col);
-            System.out.println("Columns Name: ");
-            for (int i = 1; i <= col; i++){
-                String col_name = md.getColumnName(i);
-                System.out.println(col_name);
-            }
+            res.next();
+//            ResultSetMetaData md = res.getMetaData();
+//            int col = md.getColumnCount();
+//            System.out.println("Number of Column : "+ col);
+//            System.out.println("Columns Name: ");
+//            for (int i = 1; i <= col; i++){
+//                String col_name = md.getColumnName(i);
+//                System.out.println(col_name);
+//            }
 
 
            // return getCurrentMediaFileDescriptor(res);
@@ -419,7 +425,7 @@ public class ThumbStore {
             // if (res.next()) {
             // id = new ImageDescriptor();
            // String path = res.getString("path");
-            byte[] d = res.getBytes("DATA");
+            byte[] d = res.getBytes("data");
             int[] idata = null;
             if (d != null) {
                 ObjectInputStream oi = new ObjectInputStream(new ByteArrayInputStream(d));
