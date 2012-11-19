@@ -71,7 +71,12 @@
             <artifactId>mimepull</artifactId>
             <version>1.6</version>
         </dependency>
-
+        <dependency>
+	<groupId>com.drewnoakes</groupId>
+	<artifactId>metadata-extractor</artifactId>
+	<version>2.6.2</version>
+</dependency>
+            
 
     </dependencies>
 

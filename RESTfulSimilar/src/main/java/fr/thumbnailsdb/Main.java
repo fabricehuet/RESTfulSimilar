@@ -34,6 +34,13 @@ public class Main {
 			String source = args[1];
 			tg.processMTRoot(source);
 		}
+
+        if ("indexGPS".equals(args[0])) {
+            String source = args[1];
+            tg.forceGPSUpdate= true;
+            tg.processMTRoot(source);
+        }
+
 		if ("fix".equals(args[0])) {
 			tb.fix();
 		}
@@ -71,6 +78,7 @@ public class Main {
 			System.err.println("Usage : java " + Main.class + " [-db path_to_db]  target [options]");
 			System.err.println("where target [options] are ");
 			System.err.println("   db index  folder_or_file_to_process");
+            System.err.println("   db indexGPS  folder_or_file_to_process");
 			System.err.println("   db clean");
 			System.err.println("   db fix");
 			System.err.println("   db shrink");

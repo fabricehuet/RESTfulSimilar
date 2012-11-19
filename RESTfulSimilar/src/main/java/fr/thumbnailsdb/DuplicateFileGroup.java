@@ -3,6 +3,7 @@ package fr.thumbnailsdb;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Iterator;
 
 import javax.xml.bind.annotation.XmlElement;
@@ -41,17 +42,25 @@ public class DuplicateFileGroup {
 		return sb.toString();
 	}
 
-    public Collection<String> getParentFolderList() {
-        ArrayList<String> l = new ArrayList<String>();
-        for (String s : al) {
-            File file = new File(s);
-            //File parentDir = file.getParentFile(); // to get the parent dir
-            String parentDirName = file.getParent(); // to get the parent dir name
-           // System.out.println("Folder name is " + parentDirName);
-            l.add(parentDirName);
-        }
-        return l;
+    public void sort() {
+        Collections.sort(al);
     }
+
+    public String get(int i) {
+        return al.get(i);
+    }
+
+//    public Collection<String> getParentFolderList() {
+//        ArrayList<String> l = new ArrayList<String>();
+//        for (String s : al) {
+//            File file = new File(s);
+//            //File parentDir = file.getParentFile(); // to get the parent dir
+//            String parentDirName = file.getParent(); // to get the parent dir name
+//           // System.out.println("Folder name is " + parentDirName);
+//            l.add(parentDirName);
+//        }
+//        return l;
+//    }
 
 
 }

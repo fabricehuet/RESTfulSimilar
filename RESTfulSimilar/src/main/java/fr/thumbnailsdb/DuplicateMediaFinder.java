@@ -4,7 +4,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Collection;
 import java.util.Iterator;
-import java.util.Map;
 
 public class DuplicateMediaFinder {
 
@@ -17,7 +16,7 @@ public class DuplicateMediaFinder {
     }
 
     public ResultSet findDuplicateMedia() {
-        return thumbstore.getDuplicatesMD5();
+        return thumbstore.getOrderedByMD5();
     }
 
     public void prettyPrintDuplicate(ResultSet r) {
@@ -77,6 +76,11 @@ public class DuplicateMediaFinder {
         return duplicateFileList;
     }
 
+    /**
+     *
+     * @param r the set of files sorted by md5 value
+     * @return
+     */
     public DuplicateFolderList computeDuplicateFolderSets(ResultSet r) {
         DuplicateFileList list = new DuplicateFileList();
         DuplicateFileGroup dg = new DuplicateFileGroup();

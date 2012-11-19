@@ -9,14 +9,9 @@ import java.io.File;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.sql.Connection;
-import java.sql.DatabaseMetaData;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 import java.util.ArrayList;
+import java.util.Iterator;
 
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
@@ -61,13 +56,15 @@ public class ThumbStore {
         DatabaseMetaData dbm = connexion.getMetaData();
         // check if "employee" table is there
         ResultSet tables = dbm.getTables(null, null, "IMAGES", null);
+
         if (tables.next()) {
             System.out.println("ThumbStore.checkAndCreateTables() table IMAGES exists!");
+            checkOrAddColumns(dbm);
             // Table exists
         } else {
-            System.out.println("ThumbStore.checkAndCreateTables() table does not exist, should create it");
+            System.out.println("ThumbStore.checkAndCreateTables() table IMAGES does not exist, should create it");
             // Table does not exist
-            String table = "CREATE TABLE IMAGES(path varchar(256), size long, mtime long, md5 varchar(256), data blob,   PRIMARY KEY ( path ))";
+            String table = "CREATE TABLE IMAGES(path varchar(256), size long, mtime long, md5 varchar(256), data blob,  lat double, lon double,  PRIMARY KEY ( path ))";
             Statement st = connexion.createStatement();
             st.execute(table);
             System.out.println("ThumbStore.checkAndCreateTables() table created!");
@@ -85,6 +82,25 @@ public class ThumbStore {
             st.execute(table);
             System.out.println("ThumbStore.checkAndCreateTables() table created!");
         }
+    }
+
+    private void checkOrAddColumns(DatabaseMetaData dbm) throws SQLException {
+
+        ResultSet rs = dbm.getColumns(null, null, "IMAGES", "LAT");
+        if (!rs.next()) {
+            //Column in table exist
+            System.out.println("Lat not found, updating table");
+            Statement st = connexion.createStatement();
+            st.executeUpdate("ALTER TABLE IMAGES ADD lat double");
+
+        }
+        rs = dbm.getColumns(null, null, "IMAGES", "LON");
+        if (!rs.next()) {
+            System.out.println("Lon not found, updating table");
+            Statement st = connexion.createStatement();
+            st.executeUpdate("ALTER TABLE IMAGES ADD lon double");
+        }
+
     }
 
 
@@ -121,11 +137,12 @@ public class ThumbStore {
         try {
 
             Statement st;
-            psmnt = connexion.prepareStatement("insert into IMAGES(path, size, mtime, md5, data) "
-                    + "values(?,?,?,?,?)");
+            psmnt = connexion.prepareStatement("insert into IMAGES(path, size, mtime, md5, data, lat, lon) "
+                    + "values(?,?,?,?,?,?,?)");
             psmnt.setString(1, id.getPath());
             psmnt.setLong(2, id.getSize());
             psmnt.setLong(3, id.getMtime());
+
             // convert the int[] array to byte[] array
             ByteArrayOutputStream ba = new ByteArrayOutputStream();
             ObjectOutputStream oi = new ObjectOutputStream(ba);
@@ -134,6 +151,8 @@ public class ThumbStore {
 
             psmnt.setString(4, id.getMD5());
             psmnt.setBytes(5, ba.toByteArray());
+            psmnt.setDouble(6, id.getLat());
+            psmnt.setDouble(7, id.getLon());
             psmnt.execute();
         } catch (SQLException e) {
             e.printStackTrace();
@@ -146,7 +165,6 @@ public class ThumbStore {
     public void updateToDB(MediaFileDescriptor id) {
         PreparedStatement psmnt;
         try {
-
             Statement st;
             psmnt = connexion
                     .prepareStatement("UPDATE IMAGES SET path=?, size=?, mtime=?, data=?, md5=? WHERE path=? ");
@@ -179,27 +197,36 @@ public class ThumbStore {
         return count;
     }
 
+
     public boolean isInDataBaseBasedOnName(String path) {
         boolean result = false;
+        ResultSet res =  get(path);
+        if (res!=null) {
+            try {
+                result = res.next();
+            } catch (SQLException e) {
+                e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+            }
+        }
 
+        return result;
+    }
 
-//		String select = "SELECT path FROM IMAGES WHERE path=\'" + path + "\'"; // AND
-//																				// mtime="
-//																				// +
-//																				// id.getMtime();
-//		Statement st;
+    private ResultSet get(String path) {
+        ResultSet res = null;
         try {
-            PreparedStatement psmnt = connexion.prepareStatement("SELECT path FROM IMAGES WHERE path=?");
+            PreparedStatement psmnt = connexion.prepareStatement("SELECT * FROM IMAGES WHERE path=?");
             psmnt.setString(1, path);
             //		st = connexion.createStatement();
             psmnt.execute();
-            ResultSet res = psmnt.getResultSet();
-            result = res.next();
+           res = psmnt.getResultSet();
+
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return result;
+      return  res;
     }
+
 
     public ArrayList<String> getIndexedPaths() {
         Statement sta;
@@ -208,10 +235,7 @@ public class ThumbStore {
         try {
             sta = connexion.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
             res = sta.executeQuery("SELECT * FROM PATHS");
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        try {
+
             while (res.next()) {
                 String s = res.getString("path");
                 paths.add(s);
@@ -226,6 +250,27 @@ public class ThumbStore {
     }
 
 
+    public ArrayList<String> getAllWithGPS() {
+        Statement sta;
+        ResultSet res = null;
+        ArrayList<String> al = null;
+        try {
+            sta = connexion.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
+            res = sta.executeQuery("SELECT * FROM IMAGES WHERE lat > 0");
+
+            al = new ArrayList<String>();
+            while (res.next()) {
+                System.out.println("getAllWithGPS adding  " + res);
+                al.add(res.getString("path"));
+            }
+
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return al;
+    }
+
     public ResultSet getAllInDataBase() {
         Statement sta;
         ResultSet res = null;
@@ -238,7 +283,7 @@ public class ThumbStore {
         return res;
     }
 
-    public ResultSet getDuplicatesMD5() {
+    public ResultSet getOrderedByMD5() {
 
         Statement sta;
         ResultSet res = null;
@@ -354,6 +399,54 @@ public class ThumbStore {
         return id;
     }
 
+    public MediaFileDescriptor getMediaFileDescriptor(String path) {
+        MediaFileDescriptor id = null;
+        try {
+            System.out.println("path is " + path);
+            ResultSet res = get(path);
+            ResultSetMetaData md = res.getMetaData();
+            int col = md.getColumnCount();
+            System.out.println("Number of Column : "+ col);
+            System.out.println("Columns Name: ");
+            for (int i = 1; i <= col; i++){
+                String col_name = md.getColumnName(i);
+                System.out.println(col_name);
+            }
+
+
+           // return getCurrentMediaFileDescriptor(res);
+
+            // if (res.next()) {
+            // id = new ImageDescriptor();
+           // String path = res.getString("path");
+            byte[] d = res.getBytes("DATA");
+            int[] idata = null;
+            if (d != null) {
+                ObjectInputStream oi = new ObjectInputStream(new ByteArrayInputStream(d));
+                idata = (int[]) oi.readObject();
+            } else {
+                System.err.println("xxxx");
+            }
+            String md5 = res.getString("md5");
+            long mtime = res.getLong("mtime");
+            long size = res.getLong("size");
+            id = new MediaFileDescriptor(path, size, mtime, idata, md5);
+            // }
+        } catch (SQLException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        return id;
+    }
+
+
+
     public void displayImage(BufferedImage bf) {
         Graphics2D gg = bf.createGraphics();
         gg.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
@@ -422,7 +515,7 @@ public class ThumbStore {
 
     public void testDuplicate() {
         System.out.println("ThumbStore.testDuplicate()");
-        ResultSet rs = getDuplicatesMD5();
+        ResultSet rs = getOrderedByMD5();
         try {
             while (rs.next()) {
                 System.out.println(rs.getLong("size") + "  " + rs.getString("path"));
@@ -445,10 +538,15 @@ public class ThumbStore {
 
     public static void main(String[] args) {
 
-        ThumbStore ts = new ThumbStore("local");
+        ThumbStore ts = new ThumbStore("localDB");
 
-        // ts.test();
+        ts.test();
         ts.testDuplicate();
+        ArrayList<String> al = ts.getAllWithGPS();
+        for (Iterator<String> iterator = al.iterator(); iterator.hasNext(); ) {
+            String next = iterator.next();
+            System.out.println(next);
+        }
 
     }
 

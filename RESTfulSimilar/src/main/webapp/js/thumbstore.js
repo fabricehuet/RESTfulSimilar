@@ -15,11 +15,11 @@ function getPath() {
 function getIndexedPaths() {
     $.get("rest/hello/paths", function (data) {
         // alert('page content: ' + data);
-        result='<div id="index_paths">'
-        for (i in data ){
-              result+= data[i] + '<br>';
+        result = '<div id="index_paths">'
+        for (i in data) {
+            result += data[i] + '<br>';
         }
-        result+="</div>"
+        result += "</div>"
         document.getElementById('db_paths').innerHTML = result;
     });
 }
@@ -31,8 +31,6 @@ function getStatus() {
         document.getElementById('db_status').innerHTML = data["stringStatus"];
     });
 }
-
-
 
 
 function getDuplicate() {
@@ -59,7 +57,7 @@ function getDuplicate() {
                 for (f in data[i].al) {
                     // <p>" + i + "</p>"" +
                     //console.log(data[i].al[f]);
-                    output += "<div class=\"floated_img\" id=\"imagePath\">";
+                    output += '<div id="imagePath">';
                     output += data[i].al[f] + "</div>";
                 }
                 output += "</div>";
@@ -89,7 +87,7 @@ function updateAccordion(output) {
             //   var arrayOfLines = $("div", ui.newContent).contents(); //ui.newContent.text().split("\n");
             if ($(".nailthumb-container", ui.newContent).length == 0) {
                 $.each($("[id=imagePath]", ui.newContent), function (index, data) {
-                    console.log($(data).html());
+                    //  console.log($(data).html());
                     $.post("rest/hello/getImage/", $(data).html(), function (image) {
                         var template = "<img src=\"data:image;base64,{{data}}\" title=\" {{title}} \"/>";
                         var imgTag = Mustache.to_html(template, image);
@@ -111,14 +109,14 @@ function getDuplicateFolder() {
     console.log("get duplicate folder");
     $.getJSON('rest/hello/duplicateFolder', function (data) {
 
-        $.each(data, function(key,val) {
+        $.each(data, function (key, val) {
             console.log("data is back");
-                   console.log(val);
-                   //var test = ""
-                   console.log(JSON.stringify(data));
+            console.log(val);
+            //var test = ""
+            //     console.log(JSON.stringify(data));
 
-                   var template = '<h3>{{occurences}}</h3><div><div><a href="rest/hello/folder/?path={{folder1}}">{{folder1}}</a></div> <div><a href="rest/hello/folder/?path={{folder2}}">{{folder2}}</div></div>';
-                   var html = Mustache.to_html(template, val);
+            var template = '<h3>{{occurences}} ({{totalSize}})</h3><div><div><a href="rest/hello/folder/?path={{folder1}}">{{folder1}}</a></div> <div><a href="rest/hello/folder/?path={{folder2}}">{{folder2}}</div></div>';
+            var html = Mustache.to_html(template, val);
             $('#accordion-duplicate-folders').append(html);
         });
         $('#accordion-duplicate-folders').accordion({
@@ -127,7 +125,6 @@ function getDuplicateFolder() {
             active:false
         });
         //$('#accordion-duplicate-folders').html(html);
-
 
 
     });
@@ -142,6 +139,41 @@ function shrink() {
 function update() {
     $.get("rest/hello/update", function (data) {
         //alert("shrink done");
+    });
+}
+
+
+function getAllGPS() {
+    $.get("rest/hello/getAllGPS", function (data) {
+        //alert("shrink done");
+        console.log(data);
+        var output = '<ul class="thumbs noscript">';
+        for (i in data) {
+            output += '<li>'
+//           output+=data[i]+'<br>'
+            output += '<a class="thumb"/>';
+            output += '<img src="rest/hello/getImage?path='+  data[i] + '" alt="Title #1"/>';
+            output += '</a>';
+            output += '</li>';
+        }
+           output+='</ul>';
+//
+//
+//            <li>
+//            <a class="thumb" name="drop"  title="Title #1">
+//                <img src="http://farm3.static.flickr.com/2404/2538171134_2f77bc00d9_s.jpg" alt="Title #1"/>
+//            </a>
+//
+//
+//            </li>
+            $('#thumbs').children().remove();
+          $('#thumbs').append(output);
+        $(document).ready(function () {
+            // Initialize Minimal Galleriffic Gallery
+            $('#thumbs').galleriffic();
+        });
+
+
     });
 }
 
@@ -172,25 +204,25 @@ function prettyPrint(object) {
 }
 
 function uploadFinished(object) {
-  //  console.log(object);
+    //  console.log(object);
     //var output = "";
     $('#duplicate_upload_result').children().remove();
-    for (f in object)  {
+    for (f in object) {
         //console.log(f);
         //output+= object.result[f].path+"<br>";
         var image = object[f];
-        var rmse  = (image.rmse);
-      //  console.log("Requesting file " + object.result[f].path);
-       // getWithRMSE(object.result[f], rmse);
+        var rmse = (image.rmse);
+        //  console.log("Requesting file " + object.result[f].path);
+        // getWithRMSE(object.result[f], rmse);
 
         var template = '<img src="data:image;base64,{{base64Data}}" title=" {{path}} "/>';
         var imgTag = Mustache.to_html(template, image);
 
         //console.log($(imgTag).exifPretty());
-        description = '<div class="description flt"> Distance:' + rmse + '<br>  '+ image.path +'</div>'
+        description = '<div class="description flt"> Distance:' + rmse + '<br>  ' + image.path + '</div>'
 
 //        $("#duplicate_upload_result").append('<div class="floated_img"><div class="nailthumb-container nailthumb-image-titles-animated-onhover square">' + imgTag + "</div>" + rmse +  "  " + image.path+ "</div>");
-        $("#duplicate_upload_result").append('<div class="floated_img cls"><div class="nailthumb-container nailthumb-image-titles-animated-onhover square flt">' + imgTag + "</div>"+  description +"</div>");
+        $("#duplicate_upload_result").append('<div class="floated_img cls"><div class="nailthumb-container nailthumb-image-titles-animated-onhover square flt">' + imgTag + "</div>" + description + "</div>");
 
         jQuery(document).ready(function () {
             jQuery('.nailthumb-container').nailthumb();
@@ -200,13 +232,14 @@ function uploadFinished(object) {
     }
 }
 
-function getWithRMSE(param, rmse ) {
+
+function getWithRMSE(param, rmse) {
     $.post("rest/hello/getImage/", param.path, function (image) {
         //$('[title]',image);
         var template = "<img src=\"data:image;base64,{{data}}\" title=\" {{title}} \"/>";
         var imgTag = Mustache.to_html(template, image);
         //var imgTag = "<img src=\"data:image;base64," + image.data + "\" title=\"" + image.title + "\"/>";
-        $("#duplicate_upload_result").prepend('<div class="floated_img"><div class="nailthumb-container nailthumb-image-titles-animated-onhover square">' + imgTag + "</div>" + rmse +  "  " + image.title+ "</div>");
+        $("#duplicate_upload_result").prepend('<div class="floated_img"><div class="nailthumb-container nailthumb-image-titles-animated-onhover square">' + imgTag + "</div>" + rmse + "  " + image.title + "</div>");
 //        Array.prototype.sort.call($("#floated_img"), function(a,b){
 //            var av = $(a).find("rmse"+sortby).text();
 //            var bv = $(b).find("rmse"+sortby).text();
@@ -215,7 +248,7 @@ function getWithRMSE(param, rmse ) {
         jQuery(document).ready(function () {
             jQuery('.nailthumb-container').nailthumb();
             jQuery('.nailthumb-image-titles-animated-onhover').nailthumb();
-        }) ;
+        });
 
     });
 }
