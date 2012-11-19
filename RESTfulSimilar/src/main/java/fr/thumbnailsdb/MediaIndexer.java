@@ -174,11 +174,11 @@ public class MediaIndexer {
 				data = generateThumbnail(f);
 				id.setData(data);
 
-//                double[] latLon = mdf.getLatLong(f);
-//                if (latLon != null) {
-//                    id.setLat(latLon[0]);
-//                    id.setLon(latLon[1]);
-//                }
+                double[] latLon = mdf.getLatLong(f);
+                if (latLon != null) {
+                    id.setLat(latLon[0]);
+                    id.setLon(latLon[1]);
+                }
 			}
 			md5 = generateMD5(f);
 			id.setMd5Digest(md5);
