@@ -33,6 +33,7 @@ public class MediaIndexer {
 	protected Logger log = Logger.getLogger();
 
     protected int newFiles=0;
+    protected int updatedFiles=0;
 
 	// protected ExecutorService executorService =
 	// Executors.newFixedThreadPool(3);
@@ -196,7 +197,7 @@ public class MediaIndexer {
 
 			try {
 				if (ts.isInDataBaseBasedOnName(f.getCanonicalPath())) {
-                    System.out.println("MediaIndexer.generateAndSave " + f);
+                   // System.out.println("MediaIndexer.generateAndSave " + f);
 					// System.out.println("MediaIndexer.generateImageDescriptor() Already in DB, ignoring");
                     if (forceGPSUpdate) {
                         MediaFileDescriptor  mfd = ts.getMediaFileDescriptor(f.getCanonicalPath()) ;
@@ -207,6 +208,7 @@ public class MediaIndexer {
                             mfd.setLon(latLon[1]);
                             System.out.println("MediaIndexer : forced update for GPS data for " + f );
                             ts.updateToDB(mfd);
+                            updatedFiles++;
                         }
 
 
@@ -284,6 +286,7 @@ public class MediaIndexer {
         date = new Date();
         System.out.println("MediaIndexer.processMTRoot() finished at time " + dateFormat.format(date));
         System.out.println("MediaIndexer.processMTRoot() found "+ newFiles + " new files");
+        System.out.println("MediaIndexer.processMTRoot() updated "+ updatedFiles + " files");
 
 	}
 

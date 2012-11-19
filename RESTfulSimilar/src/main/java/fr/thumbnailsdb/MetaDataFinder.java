@@ -51,13 +51,13 @@ public class MetaDataFinder {
         }
         Directory directory = metadata.getDirectory(GpsDirectory.class);
         if (directory != null && directory.getTags().size()>2) {
-         //   System.out.println("---- " + file + " ----");
-            for (Tag tag : directory.getTags()) {
-                System.out.println(tag);
-            }
+//         //   System.out.println("---- " + file + " ----");
+//            for (Tag tag : directory.getTags()) {
+//                System.out.println(tag);
+//            }
             double lat = getAsDecimalDegree(directory.getDescription(2));
             double lon = getAsDecimalDegree(directory.getDescription(4));
-            System.out.println(lat+", " +lon );
+//            System.out.println(lat+", " +lon );
             return new double[] {lat, lon};
         } else {
 
