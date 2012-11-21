@@ -509,7 +509,7 @@
 				
 				this.currentImage = imageData;
 				this.preloadRelocate(index);
-				
+
 				this.refresh();
 				
 				return this;

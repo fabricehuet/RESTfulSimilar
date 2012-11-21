@@ -1,0 +1,86 @@
+<style>
+    ul.imggrid {
+        padding: 0;
+        list-style: none;
+        margin: 0 auto;
+        /* the width of the grid area, impact the number of columns*/
+        width: 495px;
+    }
+
+    .imggrid li {
+        float: left;
+        padding: 1px;
+        border: 1px solid #cbcad0;
+        margin: 0 5px 10px 5px;
+    }
+
+    .imggrid_display {
+        padding: 20px;
+        margin: 0 auto;
+        width: 400px;
+        /*these two properties will be inherited by .portfolio h2 and .portfolio p */
+        font-family: 'GraublauWeb', arial, serif;
+        text-align: center;
+    }
+
+        /* .post-body is only for those who are on Blogger, or all others please skip
+           it and write your selector as "div.imggrid_display h2" without the quotes
+        */
+    .div.imggrid_display h2 {
+        padding: 0;
+        margin: 0;
+        clear: both;
+        font-size: 35px;
+        font-weight: normal;
+        color: #58595b;
+        background: none;
+        font-family: 'GraublauWeb', arial, serif;
+        /* reset for cascade effects that are trickling down to me
+           from other h2's
+        */
+        text-transform: none;
+        letter-spacing: normal;
+    }
+
+    .imggrid_display p {
+        margin: 0;
+        padding: 0;
+        font-size: 15px;
+        color: #58595b;
+    }
+
+        /* sprites for imggrid */
+    .imggrid a {
+        /*background: url('images/spritebitmaps.jpg') no-repeat;*/
+        height: 100px;
+        width: 100px;
+        display: block;
+    }
+</style>
+
+<div class="imggrid_display">
+    <ul class="imggrid">
+        <li>
+            <a  id="col1" href="rest/hello/getImage?path=/home/fhuet/workspaces/rechercheefficaceimagessimilaires/surfjavacl/RESTfulSimilar/gps/gg_gps.jpg"><img
+                    src="rest/hello/getThumbnail?path=/home/fhuet/workspaces/rechercheefficaceimagessimilaires/surfjavacl/RESTfulSimilar/gps/gg_gps.jpg"></a>
+        </li>
+        <li><a  id="col2" href="#"><img
+                src="rest/hello/getThumbnail?path=/home/fhuet/workspaces/rechercheefficaceimagessimilaires/surfjavacl/RESTfulSimilar/gps/GPS_location_stamped_with_GPStamper.jpg"></a>
+        </li>
+        <li><a  id="col3" href="#"><img
+                src="rest/hello/getThumbnail?path=/home/fhuet/workspaces/rechercheefficaceimagessimilaires/surfjavacl/RESTfulSimilar/gps/Extracted jpg_26-05-2011_0207.jpg"></a>
+        </li>
+
+        <li>
+            <a  href="rest/hello/getImage?path=/home/fhuet/workspaces/rechercheefficaceimagessimilaires/surfjavacl/RESTfulSimilar/gps/gg_gps.jpg"><img
+                    src="rest/hello/getThumbnail?path=/home/fhuet/workspaces/rechercheefficaceimagessimilaires/surfjavacl/RESTfulSimilar/gps/gg_gps.jpg"></a>
+        </li>
+        <li><a  href="#"><img
+                src="rest/hello/getThumbnail?path=/home/fhuet/workspaces/rechercheefficaceimagessimilaires/surfjavacl/RESTfulSimilar/gps/GPS_location_stamped_with_GPStamper.jpg"></a>
+        </li>
+        <li><a   href="#"><img
+                src="rest/hello/getThumbnail?path=/home/fhuet/workspaces/rechercheefficaceimagessimilaires/surfjavacl/RESTfulSimilar/gps/Extracted jpg_26-05-2011_0207.jpg"></a>
+        </li>
+    </ul>
+
+</div>

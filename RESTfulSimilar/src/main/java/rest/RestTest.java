@@ -1,5 +1,6 @@
 package rest;
 
+import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.*;
 import java.util.ArrayList;
@@ -130,10 +131,10 @@ public class RestTest {
 
     @GET
     @Path("getImage/")
-    @Produces("images/*")
+    @Produces("image/jpg")
     public Response getImage(@QueryParam("path") String imageId) {
         //    String img = null;
-        System.out.println("imageID " + imageId);
+        //System.out.println("imageID " + imageId);
         // img = getImageAsHTMLImg(imageId);
         //   BufferedImage img = null;
         BufferedInputStream source = null;
@@ -155,10 +156,47 @@ public class RestTest {
             } finally {
                 source.close();
             }
-
-
             final byte[] imgData = out.toByteArray();
+            final InputStream bigInputStream =
+                    new ByteArrayInputStream(imgData);
+            return Response.status(200).entity(bigInputStream).type("image/jpg").build();
+        } catch (IOException e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        }
 
+        return Response.status(404).build();
+
+    }
+
+
+    @GET
+    @Path("getThumbnail/")
+    @Produces("image/jpg")
+    public Response getThumbnail(@QueryParam("path") String imageId) {
+        //    String img = null;
+       // System.out.println("Thubnail : imageID " + imageId);
+        // img = getImageAsHTMLImg(imageId);
+        //   BufferedImage img = null;
+        BufferedInputStream source = null;
+       // ByteArrayOutputStream out = null;
+        try {
+
+            BufferedImage bf = ImageIO.read(new FileInputStream(new File(imageId)));
+
+
+            // scale it to the new size on-the-fly
+            BufferedImage thumbImage = new BufferedImage(100, 100, BufferedImage.TYPE_INT_RGB);
+            Graphics2D graphics2D = thumbImage.createGraphics();
+            graphics2D.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
+            graphics2D.drawImage(bf, 0, 0, 100, 100, null);
+
+            // save thumbnail image to outFilename
+            ByteArrayOutputStream bout = new ByteArrayOutputStream();
+            BufferedOutputStream out = new BufferedOutputStream(bout);
+            ImageIO.write(thumbImage,"jpg", out) ;
+
+
+            final byte[] imgData = bout.toByteArray();
             final InputStream bigInputStream =
                     new ByteArrayInputStream(imgData);
             return Response.status(200).entity(bigInputStream).build();

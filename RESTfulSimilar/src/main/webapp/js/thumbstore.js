@@ -143,40 +143,6 @@ function update() {
 }
 
 
-function getAllGPS() {
-    $.get("rest/hello/getAllGPS", function (data) {
-        //alert("shrink done");
-        console.log(data);
-        var output = '<ul class="thumbs noscript">';
-        for (i in data) {
-            output += '<li>'
-//           output+=data[i]+'<br>'
-            output += '<a class="thumb"/>';
-            output += '<img src="rest/hello/getImage?path='+  data[i] + '" alt="Title #1"/>';
-            output += '</a>';
-            output += '</li>';
-        }
-           output+='</ul>';
-//
-//
-//            <li>
-//            <a class="thumb" name="drop"  title="Title #1">
-//                <img src="http://farm3.static.flickr.com/2404/2538171134_2f77bc00d9_s.jpg" alt="Title #1"/>
-//            </a>
-//
-//
-//            </li>
-            $('#thumbs').children().remove();
-          $('#thumbs').append(output);
-        $(document).ready(function () {
-            // Initialize Minimal Galleriffic Gallery
-            $('#thumbs').galleriffic();
-        });
-
-
-    });
-}
-
 
 function index(currentForm) {
 
