@@ -3,6 +3,8 @@ package rest;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.*;
+import java.net.URLDecoder;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Collection;
 
@@ -370,12 +372,57 @@ public class RestTest {
             e.printStackTrace();
         }
 
-        MetaDataFinder mdf = new MetaDataFinder();
-        double[] coo = mdf.getLatLong(temp);
+        MetaDataFinder mdf = new MetaDataFinder(temp);
+        double[] coo = mdf.getLatLong();
 
-        return Response.status(200).entity(coo).type(MediaType.APPLICATION_JSON).build();
+        JSONObject responseDetailsJson = new JSONObject();
+        try {
+            responseDetailsJson.put("lat", coo[0]);
 
+            responseDetailsJson.put("lon", coo[1]);
+        } catch (JSONException e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        }
+
+
+        System.out.println("RestTest.findGPS sending json " + responseDetailsJson);
+        return Response.status(200).entity(responseDetailsJson).type(MediaType.APPLICATION_JSON).build();
     }
+
+
+    @GET
+    @Path("findGPSFromPath/")
+    @Produces({MediaType.APPLICATION_JSON})
+    public Response findGPSFromPath(@QueryParam("path") String path) {
+        System.out.println("RestTest.findGPSFromPath " + path);
+        String rPath = null;
+        try {
+           rPath = URLDecoder.decode(path, "UTF-8");
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        }
+
+        System.out.println("RestTest.findGPSFromPath real path " + rPath);
+        File temp = new File(rPath);
+        MetaDataFinder mdf = new MetaDataFinder(temp);
+        double[] coo = mdf.getLatLong();
+        JSONObject responseDetailsJson = new JSONObject();
+        try {
+            responseDetailsJson.put("lat", coo[0]);
+
+            responseDetailsJson.put("lon", coo[1]);
+            responseDetailsJson.put("date", mdf.getDate());
+        } catch (JSONException e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        }
+
+
+        System.out.println("RestTest.findGPSFromPath sending json " + responseDetailsJson);
+        return Response.status(200).entity(responseDetailsJson).type(MediaType.APPLICATION_JSON).build();
+    }
+
+
+
 
     @GET
     @Path("getAllGPS/")

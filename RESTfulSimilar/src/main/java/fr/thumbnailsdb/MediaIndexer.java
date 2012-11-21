@@ -28,7 +28,7 @@ public class MediaIndexer {
 
     protected boolean forceGPSUpdate = false;
 
-    protected MetaDataFinder mdf = new MetaDataFinder();
+  //  protected MetaDataFinder mdf = new MetaDataFinder();
 
 	protected Logger log = Logger.getLogger();
 
@@ -173,8 +173,8 @@ public class MediaIndexer {
 			if (Utils.isValideImageName(f.getName())) {
 				data = generateThumbnail(f);
 				id.setData(data);
-
-                double[] latLon = mdf.getLatLong(f);
+                                           MetaDataFinder mdf = new MetaDataFinder(f) ;
+                double[] latLon = mdf.getLatLong();
                 if (latLon != null) {
                     id.setLat(latLon[0]);
                     id.setLon(latLon[1]);
@@ -201,7 +201,8 @@ public class MediaIndexer {
 					// System.out.println("MediaIndexer.generateImageDescriptor() Already in DB, ignoring");
                     if (forceGPSUpdate) {
                         MediaFileDescriptor  mfd = ts.getMediaFileDescriptor(f.getCanonicalPath()) ;
-                        double latLon[] = mdf.getLatLong(f.getCanonicalFile());
+                        MetaDataFinder mdf = new MetaDataFinder(f) ;
+                        double latLon[] = mdf.getLatLong();
                        // System.out.println("MediaIndexer.generateAndSave working on " + f);
                         if (latLon != null) {
                             mfd.setLat(latLon[0]);

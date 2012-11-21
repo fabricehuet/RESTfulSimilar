@@ -266,7 +266,7 @@ public class ThumbStore {
             al = new ArrayList<String>();
             while (res.next()) {
                 System.out.println("getAllWithGPS adding  " + res);
-                al.add(res.getString("path"));
+                al.add(res.getString("path").replaceAll("\\\\", "\\\\\\\\"));
             }
 
 
