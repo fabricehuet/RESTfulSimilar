@@ -1,6 +1,7 @@
 package fr.thumbnailsdb;
 
 import com.drew.imaging.ImageMetadataReader;
+import com.drew.lang.GeoLocation;
 import com.drew.metadata.Directory;
 import com.drew.metadata.Metadata;
 import com.drew.metadata.Tag;
@@ -59,28 +60,36 @@ public class MetaDataFinder {
 
     public String getGPS() {
         String result = "";
-        Directory directory = metadata.getDirectory(GpsDirectory.class);
+        GpsDirectory directory = metadata.getDirectory(GpsDirectory.class);
         if (directory != null && directory.getTags().size() > 2) {
 //         //   System.out.println("---- " + file + " ----");
             for (Tag tag : directory.getTags()) {
+
                 result+=tag + "\n";
             }
         }
+
+
        return result;
 
     }
 
     public double[] getLatLong() {
 
-        Directory directory = metadata.getDirectory(GpsDirectory.class);
+        GpsDirectory directory = metadata.getDirectory(GpsDirectory.class);
         if (directory != null && directory.getTags().size() > 2) {
 //         //   System.out.println("---- " + file + " ----");
 //            for (Tag tag : directory.getTags()) {
 //                System.out.println(tag);
 //            }
-            double lat = getAsDecimalDegree(directory.getDescription(2));
-            double lon = getAsDecimalDegree(directory.getDescription(4));
-//            System.out.println(lat+", " +lon );
+//            double lat = getAsDecimalDegree(directory.getDescription(2));
+//            double lon = getAsDecimalDegree(directory.getDescription(4));
+////            System.out.println(lat+", " +lon );
+           GeoLocation gl =  directory.getGeoLocation();
+             double lat =     gl.getLatitude();
+            double lon = gl.getLongitude();
+
+
             return new double[]{lat, lon};
         } else {
 
@@ -154,6 +163,9 @@ public class MetaDataFinder {
         mdf.printTags();
         System.out.println(mdf.getDate());
         System.out.println(mdf.getGPS());
+        double ll[] = mdf.getLatLong();
+        System.out.println("Latitude " + ll[0]);
+        System.out.println("Longitude " + ll[1]);
 //        }
     }
 }

@@ -56,10 +56,23 @@
         width: 100px;
         display: block;
     }
+
+    div.
+
 </style>
 
 <script type="text/javascript">
 
+    jQuery(document).ready(function () {
+        createUploader();
+    });
+
+
+    // GOOGLE MAPS V3
+    var map;                    //google map
+    var lat = 0;
+    var lon = 0;
+    var geocoder;
     var previouslySelectedImage;
 
     function createUploader() {
@@ -112,32 +125,38 @@
     }
 
     function getGPSFromPath(event, name) {
-      // debugger;
+        // debugger;
 
-        if (previouslySelectedImage!=null)  {
-            previouslySelectedImage.style.borderStyle= "";
-            previouslySelectedImage.style.borderColor = "";
+        if (previouslySelectedImage != null) {
+            previouslySelectedImage.style.outline = "none";
+//            previouslySelectedImage.style.margin="0px";
+//            previouslySelectedImage.style.borderColor = "";
 
         }
-         previouslySelectedImage = event;
-
+        previouslySelectedImage = event;
 
 
         //make border around selected image red (border-style:outset and border:red)
-        event.style.borderStyle= "outset";
-        event.style.borderColor = "red";
-        $.get("rest/hello/findGPSFromPath" , {path:name}, function (data) {
+        event.style.outline = "3px solid black";
+        //event.style.borderColor = "red";
+        //event.style.margin = "-3px";
+        $.get("rest/hello/findGPSFromPath", {path:name}, function (data) {
             updateMap(data);
-            $("#big_picture").append("{"+ data["lat"] + "," + data["lon"] + "}<br>" + data["date"]) ;
+            $("#big_picture").empty();
+            $("#big_picture").append(data["gps"].replace(/\n/g, "<br />") + "<br>{" + data["lat"] + "," + data["lon"] + "}<br>" + data["date"]+ "<br>");
 
         });
+
+
+        //http://maps.googleapis.com/maps/api/geocode/json?address=1600+Amphitheatre+Parkway,+Mountain+View,+CA&sensor=true_or_false
+
     }
 
     function updateMap(json) {
         //   console.log(json);
         lat = json["lat"];
         lon = json["lon"];
-      //  debugger;
+        //  debugger;
         // initialize();
         var marker = new google.maps.Marker({
             position:new google.maps.LatLng(lat, lon),
@@ -147,21 +166,29 @@
         map.setCenter(new google.maps.LatLng(lat, lon));
         google.maps.event.trigger(map, 'resize');
         map.setZoom(map.getZoom());
+
+
+        var latlon = new google.maps.LatLng(lat, lon);
+        var infowindow = new google.maps.InfoWindow();
+        geocoder.geocode({'latLng':latlon}, function (results, status) {
+            if (status == google.maps.GeocoderStatus.OK) {
+//                var addresses = "";
+                if (results[0]) {
+//                for (s in results) {
+//                    addresses += results[s].formatted_address + "<br><br>";
+//                }
+                $("#big_picture").append(results[0].formatted_address) ;
+                }
+            }
+
+        });
+
+
     }
 
 
-    jQuery(document).ready(function () {
-        createUploader();
-    });
-
-
-    // GOOGLE MAPS V3
-    var map;                    //google map
-    var lat = 0;
-    var lon = 0;
-
-
     function initialize() {
+        geocoder = new google.maps.Geocoder();
         var mapOptions = {
             center:new google.maps.LatLng(lat, lon),
             zoom:18,
@@ -186,7 +213,7 @@
                 output += '<a  href="#" onclick="javascript: getGPSFromPath(this, \'' + encodeURIComponent(data[i]) + '\')">';
 //                output += '<a  href="javascript: getGPSFromPath(\'' + data[i].replace(/\\/g,"\\\\") + '\')">';
 
-              //  var path = 'c:\toto\titi\tata\'.replace(/\\/g,"\\\\");
+                //  var path = 'c:\toto\titi\tata\'.replace(/\\/g,"\\\\");
 //                output += '<a  href="javascript: getGPSFromPath(\''+ path + '\')">';
 
                 output += '<img src="rest/hello/getThumbnail?path=' + data[i] + '" alt="Title #1"/>';
@@ -194,7 +221,7 @@
                 output += '</li>';
             }
 
-        //    output += '<li>       <a class="thumb" name="leaf" href="http://farm4.static.flickr.com/3261/2538183196_8baf9a8015.jpg" title="Title #0">                    <img src="http://farm4.static.flickr.com/3261/2538183196_8baf9a8015_s.jpg" alt="Title #0" />                                                                                              </a>                    <div class="caption">                    <div class="download">                    <a href="http://farm4.static.flickr.com/3261/2538183196_8baf9a8015_b.jpg">Download Original</a>                    </div>            <div class="image-title">Title #0</div>            <div class="image-desc">Description</div>                    </div>                    </li>';
+            //    output += '<li>       <a class="thumb" name="leaf" href="http://farm4.static.flickr.com/3261/2538183196_8baf9a8015.jpg" title="Title #0">                    <img src="http://farm4.static.flickr.com/3261/2538183196_8baf9a8015_s.jpg" alt="Title #0" />                                                                                              </a>                    <div class="caption">                    <div class="download">                    <a href="http://farm4.static.flickr.com/3261/2538183196_8baf9a8015_b.jpg">Download Original</a>                    </div>            <div class="image-title">Title #0</div>            <div class="image-desc">Description</div>                    </div>                    </li>';
 
             output += '</ul>';
 
@@ -202,29 +229,29 @@
             $('.imggrid_display').append(output);
         });
     }
-//            $(document).ready(function () {
-//                // Initialize Minimal Galleriffic Gallery
-//                $('#thumbs').galleriffic({
-//                    numThumbs:3 ,
-//                    enableTopPager:            true,
-//                    enableBottomPager:         true,
-//                    maxPagesToShow:            7,
-//                    imageContainerSel:         '#slideshow',
-//                    controlsContainerSel:      '#controls',
-//                    captionContainerSel:       '#caption',
-//                    loadingContainerSel:       '#loading',
-//                    renderSSControls:          true,
-//                    renderNavControls:         true,
-//                    playLinkText:              'Play Slideshow',
-//                    pauseLinkText:             'Pause Slideshow',
-//                    prevLinkText:              '&lsaquo; Previous Photo',
-//                    nextLinkText:              'Next Photo &rsaquo;',
-//                    nextPageLinkText:          'Next &rsaquo;',
-//                    prevPageLinkText:          '&lsaquo; Prev',
-//                    enableHistory:             true
-//                });
-//            });
-            </script>
+    //            $(document).ready(function () {
+    //                // Initialize Minimal Galleriffic Gallery
+    //                $('#thumbs').galleriffic({
+    //                    numThumbs:3 ,
+    //                    enableTopPager:            true,
+    //                    enableBottomPager:         true,
+    //                    maxPagesToShow:            7,
+    //                    imageContainerSel:         '#slideshow',
+    //                    controlsContainerSel:      '#controls',
+    //                    captionContainerSel:       '#caption',
+    //                    loadingContainerSel:       '#loading',
+    //                    renderSSControls:          true,
+    //                    renderNavControls:         true,
+    //                    playLinkText:              'Play Slideshow',
+    //                    pauseLinkText:             'Pause Slideshow',
+    //                    prevLinkText:              '&lsaquo; Previous Photo',
+    //                    nextLinkText:              'Next Photo &rsaquo;',
+    //                    nextPageLinkText:          'Next &rsaquo;',
+    //                    prevPageLinkText:          '&lsaquo; Prev',
+    //                    enableHistory:             true
+    //                });
+    //            });
+</script>
 
 
 <div style="padding-right: 20px">
@@ -235,29 +262,29 @@
 
 <div class="imggrid_display" style="float:left">
     <!--<ul class="imggrid">-->
-        <!--<li>-->
-            <!--<a  id="col1" href="rest/hello/getImage?path=/home/fhuet/workspaces/rechercheefficaceimagessimilaires/surfjavacl/RESTfulSimilar/gps/gg_gps.jpg"><img-->
-                    <!--src="rest/hello/getThumbnail?path=/home/fhuet/workspaces/rechercheefficaceimagessimilaires/surfjavacl/RESTfulSimilar/gps/gg_gps.jpg"></a>-->
-        <!--</li>-->
-        <!--<li><a  id="col2" href="#"><img-->
-                <!--src="rest/hello/getThumbnail?path=/home/fhuet/workspaces/rechercheefficaceimagessimilaires/surfjavacl/RESTfulSimilar/gps/GPS_location_stamped_with_GPStamper.jpg"></a>-->
-        <!--</li>-->
-        <!--<li><a  id="col3" href="#"><img-->
-                <!--src="rest/hello/getThumbnail?path=/home/fhuet/workspaces/rechercheefficaceimagessimilaires/surfjavacl/RESTfulSimilar/gps/Extracted jpg_26-05-2011_0207.jpg"></a>-->
-        <!--</li>-->
+    <!--<li>-->
+    <!--<a  id="col1" href="rest/hello/getImage?path=/home/fhuet/workspaces/rechercheefficaceimagessimilaires/surfjavacl/RESTfulSimilar/gps/gg_gps.jpg"><img-->
+    <!--src="rest/hello/getThumbnail?path=/home/fhuet/workspaces/rechercheefficaceimagessimilaires/surfjavacl/RESTfulSimilar/gps/gg_gps.jpg"></a>-->
+    <!--</li>-->
+    <!--<li><a  id="col2" href="#"><img-->
+    <!--src="rest/hello/getThumbnail?path=/home/fhuet/workspaces/rechercheefficaceimagessimilaires/surfjavacl/RESTfulSimilar/gps/GPS_location_stamped_with_GPStamper.jpg"></a>-->
+    <!--</li>-->
+    <!--<li><a  id="col3" href="#"><img-->
+    <!--src="rest/hello/getThumbnail?path=/home/fhuet/workspaces/rechercheefficaceimagessimilaires/surfjavacl/RESTfulSimilar/gps/Extracted jpg_26-05-2011_0207.jpg"></a>-->
+    <!--</li>-->
 
-        <!--<li>-->
-            <!--<a  href="rest/hello/getImage?path=/home/fhuet/workspaces/rechercheefficaceimagessimilaires/surfjavacl/RESTfulSimilar/gps/gg_gps.jpg"><img-->
-                    <!--src="rest/hello/getThumbnail?path=/home/fhuet/workspaces/rechercheefficaceimagessimilaires/surfjavacl/RESTfulSimilar/gps/gg_gps.jpg"></a>-->
-        <!--</li>-->
-        <!--<li><a  href="#"><img-->
-                <!--src="rest/hello/getThumbnail?path=/home/fhuet/workspaces/rechercheefficaceimagessimilaires/surfjavacl/RESTfulSimilar/gps/GPS_location_stamped_with_GPStamper.jpg"></a>-->
-        <!--</li>-->
-        <!--<li><a   href="#"><img-->
-                <!--src="rest/hello/getThumbnail?path=/home/fhuet/workspaces/rechercheefficaceimagessimilaires/surfjavacl/RESTfulSimilar/gps/Extracted jpg_26-05-2011_0207.jpg"></a>-->
-        <!--</li>-->
+    <!--<li>-->
+    <!--<a  href="rest/hello/getImage?path=/home/fhuet/workspaces/rechercheefficaceimagessimilaires/surfjavacl/RESTfulSimilar/gps/gg_gps.jpg"><img-->
+    <!--src="rest/hello/getThumbnail?path=/home/fhuet/workspaces/rechercheefficaceimagessimilaires/surfjavacl/RESTfulSimilar/gps/gg_gps.jpg"></a>-->
+    <!--</li>-->
+    <!--<li><a  href="#"><img-->
+    <!--src="rest/hello/getThumbnail?path=/home/fhuet/workspaces/rechercheefficaceimagessimilaires/surfjavacl/RESTfulSimilar/gps/GPS_location_stamped_with_GPStamper.jpg"></a>-->
+    <!--</li>-->
+    <!--<li><a   href="#"><img-->
+    <!--src="rest/hello/getThumbnail?path=/home/fhuet/workspaces/rechercheefficaceimagessimilaires/surfjavacl/RESTfulSimilar/gps/Extracted jpg_26-05-2011_0207.jpg"></a>-->
+    <!--</li>-->
     <!--</ul>-->
 </div>
 
-<div id="big_picture" style="width:300px; height:500px; float:left; background-color: #c6c0bd"> </div>
-<div id="map_canvas"  style="float:right; width:500px; height:500px"></div>
+<div id="big_picture" style="width:300px; height:500px; font-size:0.875em; font-style:italic;float:left; background-color: #c6c0bd"></div>
+<div id="map_canvas" style="float:right; width:500px; height:500px"></div>

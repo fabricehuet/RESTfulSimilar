@@ -211,9 +211,6 @@ public class MediaIndexer {
                             ts.updateToDB(mfd);
                             updatedFiles++;
                         }
-
-
-
                     }
 					//log.log(f.getCanonicalPath() + " already in DB");
 				} else {

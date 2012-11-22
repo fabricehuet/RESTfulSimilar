@@ -412,6 +412,7 @@ public class RestTest {
 
             responseDetailsJson.put("lon", coo[1]);
             responseDetailsJson.put("date", mdf.getDate());
+            responseDetailsJson.put("gps", mdf.getGPS());
         } catch (JSONException e) {
             e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
         }
