@@ -114,6 +114,7 @@ function getDuplicateFolder() {
             console.log(val);
             //var test = ""
             //     console.log(JSON.stringify(data));
+            val['totalSize'] = val['totalSize']/1024.0/1024;
 
             var template = '<h3>{{occurences}} ({{totalSize}})</h3><div><div><a href="rest/hello/folder/?path={{folder1}}">{{folder1}}</a></div> <div><a href="rest/hello/folder/?path={{folder2}}">{{folder2}}</div></div>';
             var html = Mustache.to_html(template, val);

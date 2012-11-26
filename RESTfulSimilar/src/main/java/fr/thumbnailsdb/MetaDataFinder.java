@@ -24,8 +24,10 @@ import java.util.Date;
 public class MetaDataFinder {
 
     Metadata metadata;
+    File file;
 
     public MetaDataFinder(File f) {
+        file = f;
         metadata = null;
         try {
             metadata = ImageMetadataReader.readMetadata(f);
@@ -54,8 +56,12 @@ public class MetaDataFinder {
     public String getDate() {
         ExifSubIFDDirectory directory = metadata.getDirectory(ExifSubIFDDirectory.class);
         ExifSubIFDDescriptor descriptor = new ExifSubIFDDescriptor((ExifSubIFDDirectory) directory);
-        Date date = directory.getDate(ExifSubIFDDirectory.TAG_DATETIME_ORIGINAL);
-        return date.toString();
+        Date date = null;
+        if (directory!=null) {
+         date = directory.getDate(ExifSubIFDDirectory.TAG_DATETIME_ORIGINAL);
+            return date.toString();
+        }
+        else return "";
     }
 
     public String getGPS() {
@@ -69,13 +75,14 @@ public class MetaDataFinder {
             }
         }
 
+        System.out.println("MetaDataFinder.getGPS file : " + file + " has coordinates " + result);
 
        return result;
 
     }
 
     public double[] getLatLong() {
-
+        System.out.println("MetaDataFinder.getLatLon processing file : " + file );
         GpsDirectory directory = metadata.getDirectory(GpsDirectory.class);
         if (directory != null && directory.getTags().size() > 2) {
 //         //   System.out.println("---- " + file + " ----");
@@ -89,6 +96,7 @@ public class MetaDataFinder {
              double lat =     gl.getLatitude();
             double lon = gl.getLongitude();
 
+            System.out.println("MetaDataFinder.getLatLon file : " + file + " has coordinates {" + lat + "," + lon+"}");
 
             return new double[]{lat, lon};
         } else {
@@ -153,7 +161,7 @@ public class MetaDataFinder {
 
 
     public static void main(String[] args) {
-        File f = new File("/user/fhuet/desktop/home/workspaces/rechercheefficaceimagessimilaires/surfjavacl/RESTfulSimilar/gps_nsfw/test2.jpg");
+        File f = new File("/user/fhuet/desktop/home/workspaces/rechercheefficaceimagessimilaires/surfjavacl/RESTfulSimilar/gps/30-05-2011_0573.jpg");
         MetaDataFinder mdf = new MetaDataFinder(f);
 //        if (args.length > 0) {
 //            mdf.processMT(new File(args[0]));

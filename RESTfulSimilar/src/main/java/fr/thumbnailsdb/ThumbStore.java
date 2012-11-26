@@ -261,11 +261,11 @@ public class ThumbStore {
         ArrayList<String> al = null;
         try {
             sta = connexion.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
-            res = sta.executeQuery("SELECT * FROM IMAGES WHERE lat > 0");
+            res = sta.executeQuery("SELECT * FROM IMAGES WHERE lat <> 0 OR lon <>0");
 
             al = new ArrayList<String>();
             while (res.next()) {
-                System.out.println("getAllWithGPS adding  " + res);
+                System.out.println("getAllWithGPS adding  " + res.getString("path"));
                 al.add(res.getString("path").replaceAll("\\\\", "\\\\\\\\"));
             }
 

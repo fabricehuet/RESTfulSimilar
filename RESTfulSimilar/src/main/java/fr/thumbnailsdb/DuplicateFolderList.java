@@ -62,7 +62,7 @@ public class DuplicateFolderList {
         TreeSet<DuplicateFolderGroup> list = new TreeSet<DuplicateFolderGroup>(new Comparator<DuplicateFolderGroup>() {
             //	@Override
             public int compare(DuplicateFolderGroup o1, DuplicateFolderGroup o2) {
-                return Double.compare(o2.occurences, o1.occurences);
+                return Double.compare(o2.totalSize, o1.totalSize);
             }
         });
         for (DuplicateFolderGroup d : folderWithDuplicates.values()) {
