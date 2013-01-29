@@ -213,7 +213,6 @@ public class ThumbStore {
                 e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
             }
         }
-
         return result;
     }
 
@@ -317,7 +316,6 @@ public class ThumbStore {
             e.printStackTrace();
         }
         return res;
-
     }
 
     /**
@@ -542,17 +540,38 @@ public class ThumbStore {
         return this.path;
     }
 
+
+    public void test2() {
+        String query = "SELECT path FROM Images\n" +
+                "where path like '%Sabine%'";
+        Statement st;
+        try {
+            st = connexion.createStatement();
+
+            ResultSet res = st.executeQuery(query);
+            while (res.next()) {
+                String i = res.getString("path");
+               // byte[] d = res.getBytes("data");
+                System.out.println("-"+i + "-");
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
     public static void main(String[] args) {
 
         ThumbStore ts = new ThumbStore("localDB");
 
-        ts.test();
-        ts.testDuplicate();
-        ArrayList<String> al = ts.getAllWithGPS();
-        for (Iterator<String> iterator = al.iterator(); iterator.hasNext(); ) {
-            String next = iterator.next();
-            System.out.println(next);
-        }
+//        ts.test();
+//        ts.testDuplicate();
+//        ArrayList<String> al = ts.getAllWithGPS();
+//        for (Iterator<String> iterator = al.iterator(); iterator.hasNext(); ) {
+//            String next = iterator.next();
+//            System.out.println(next);
+//        }
+        ts.test2();
 
     }
 

@@ -42,6 +42,8 @@ public class RestTest {
     protected DuplicateMediaFinder df;
 
 
+    DuplicateFolderList dc = null;
+
     public RestTest() {
         System.out.println("RestTest.RestTest()");
         tb = new ThumbStore();
@@ -110,12 +112,40 @@ public class RestTest {
     @Produces({MediaType.APPLICATION_JSON})
     public Response getDuplicateFolder() {
         System.out.println("RestTest.getDuplicateFolder ");
-        Collection<DuplicateFolderGroup> dc = (Collection) df.computeDuplicateFolderSets(df.findDuplicateMedia()).asSortedCollection();
-        for (DuplicateFolderGroup dfg : dc) {
-            System.out.println(dfg);
-        }
-        return Response.status(200).entity(dc).build();
+        Collection<DuplicateFolderGroup> col =getDuplicateFolderGroup().asSortedCollection();
+//        for (DuplicateFolderGroup dfg : dc) {
+//            System.out.println(dfg);
+//        }
+        return Response.status(200).entity(col).build();
     }
+
+    private synchronized DuplicateFolderList getDuplicateFolderGroup() {
+
+        if (dc == null) {
+            dc = df.computeDuplicateFolderSets(df.findDuplicateMedia());
+        }
+        return dc;
+    }
+
+    @GET
+    @Path("/duplicateFolderDetails")
+    @Produces({MediaType.APPLICATION_JSON})
+    public Response getDuplicateFolderDetails(@QueryParam("folder1") String f1, @QueryParam("folder2") String f2) {
+
+      DuplicateFolderGroup group = getDuplicateFolderGroup().getDetails(f1,f2);
+      JSONObject json = new JSONObject();
+
+        try {
+            json.put("file1", group.getFile1());
+            json.put("file2", group.getFile2());
+        } catch (JSONException e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        }
+
+
+        return Response.status(200).entity(json).build();
+    }
+
 
 //    @POST
 ////	@Path("getImage/{imageId}")
@@ -176,11 +206,11 @@ public class RestTest {
     @Produces("image/jpg")
     public Response getThumbnail(@QueryParam("path") String imageId) {
         //    String img = null;
-       // System.out.println("Thubnail : imageID " + imageId);
+        // System.out.println("Thubnail : imageID " + imageId);
         // img = getImageAsHTMLImg(imageId);
         //   BufferedImage img = null;
         BufferedInputStream source = null;
-       // ByteArrayOutputStream out = null;
+        // ByteArrayOutputStream out = null;
         try {
 
             BufferedImage bf = ImageIO.read(new FileInputStream(new File(imageId)));
@@ -195,7 +225,7 @@ public class RestTest {
             // save thumbnail image to outFilename
             ByteArrayOutputStream bout = new ByteArrayOutputStream();
             BufferedOutputStream out = new BufferedOutputStream(bout);
-            ImageIO.write(thumbImage,"jpg", out) ;
+            ImageIO.write(thumbImage, "jpg", out);
 
 
             final byte[] imgData = bout.toByteArray();
@@ -259,7 +289,7 @@ public class RestTest {
     @Produces({MediaType.APPLICATION_JSON})
     public Response findSimilar(FormDataMultiPart multipart) {
 
-
+        ThumbnailGenerator tg = new ThumbnailGenerator(null);
         BodyPartEntity bpe = (BodyPartEntity) multipart.getBodyParts().get(0).getEntity();
         Collection<MediaFileDescriptor> c = null;
         ArrayList<SimilarImage> al = null;
@@ -302,7 +332,11 @@ public class RestTest {
 
             String data = null;
             try {
-                data = Base64.encodeBase64String(FileUtils.readFileToByteArray(new File(path)));
+                BufferedImage bf =  tg.downScaleImage(ImageIO.read(new FileInputStream(new File(path))),200,200);
+                ByteArrayOutputStream out = new ByteArrayOutputStream();
+                ImageIO.write(bf,"JPEG", out);
+                data = Base64.encodeBase64String(out.toByteArray());
+              //  Base64.encodeBase64String(FileUtils.readFileToByteArray(new File(path)));
             } catch (IOException e) {
                 System.err.println("Err: File " + path + " not found");
             }
@@ -397,7 +431,7 @@ public class RestTest {
         System.out.println("RestTest.findGPSFromPath " + path);
         String rPath = null;
         try {
-           rPath = URLDecoder.decode(path, "UTF-8");
+            rPath = URLDecoder.decode(path, "UTF-8");
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
         }
@@ -421,8 +455,6 @@ public class RestTest {
         System.out.println("RestTest.findGPSFromPath sending json " + responseDetailsJson);
         return Response.status(200).entity(responseDetailsJson).type(MediaType.APPLICATION_JSON).build();
     }
-
-
 
 
     @GET

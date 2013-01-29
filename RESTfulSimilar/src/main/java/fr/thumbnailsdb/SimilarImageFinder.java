@@ -255,6 +255,7 @@ public class SimilarImageFinder {
                     MediaFileDescriptor imd = new MediaFileDescriptor();
                     imd.setPath(path);
                     imd.setRmse(rmse);
+                    imd.setData(current.getData());
                     tree.remove(df);
                     tree.add(imd);
                 }
@@ -262,6 +263,7 @@ public class SimilarImageFinder {
                 MediaFileDescriptor imd = new MediaFileDescriptor();
                 imd.setPath(path);
                 imd.setRmse(rmse);
+                imd.setData(current.getData());
                 tree.add(imd);
             }
             i++;

@@ -57,8 +57,6 @@
         display: block;
     }
 
-    div.
-
 </style>
 
 <script type="text/javascript">
@@ -143,8 +141,9 @@
         $.get("rest/hello/findGPSFromPath", {path:name}, function (data) {
             updateMap(data);
             $("#big_picture").empty();
-            $("#big_picture").append(data["gps"].replace(/\n/g, "<br />") + "<br>{" + data["lat"] + "," + data["lon"] + "}<br>" + data["date"]+ "<br>");
-
+            $("#big_picture").append( data["gps"].replace(/\n/g, "<br />") + "<br>{" + data["lat"] + "," + data["lon"] + "}<br>" + data["date"]+ "<br>");
+            $("#picture_name").empty();
+            $("#picture_name").append(decodeURIComponent(name));
         });
 
 
@@ -288,3 +287,4 @@
 
 <div id="big_picture" style="width:300px; height:500px; font-size:0.875em; font-style:italic;float:left; background-color: #c6c0bd"></div>
 <div id="map_canvas" style="float:right; width:500px; height:500px"></div>
+<div id="picture_name" style="width:800px; height:20px; position: fixed;bottom: 0px;font-size:0.875em; font-style:italic; background-color: #c6c0bd"></div>

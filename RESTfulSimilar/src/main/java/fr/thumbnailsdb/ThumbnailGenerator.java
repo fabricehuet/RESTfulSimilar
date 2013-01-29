@@ -1,25 +1,22 @@
 package fr.thumbnailsdb;
 
-import java.awt.AlphaComposite;
-import java.awt.Graphics2D;
+import org.apache.commons.codec.digest.DigestUtils;
+
+import javax.imageio.ImageIO;
+import javax.swing.*;
+import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
+import java.net.URL;
 import java.util.concurrent.LinkedBlockingQueue;
-import java.util.concurrent.Semaphore;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
-import javax.imageio.ImageIO;
-
-import org.apache.commons.codec.digest.DigestUtils;
-
 public class ThumbnailGenerator {
 
-	protected boolean debug;
+    public static final int WIDTH = 10;
+    public static final int HEIGHT = 10;
+    protected boolean debug;
 	protected boolean software = true;
 	protected ThumbStore ts;
 
@@ -72,7 +69,7 @@ public class ThumbnailGenerator {
 	/**
 	 * Load the image and resize it if necessary
 	 * 
-	 * @param imagePath
+	 *
 	 * @return
 	 * @throws IOException
 	 */
@@ -98,6 +95,53 @@ public class ThumbnailGenerator {
 		// }
 		return scaledBI;
 	}
+
+    /**
+     * restace to nh x nw while maintaining aspect ratio
+     * @param bi
+     * @param nw
+     * @param nh
+     * @return
+     * @throws IOException
+     */
+    public BufferedImage downScaleImage(BufferedImage bi, int nw, int nh) throws IOException {
+     //   if (debug) {
+            System.out.println("ThumbnailGenerator.downScaleImage()  original image is " + bi.getWidth() + "x"
+                    + bi.getHeight());
+      //  }
+        BufferedImage scaledBI = null;
+        // if (nw < width || nh < height) {
+      //  if (debug) {
+            System.out.println("ThumbnailGenerator.downScaleImage() requested to " + nw + "x" + nh);
+      //  }
+
+
+        float h_original = bi.getHeight();
+        float w_original= bi.getWidth();
+
+        float h_ratio = h_original/nh;
+        float w_ratio = w_original/nw;
+        //ensure we have at least one
+        if (h_ratio <1) {h_ratio=1;}
+        if (w_ratio <1) {w_ratio=1;}
+
+        float ratio = Math.max(h_ratio,w_ratio);
+
+        int fWidth = Math.round(w_original/ratio);
+        int fHeight = Math.round(h_original/ratio);
+
+      //  if (debug) {
+            System.out.println("resizing to " + fWidth + "x" + fHeight + " with scale " + ratio);
+        //}
+        scaledBI = new BufferedImage(fWidth, fHeight, BufferedImage.TYPE_INT_RGB);
+        Graphics2D g = scaledBI.createGraphics();
+        g.setComposite(AlphaComposite.Src);
+        g.drawImage(bi, 0, 0, fWidth, fHeight, null);
+        g.dispose();
+        // }
+        return scaledBI;
+    }
+
 
 	public String generateMD5(File f) throws IOException {
 		InputStream fis = new FileInputStream(f);
@@ -134,7 +178,7 @@ public class ThumbnailGenerator {
 
 			BufferedImage dest = null;
 			if (software) {
-				dest = this.downScaleImageToGray(source, 10, 10);
+				dest = this.downScaleImageToGray(source, WIDTH, HEIGHT);
 			}
 			// ByteArrayOutputStream baos = new ByteArrayOutputStream();
 			// ImageIO.write(dest, "jpg", baos);
@@ -289,33 +333,67 @@ public class ThumbnailGenerator {
 		}
 	}
 
-	public static void main(String[] args) {
-		String pathToDB = "test";
-		String source = ".";
-		if (args.length == 2 || args.length == 4) {
-			for (int i = 0; i < args.length; i++) {
-				if ("-db".equals(args[i])) {
-					pathToDB = args[i + 1];
-					i++;
-				}
-				if ("-source".equals(args[i])) {
-					source = args[i + 1];
-					i++;
-				}
-			}
-			// pathToDB=args[0];
-		} else {
-			System.err.println("Usage: java " + ThumbnailGenerator.class.getName()
-					+ "[-db path_to_db] -source folder_or_file_to_process");
-			System.exit(0);
-		}
-		ThumbStore ts = new ThumbStore(pathToDB);
-		ThumbnailGenerator tb = new ThumbnailGenerator(ts);
-		File fs = new File(source);
-		try {
-			tb.processMT(fs);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-	}
+//	public static void main(String[] args) {
+//		String pathToDB = "test";
+//		String source = ".";
+//		if (args.length == 2 || args.length == 4) {
+//			for (int i = 0; i < args.length; i++) {
+//				if ("-db".equals(args[i])) {
+//					pathToDB = args[i + 1];
+//					i++;
+//				}
+//				if ("-source".equals(args[i])) {
+//					source = args[i + 1];
+//					i++;
+//				}
+//			}
+//			// pathToDB=args[0];
+//		} else {
+//			System.err.println("Usage: java " + ThumbnailGenerator.class.getName()
+//					+ "[-db path_to_db] -source folder_or_file_to_process");
+//			System.exit(0);
+//		}
+//		ThumbStore ts = new ThumbStore(pathToDB);
+//		ThumbnailGenerator tb = new ThumbnailGenerator(ts);
+//		File fs = new File(source);
+//		try {
+//			tb.processMT(fs);
+//		} catch (IOException e) {
+//			e.printStackTrace();
+//		}
+//	}
+
+    public static void main(String[] args) {
+        ThumbnailGenerator tg = new ThumbnailGenerator(null);
+        MediaFileDescriptor mf = tg.buildMediaDescriptor(new File(args[0]));
+
+        BufferedImage image = null; //new BufferedImage(WIDTH, HEIGHT, BufferedImage.TYPE_BYTE_GRAY);
+        BufferedImage target = null;
+          try {
+            image = ImageIO.read(new FileInputStream(args[0]));
+        //   InputStream in = new ByteArrayInputStream(mf.getDataAsByte());
+          // image = ImageIO.read(in);
+           // image.setRGB(0,0,WIDTH,HEIGHT,mf.getData(),0,WIDTH);
+            target = tg.downScaleImage(image,300,300)     ;
+            System.out.println("ThumbnailGenerator.main image is " + target);
+        } catch (IOException e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        }
+
+
+//
+// Use a label to display the image
+        JFrame frame = new JFrame();
+
+        JLabel lblimage = new JLabel(new ImageIcon(target));
+        JPanel mainPanel = new JPanel(new BorderLayout());
+        mainPanel.add(lblimage);
+
+// add more components here
+        frame.add(mainPanel);
+        frame.pack();
+        frame.setVisible(true);
+
+    }
+
 }
