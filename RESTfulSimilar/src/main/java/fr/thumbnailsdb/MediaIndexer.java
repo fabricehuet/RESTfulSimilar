@@ -192,9 +192,6 @@ public class MediaIndexer {
 
 	public void generateAndSave(File f) {
 	//first check if it is in DB
-
-
-
 			try {
 				if (ts.isInDataBaseBasedOnName(f.getCanonicalPath())) {
                    // System.out.println("MediaIndexer.generateAndSave " + f);
