@@ -27,7 +27,7 @@
     <!--<script src="js/jquery.exif.js"></script>-->
 
     <script type="text/javascript" src="galleriffic-2.0/js/jquery.galleriffic.js"></script>
-    <!--<link rel="stylesheet" href="galleriffic-2.0/css/galleriffic-2.css" type="text/css" />-->
+    <link rel="stylesheet" href="galleriffic-2.0/css/galleriffic-1.css" type="text/css" />
 
     <!--&lt;!&ndash;for google maps&ndash;&gt;-->
     <!--<style type="text/css">-->
@@ -99,7 +99,7 @@
 
 
         $(function () {
-            $("#tabs").tabs({
+            $("#tabs").tabs({     cache:true,
                         show:function (event, ui) {
                             if (ui.index == 4) {
                           //      if (map == null) {
@@ -175,8 +175,8 @@
         <!--<li><a href="#tabs-3">Similar image</a></li>-->
         <li><a href="drag.html">Drag'n'Drop</a></li>
         <!--<li><a href="#tabs-gps">GPS</a></li>-->
-        <li><a href="gps.html">GPS</a></li>
-
+        <li><a href="grid.html">GPS</a></li>
+        <!--<li><a href="gallery.html">GPS</a></li>-->
         <!--<li><a href="drag2.html">Drag'n'Drop-2</li>-->
     </ul>
 
@@ -202,7 +202,8 @@
             <input type="submit" value="get Folders"/>
 
         </form>
-        <div id="accordion-duplicate-folders"></div>
+        <div id="accordion-duplicate-folders" style="width:800px;float:left"></div>
+        <div id="duplicate-folders-details" style="width:400px;float:left"></div>
     </div>
 
     <!--<div id="tabs-gps">-->

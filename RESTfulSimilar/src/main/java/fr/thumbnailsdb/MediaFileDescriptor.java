@@ -171,6 +171,7 @@ protected double lat;
 	public byte[] getDataAsByte() {
 		// convert the int[] array to byte[] array
 		if (data == null) {
+            System.out.println("MediaFileDescriptor.getDataAsByte found null data");
 			return null;
 		}
 		ByteArrayOutputStream ba = new ByteArrayOutputStream();

@@ -40,10 +40,12 @@ public class DuplicateFolderList {
                         //folderWithDuplicates.put(couple, dfg + 1);
                         dfg.increase();
                         dfg.addSize(dg.fileSize);
+                        dfg.addFiles(dg.get(i), dg.get(j));
                     } else {
                         //   System.out.println(" Key not found, adding");
                         dfg = new DuplicateFolderGroup(dir1, dir2);
                         dfg.addSize(dg.fileSize);
+                        dfg.addFiles(dg.get(i), dg.get(j));
                         folderWithDuplicates.put(couple, dfg);
                     }
                 }
@@ -58,11 +60,16 @@ public class DuplicateFolderList {
     }
 
 
+    public  DuplicateFolderGroup getDetails(String f1, String f2) {
+        String couple = f1 + " <-> " + f2;
+        return folderWithDuplicates.get(couple);
+    }
+
     public Collection asSortedCollection() {
         TreeSet<DuplicateFolderGroup> list = new TreeSet<DuplicateFolderGroup>(new Comparator<DuplicateFolderGroup>() {
             //	@Override
             public int compare(DuplicateFolderGroup o1, DuplicateFolderGroup o2) {
-                return Double.compare(o2.occurences, o1.occurences);
+                return Double.compare(o2.totalSize, o1.totalSize);
             }
         });
         for (DuplicateFolderGroup d : folderWithDuplicates.values()) {

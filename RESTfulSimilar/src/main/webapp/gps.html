@@ -1,3 +1,5 @@
+<script type="text/javascript" src="galleriffic-2.0/js/jquery.opacityrollover.js"></script>
+
 <script type="text/javascript">
     function createUploader() {
         var uploader = new qq.FileUploader({
@@ -84,6 +86,110 @@
             //map.setCenter(mapOptions.center);
         });
     }
+
+
+    function getAllGPS() {
+        $.get("rest/hello/getAllGPS", function (data) {
+            //alert("shrink done");
+            console.log(data);
+            var output = '<ul class="thumbs noscript">';
+            for (i in data) {
+                output += '<li>'
+//           output+=data[i]+'<br>'
+                output += '<a class="thumb"  href="rest/hello/getImage?path=' + data[i] + '">';
+                output += '<img src="rest/hello/getThumbnail?path=' + data[i] + '" alt="Title #1"/>';
+                output += '</a>';
+                output += '</li>';
+            }
+
+            output += '<li>       <a class="thumb" name="leaf" href="http://farm4.static.flickr.com/3261/2538183196_8baf9a8015.jpg" title="Title #0">                    <img src="http://farm4.static.flickr.com/3261/2538183196_8baf9a8015_s.jpg" alt="Title #0" />                                                                                              </a>                    <div class="caption">                    <div class="download">                    <a href="http://farm4.static.flickr.com/3261/2538183196_8baf9a8015_b.jpg">Download Original</a>                    </div>            <div class="image-title">Title #0</div>            <div class="image-desc">Description</div>                    </div>                    </li>';
+
+            output += '</ul>';
+
+            $('#thumbs').children().remove();
+            $('#thumbs').append(output);
+//            $(document).ready(function () {
+//                // Initialize Minimal Galleriffic Gallery
+//                $('#thumbs').galleriffic({
+//                    numThumbs:3 ,
+//                    enableTopPager:            true,
+//                    enableBottomPager:         true,
+//                    maxPagesToShow:            7,
+//                    imageContainerSel:         '#slideshow',
+//                    controlsContainerSel:      '#controls',
+//                    captionContainerSel:       '#caption',
+//                    loadingContainerSel:       '#loading',
+//                    renderSSControls:          true,
+//                    renderNavControls:         true,
+//                    playLinkText:              'Play Slideshow',
+//                    pauseLinkText:             'Pause Slideshow',
+//                    prevLinkText:              '&lsaquo; Previous Photo',
+//                    nextLinkText:              'Next Photo &rsaquo;',
+//                    nextPageLinkText:          'Next &rsaquo;',
+//                    prevPageLinkText:          '&lsaquo; Prev',
+//                    enableHistory:             true
+//                });
+//            });
+            jQuery(document).ready(function ($) {
+                // We only want these styles applied when javascript is enabled
+                $('div.navigation').css({'width':'300px', 'float':'left'});
+                $('div.content').css('display', 'block');
+                //debugger
+                $('a.advance-link img').prop('height','200')
+               // $('a.advance-link img').attr('height').text("500");
+
+                // Initially set opacity on thumbs and add
+                // additional styling for hover effect on thumbs
+                var onMouseOutOpacity = 0.67;
+                $('#thumbs ul.thumbs li').opacityrollover({
+                    mouseOutOpacity:onMouseOutOpacity,
+                    mouseOverOpacity:1.0,
+                    fadeSpeed:'fast',
+                    exemptionSelector:'.selected'
+                });
+
+                // Initialize Advanced Galleriffic Gallery
+                var gallery = $('#thumbs').galleriffic({
+                    delay:2500,
+                    numThumbs:2,
+                    preloadAhead:10,
+                    enableTopPager:true,
+                    enableBottomPager:true,
+                    maxPagesToShow:7,
+                    imageContainerSel:'#slideshow',
+                    controlsContainerSel:'#controls',
+                    captionContainerSel:'#caption',
+                    loadingContainerSel:'#loading',
+                    renderSSControls:true,
+                    renderNavControls:true,
+                    playLinkText:'Play Slideshow',
+                    pauseLinkText:'Pause Slideshow',
+                    prevLinkText:'&lsaquo; Previous Photo',
+                    nextLinkText:'Next Photo &rsaquo;',
+                    nextPageLinkText:'Next &rsaquo;',
+                    prevPageLinkText:'&lsaquo; Prev',
+                    enableHistory:false,
+                    autoStart:false,
+                    syncTransitions:true,
+                    defaultTransitionDuration:900,
+                    onSlideChange:function (prevIndex, nextIndex) {
+                        // 'this' refers to the gallery, which is an extension of $('#thumbs')
+                        this.find('ul.thumbs').children()
+                                .eq(prevIndex).fadeTo('fast', onMouseOutOpacity).end()
+                                .eq(nextIndex).fadeTo('fast', 1.0);
+                    },
+                    onPageTransitionOut:function (callback) {
+                        this.fadeTo('fast', 0.0, callback);
+                    },
+                    onPageTransitionIn:function () {
+                        this.fadeTo('fast', 1.0);
+                    }
+                });
+            });
+        });
+    }
+
+
 </script>
 
 
@@ -105,27 +211,62 @@
 <!--<div id="thumbs" class="navigation">       </div>-->
 
 
+<style>
+    #wrap {
+        width: 1500px;
+        margin: 0 auto;
+        background: #99c;
+    }
+
+    #duplicate_gps_source {
+        background: #ddd;
+    }
+
+    #map_canvas {
+        float:right;
+        width:250px;
+        background: #c99;
+    }
+
+    .slideshow-container {
+        background: #9c9;
+    }
+
+    #slideshow {
+        background: #c9c;
+    }
+
+    #gallery {
+        float:left;
+        width:500px;
+
+        background: #cc9;
+    }
+    #thumbs {
+        clear:both;
+    }
+
+</style>
+
 <div id="duplicate_gps_source" class="flt" style="margin:10px 0px"></div>
-<div class="flt" style="width:300px; height:500px"></div>
+<!--<div class="flt" style="width:300px; height:500px"></div>-->
 
-<div id="map_canvas" class="flt" style="width:500px; height:500px"></div>
+<div id="wrap">
 
 
-<!-- Start Minimal Gallery Html Containers -->
-<div id="gallery" class="content">
-    <div id="controls" class="controls"></div>
-    <div class="slideshow-container">
-        <div id="loading" class="loader"></div>
-        <div id="slideshow" class="slideshow"></div>
+    <div id="gallery" class="content">
+        <div id="controls" class="controls"></div>
+        <div class="slideshow-container">
+            <div id="loading" class="loader"></div>
+            <div id="slideshow" class="slideshow"></div>
+
+        </div>
     </div>
+
+    <div id="map_canvas" class="flt" style="width:500px; height:500px"></div>
+
+    <div id="thumbs" class="navigation"></div>
+
 </div>
-<div id="thumbs" class="navigation"> </div>
 
-<script type="text/javascript">
-    // We only want these styles applied when javascript is enabled
-    $('div.navigation').css({'width':'300px', 'float':'left'});
-    $('div.content').css('display', 'block');
-
-
-</script>
 
