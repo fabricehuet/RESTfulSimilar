@@ -110,12 +110,9 @@ public class RestTest {
     @GET
     @Path("/duplicateFolder")
     @Produces({MediaType.APPLICATION_JSON})
-    public Response getDuplicateFolder() {
-        System.out.println("RestTest.getDuplicateFolder ");
-        Collection<DuplicateFolderGroup> col =getDuplicateFolderGroup().asSortedCollection();
-//        for (DuplicateFolderGroup dfg : dc) {
-//            System.out.println(dfg);
-//        }
+    public Response getDuplicateFolder(@QueryParam("folder") final java.util.List<String> obj) {
+        System.out.println("RestTest.getDuplicateFolder " + obj);
+        Collection<DuplicateFolderGroup> col =getDuplicateFolderGroup().asSortedCollection(obj.toArray(new String[] {}));
         return Response.status(200).entity(col).build();
     }
 

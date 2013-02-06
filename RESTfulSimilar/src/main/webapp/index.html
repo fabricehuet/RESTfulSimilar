@@ -122,6 +122,7 @@
         });
         $(function () {
             $("#accordion").accordion();
+            $('#accordion-duplicate-folders').accordion();
         });
         $(function () {
             $('#fileupload').fileupload({
@@ -197,10 +198,12 @@
     </div>
 
     <div id="tabs-folder">
-        <form name="input" action="javascript:getDuplicateFolder()">
 
-            <input type="submit" value="get Folders"/>
 
+
+        <form name="input_duplicate_folders" action="javascript:getDuplicateFolder()">
+
+            <input type="submit" value="get Folders">
         </form>
         <div id="accordion-duplicate-folders" style="width:800px;float:left"></div>
         <div id="duplicate-folders-details" style="width:400px;float:left"></div>

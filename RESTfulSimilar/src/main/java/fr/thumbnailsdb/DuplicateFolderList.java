@@ -60,12 +60,12 @@ public class DuplicateFolderList {
     }
 
 
-    public  DuplicateFolderGroup getDetails(String f1, String f2) {
+    public DuplicateFolderGroup getDetails(String f1, String f2) {
         String couple = f1 + " <-> " + f2;
         return folderWithDuplicates.get(couple);
     }
 
-    public Collection asSortedCollection() {
+    public Collection asSortedCollection(String[] filter) {
         TreeSet<DuplicateFolderGroup> list = new TreeSet<DuplicateFolderGroup>(new Comparator<DuplicateFolderGroup>() {
             //	@Override
             public int compare(DuplicateFolderGroup o1, DuplicateFolderGroup o2) {
@@ -73,7 +73,9 @@ public class DuplicateFolderList {
             }
         });
         for (DuplicateFolderGroup d : folderWithDuplicates.values()) {
-            list.add(d);
+            if (match(d, filter)) {
+                list.add(d);
+            }
         }
         ArrayList<DuplicateFolderGroup> al = new ArrayList<DuplicateFolderGroup>(list.size());
         Iterator<DuplicateFolderGroup> it = list.iterator();
@@ -83,6 +85,20 @@ public class DuplicateFolderList {
 
         }
         return al;
+    }
+
+    private boolean match(DuplicateFolderGroup d, String[] filter) {
+        for (String s : filter) {
+//            System.out.println("DuplicateFolderList.match  checking "  );
+//            System.out.println("    " + d.folder1);
+//            System.out.println("    " + d.folder2);
+//            System.out.println("filter " + s);
+//            System.out.println("result is " +  (d.folder1.contains(s) || d.folder2.contains(s)) );
+            if (d.folder1.contains(s) || d.folder2.contains(s)) {
+                return true;
+            }
+        }
+        return false;
     }
 
 

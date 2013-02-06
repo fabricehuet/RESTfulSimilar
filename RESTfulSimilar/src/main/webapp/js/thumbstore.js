@@ -12,15 +12,21 @@ function getPath() {
     });
 }
 
-function getIndexedPaths() {
+function getIndexedPaths(div) {
     $.get("rest/hello/paths", function (data) {
-        // alert('page content: ' + data);
-        result = '<div id="index_paths">'
+        var val = 1;
+        var cbh = document.getElementById('db_paths');
         for (i in data) {
-            result += data[i] + '<br>';
+            var cb = document.createElement('input');
+            cb.type = 'checkbox';
+            cb.checked=true;
+            cbh.appendChild(cb);
+            cb.name = "folder";
+            cb.value = data[i];
+            cbh.appendChild(document.createTextNode(data[i]));
+            val++;
+            cbh.appendChild(document.createElement('br'));
         }
-        result += "</div>"
-        document.getElementById('db_paths').innerHTML = result;
     });
 }
 
@@ -34,8 +40,6 @@ function getStatus() {
 
 
 function getDuplicate() {
-    // alert( $("input[name=max]").val() );
-    // document.myform.submit();
     $
         .get(
         "rest/hello/identical",
@@ -50,7 +54,7 @@ function getDuplicate() {
                 output += "<h3>";
                 // output += property + ': ' + data[property] + ';
                 // ';
-                output += data[i].fileSize;
+                output += data[i].fileSize / 1024.0 / 1024;
                 output += "</h3>";
                 output += "<div>";
                 console.log(data[i]);
@@ -58,21 +62,27 @@ function getDuplicate() {
                     // <p>" + i + "</p>"" +
                     //console.log(data[i].al[f]);
                     output += '<div id="imagePath">';
-                    output += data[i].al[f] + "</div>";
+                    // output += data[i].al[f] + "</div>";
+                    output += toFolderAndFileLink(data[i].al[f]) + "</div>";
                 }
                 output += "</div>";
             }
-            // var data2 = JSON.stringify(data, undefined, 2);
-            // alert("Data Loaded: " + data2);
-            // console.log(data2);
-            // output += '</div>';
-            //document.getElementById('duplicate_result').innerHTML = "<div id=\"accordion\">     <h3><a href=\"#\">First header</a></h3>     <div>First content</div>     <h3><a href=\"#\">Second header</a></h3>     <div>Second content</div> </div>";
             updateAccordion(output);
-//						updateCoverFlip(output);
-
-            //  jQuery('').nailthumb();
-
         });
+}
+
+function toFolderLink(path) {
+    return path + '  <a href="explorer://rest/hello/folder/?path=' + path + '">[folder]</a>'
+}
+
+
+function toFolderAndFileLink(path) {
+    var n = path.lastIndexOf('/');
+    //  var file = path.substring(n + 1);
+    var folder = path.substring(0, n);
+
+    return path + '  <a href="explorer://rest/hello/folder/?path=' + path + '">[file]</a>' +
+        '  <a href="explorer://rest/hello/folder/?path=' + folder + '">[folder]</a>'
 }
 
 function updateAccordion(output) {
@@ -122,8 +132,8 @@ function getDuplicateFolderDetails(ui, folder1, folder2) {
                     f1:data.file1[i],
                     f2:data.file2[i]
                 });
-            var templateFiles = ' {{#files}} ' + '<div><a href="explorer://rest/hello/folder/?path={{f1}}">{{f1}}</a><br>' +
-                                                      '<a href="explorer://rest/hello/folder/?path={{f2}}">{{f2}}</a></div><br>' +
+            var templateFiles = ' {{#files}} ' + '<div>{{f1}}   <a href="explorer://rest/hello/folder/?path={{f1}}">[file]</a><br>' +
+                '{{f2}}   <a href="explorer://rest/hello/folder/?path={{f2}}">[file]</a></div><br>' +
                 '{{/files}}';
             var htmlFiles = Mustache.to_html(templateFiles, tab);
             $('#duplicate-folders-details').children().remove();
@@ -133,37 +143,41 @@ function getDuplicateFolderDetails(ui, folder1, folder2) {
 }
 
 
+function getSelectedFolders() {
+    var inputs = $("input[name=folder]");
+    var folders = [];
+    for (i=0; i<inputs.length;i++) {
+        if (inputs[i].checked) {
+            folders[i] = inputs[i].value;
+        }
+
+    }
+    console.log(folders);
+    return folders;
+}
+
 function getDuplicateFolder() {
+
+    jQuery.ajaxSettings.traditional = true;
     console.log("get duplicate folder");
-    $.getJSON('rest/hello/duplicateFolder', function (data) {
+    var folders = getSelectedFolders();
+    $('#accordion-duplicate-folders').children().remove();
+    $.getJSON('rest/hello/duplicateFolder', {folder:folders}, function (data) {
         $.each(data, function (key, val) {
             console.log("data is back");
             console.log(val);
-            //var test = ""
-            //     console.log(JSON.stringify(data));
             val['totalSize'] = val['totalSize'] / 1024.0 / 1024;
-
-//            var tab = { files: [ ] };
-//            //debugger;
-//            for(var i = 0; i < val.file1.length; ++i)
-//                tab.files.push({
-//                    f1:   val.file1[i],
-//                    f2: val.file2[i]
-//                });
-//            var templateFiles = ' {{#files}} '  +  '<div>{{f1}},'  +  '{{f2}}</div>'+  '{{/files}}';
-//            var htmlFiles = Mustache.to_html(templateFiles,tab)   ;
-//            folder1=val['folder1'];
-//            folder2=val['folder2'];
             var template = '<h3>{{occurences}} ({{totalSize}})</h3>' +
                 '<div>' +
-                '<div><a href="explorer://rest/hello/folder/?path={{folder1}}">{{folder1}}</a></div> ' +
-                '<div><a href="explorer://rest/hello/folder/?path={{folder2}}">{{folder2}}</a></div>' +
-//                 htmlFiles +
+                '<div>' + toFolderLink("{{folder1}}") + '</div> ' +
+                '<div>' + toFolderLink("{{folder2}}") + '</div> ' +
                 '</div>';
             var html = Mustache.to_html(template, val);
+
             $('#accordion-duplicate-folders').append(html);
         });
-        $('#accordion-duplicate-folders').accordion({
+
+        $('#accordion-duplicate-folders').accordion('destroy').accordion({
             collapsible:true,
             autoHeight:false,
             active:false,
@@ -180,6 +194,7 @@ function getDuplicateFolder() {
 
             }
         });
+       // updateAccortion();
         //$('#accordion-duplicate-folders').html(html);
 
 
@@ -240,11 +255,10 @@ function uploadFinished(object) {
         var imgTag = Mustache.to_html(template, image);
 
         //console.log($(imgTag).exifPretty());
-        description = '<div class="description flt"> Distance:' + rmse + '<br>  ' + '<a href="explorer://rest/hello/folder/?path=' + image.path + '">' + image.path + '</a><br></div>'
+        description = '<div class="description flt"> Distance:' + rmse + '<br>  ' + toFolderAndFileLink(image.path)+ '</a><br></div>'
 
 //        $("#duplicate_upload_result").append('<div class="floated_img"><div class="nailthumb-container nailthumb-image-titles-animated-onhover square">' + imgTag + "</div>" + rmse +  "  " + image.path+ "</div>");
         $("#duplicate_upload_result").append('<div class="floated_img cls"><div class="nailthumb-container nailthumb-image-titles-animated-onhover square flt">' + imgTag + "</div>" + description + "</div>");
-
 
 
     }

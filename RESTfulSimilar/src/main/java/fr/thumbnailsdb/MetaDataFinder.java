@@ -54,6 +54,9 @@ public class MetaDataFinder {
 
 
     public String getDate() {
+        if (metadata == null) {
+            return null;
+        }
         ExifSubIFDDirectory directory = metadata.getDirectory(ExifSubIFDDirectory.class);
         ExifSubIFDDescriptor descriptor = new ExifSubIFDDescriptor((ExifSubIFDDirectory) directory);
         Date date = null;
@@ -65,6 +68,9 @@ public class MetaDataFinder {
     }
 
     public String getGPS() {
+        if (metadata == null) {
+            return null;
+        }
         String result = "";
         GpsDirectory directory = metadata.getDirectory(GpsDirectory.class);
         if (directory != null && directory.getTags().size() > 2) {
@@ -82,6 +88,9 @@ public class MetaDataFinder {
     }
 
     public double[] getLatLong() {
+        if (metadata == null) {
+            return null;
+        }
         System.out.println("MetaDataFinder.getLatLon processing file : " + file );
         GpsDirectory directory = metadata.getDirectory(GpsDirectory.class);
         if (directory != null && directory.getTags().size() > 2) {
@@ -132,32 +141,6 @@ public class MetaDataFinder {
         }
         return decimaldms;
     }
-
-//    public void processMT(File fd) {
-//
-//        if (fd.isDirectory()) {
-//            String entries[] = fd.list();
-//            if (entries != null) {
-//                for (int i = 0; i < entries.length; i++) {
-//                    File f = null;
-//                    try {
-//                        f = new File(fd.getCanonicalPath() + "/" + entries[i]);
-//                    } catch (IOException e) {
-//                        e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-//                    }
-//
-//                    processMT(f);
-//
-//                }
-//            }
-//        } else {
-//            hasGPSData(fd);
-//               System.out.println(fd + " " + hasGPSData(fd));
-////            }
-//
-//        }
-//
-//    }
 
 
     public static void main(String[] args) {
