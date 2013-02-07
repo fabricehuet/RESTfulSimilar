@@ -19,7 +19,7 @@ function getIndexedPaths(div) {
         for (i in data) {
             var cb = document.createElement('input');
             cb.type = 'checkbox';
-            cb.checked=true;
+            cb.checked = true;
             cbh.appendChild(cb);
             cb.name = "folder";
             cb.value = data[i];
@@ -32,22 +32,25 @@ function getIndexedPaths(div) {
 
 
 function getStatus() {
-    $.get("rest/hello/status", function (data) {
-        // alert('page content: ' + data);
+    $.get("rest/hello/status",function (data) {
         document.getElementById('db_status').innerHTML = data["stringStatus"];
-    });
+    }).error(function () {
+            document.getElementById('db_status').innerHTML = "Cannot connect to REST service";
+
+        });
 }
 
 
 function getDuplicate() {
-    $
-        .get(
+    var folders = getSelectedFolders();
+    $.get(
         "rest/hello/identical",
         {
+            //max:$("input[name=max]").val(),
+            folder:folders,
             max:$("input[name=max]").val()
         },
         function (data) {
-
             var i = 1;
             var output = ""; // '<div id="accordion">';
             for (i in data) {
@@ -57,7 +60,7 @@ function getDuplicate() {
                 output += data[i].fileSize / 1024.0 / 1024;
                 output += "</h3>";
                 output += "<div>";
-                console.log(data[i]);
+               // console.log(data[i]);
                 for (f in data[i].al) {
                     // <p>" + i + "</p>"" +
                     //console.log(data[i].al[f]);
@@ -98,15 +101,17 @@ function updateAccordion(output) {
             if ($(".nailthumb-container", ui.newContent).length == 0) {
                 $.each($("[id=imagePath]", ui.newContent), function (index, data) {
                     //  console.log($(data).html());
-                    $.post("rest/hello/getImage/", $(data).html(), function (image) {
-                        var template = "<img src=\"data:image;base64,{{data}}\" title=\" {{title}} \"/>";
-                        var imgTag = Mustache.to_html(template, image);
-                        $(data).prepend('<div class="nailthumb-container nailthumb-image-titles-animated-onhover square">' + imgTag + "</div>");
-                        jQuery(document).ready(function () {
-                            jQuery('.nailthumb-container').nailthumb();
-                            jQuery('.nailthumb-image-titles-animated-onhover').nailthumb();
-                        })
-                    });
+//                    $.get("rest/hello/getThumbnail/", {path: $(data).html().split(' ')[0]}, function (image) {
+//
+//                        var template = '<img src="data:image;base64,{{base64Data}}" title="{{path}} "/>';
+//                        var imgTag = Mustache.to_html(template, image);
+//
+//                        $(data).prepend('<div class="nailthumb-container nailthumb-image-titles-animated-onhover square">' + imgTag + "</div>");
+//                        jQuery(document).ready(function () {
+//                            jQuery('.nailthumb-container').nailthumb();
+//                            jQuery('.nailthumb-image-titles-animated-onhover').nailthumb();
+//                        })
+//                    });
                 });
             }
         }
@@ -124,7 +129,7 @@ function getDuplicateFolderDetails(ui, folder1, folder2) {
             folder2:folder2
         },
         function (data) {
-            console.log(data);
+           // console.log(data);
             var tab = { files:[ ] };
             //debugger;
             for (var i = 0; i < data.file1.length; ++i)
@@ -146,26 +151,27 @@ function getDuplicateFolderDetails(ui, folder1, folder2) {
 function getSelectedFolders() {
     var inputs = $("input[name=folder]");
     var folders = [];
-    for (i=0; i<inputs.length;i++) {
+    for (i = 0; i < inputs.length; i++) {
         if (inputs[i].checked) {
             folders[i] = inputs[i].value;
         }
 
     }
-    console.log(folders);
+    //console.log(folders);
     return folders;
 }
 
 function getDuplicateFolder() {
 
-    jQuery.ajaxSettings.traditional = true;
     console.log("get duplicate folder");
     var folders = getSelectedFolders();
     $('#accordion-duplicate-folders').children().remove();
-    $.getJSON('rest/hello/duplicateFolder', {folder:folders}, function (data) {
+    $.getJSON('rest/hello/duplicateFolder', {
+        folder:folders
+    }, function (data) {
         $.each(data, function (key, val) {
-            console.log("data is back");
-            console.log(val);
+           // console.log("data is back");
+           // console.log(val);
             val['totalSize'] = val['totalSize'] / 1024.0 / 1024;
             var template = '<h3>{{occurences}} ({{totalSize}})</h3>' +
                 '<div>' +
@@ -194,7 +200,7 @@ function getDuplicateFolder() {
 
             }
         });
-       // updateAccortion();
+        // updateAccortion();
         //$('#accordion-duplicate-folders').html(html);
 
 
@@ -221,14 +227,14 @@ function index(currentForm) {
 //	val = currentForm[0]; // document.getElementById("index_path").value;
     val = document.getElementById("index_path").value;
 
-    console.log(val);
+  //  console.log(val);
 
     // prettyPrint(val);
     // prettyPrint(currentForm);
     $.get("rest/hello/index", {
         path:val
     }, function (data) {
-        console.log("index done on  ");
+   //     console.log("index done on  ");
         // prettyPrint(currentForm.index_path.value);
     });
 }
@@ -255,12 +261,10 @@ function uploadFinished(object) {
         var imgTag = Mustache.to_html(template, image);
 
         //console.log($(imgTag).exifPretty());
-        description = '<div class="description flt"> Distance:' + rmse + '<br>  ' + toFolderAndFileLink(image.path)+ '</a><br></div>'
+        description = '<div class="description flt"> Distance:' + rmse + '<br>  ' + toFolderAndFileLink(image.path) + '</a><br></div>'
 
 //        $("#duplicate_upload_result").append('<div class="floated_img"><div class="nailthumb-container nailthumb-image-titles-animated-onhover square">' + imgTag + "</div>" + rmse +  "  " + image.path+ "</div>");
         $("#duplicate_upload_result").append('<div class="floated_img cls"><div class="nailthumb-container nailthumb-image-titles-animated-onhover square flt">' + imgTag + "</div>" + description + "</div>");
-
-
     }
     jQuery(document).ready(function () {
         jQuery('.nailthumb-container').nailthumb();
@@ -270,7 +274,7 @@ function uploadFinished(object) {
 
 
 function getWithRMSE(param, rmse) {
-    $.post("rest/hello/getImage/", param.path, function (image) {
+    $.get("rest/hello/getThumbnail/", param.path, function (image) {
         //$('[title]',image);
         var template = "<img src=\"data:image;base64,{{data}}\" title=\" {{title}} \"/>";
         var imgTag = Mustache.to_html(template, image);

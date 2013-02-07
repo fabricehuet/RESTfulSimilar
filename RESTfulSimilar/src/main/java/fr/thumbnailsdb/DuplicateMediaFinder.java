@@ -28,7 +28,7 @@ public class DuplicateMediaFinder {
     }
 
     public void prettyPrintDuplicateFolder(ResultSet r) {
-       Collection<DuplicateFolderGroup> map = computeDuplicateFolderSets(r).asSortedCollection();
+       Collection<DuplicateFolderGroup> map = computeDuplicateFolderSets(r).asSortedCollection(null);
         Iterator<DuplicateFolderGroup> it = map.iterator();
             //System.out.println(k + "  have " + map.get(k).occurences + " common files");
         while (it.hasNext()) {

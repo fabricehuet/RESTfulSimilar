@@ -463,7 +463,6 @@ public class ThumbStore {
             frame = new JFrame();
             final JLabel label = new JLabel(new ImageIcon(bf));
             frame.add(label);
-
         }
         frame.pack();
         frame.setVisible(true);

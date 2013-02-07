@@ -50,17 +50,14 @@ public class DuplicateFileGroup {
         return al.get(i);
     }
 
-//    public Collection<String> getParentFolderList() {
-//        ArrayList<String> l = new ArrayList<String>();
-//        for (String s : al) {
-//            File file = new File(s);
-//            //File parentDir = file.getParentFile(); // to get the parent dir
-//            String parentDirName = file.getParent(); // to get the parent dir name
-//           // System.out.println("Folder name is " + parentDirName);
-//            l.add(parentDirName);
-//        }
-//        return l;
-//    }
 
+    public boolean match(String filter) {
+        for (String s : al) {
+            if (s.contains(filter)) {
+                return true;
+            }
+        }
+        return false;
+    }
 
 }

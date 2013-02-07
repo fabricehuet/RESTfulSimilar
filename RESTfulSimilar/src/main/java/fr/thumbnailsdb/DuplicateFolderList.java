@@ -89,11 +89,6 @@ public class DuplicateFolderList {
 
     private boolean match(DuplicateFolderGroup d, String[] filter) {
         for (String s : filter) {
-//            System.out.println("DuplicateFolderList.match  checking "  );
-//            System.out.println("    " + d.folder1);
-//            System.out.println("    " + d.folder2);
-//            System.out.println("filter " + s);
-//            System.out.println("result is " +  (d.folder1.contains(s) || d.folder2.contains(s)) );
             if (d.folder1.contains(s) || d.folder2.contains(s)) {
                 return true;
             }
