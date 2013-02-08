@@ -54,9 +54,14 @@ public class DuplicateFolderList {
     }
 
     private String fileToDirectory(String n) {
-        File file = new File(n);
+        int folderIndex = n.lastIndexOf('/');
+        if (folderIndex <0) {
+            //it's probably a windows path
+            folderIndex = n.lastIndexOf('\\');
+        }
+       // File file = new File(n);
 //            //File parentDir = file.getParentFile(); // to get the parent dir
-        return file.getParent(); // to get the parent dir name
+        return n.substring(0,folderIndex);//file.getParent(); // to get the parent dir name
     }
 
 
@@ -65,7 +70,7 @@ public class DuplicateFolderList {
         return folderWithDuplicates.get(couple);
     }
 
-    public Collection asSortedCollection(String[] filter) {
+    public Collection asSortedCollection(String[] filter, int max) {
         TreeSet<DuplicateFolderGroup> list = new TreeSet<DuplicateFolderGroup>(new Comparator<DuplicateFolderGroup>() {
             //	@Override
             public int compare(DuplicateFolderGroup o1, DuplicateFolderGroup o2) {
@@ -80,8 +85,9 @@ public class DuplicateFolderList {
         ArrayList<DuplicateFolderGroup> al = new ArrayList<DuplicateFolderGroup>(list.size());
         Iterator<DuplicateFolderGroup> it = list.iterator();
         int i = 0;
-        while (it.hasNext()) {
+        while (it.hasNext() && i<max) {
             al.add(it.next());
+            i++;
 
         }
         return al;
@@ -96,5 +102,9 @@ public class DuplicateFolderList {
         return false;
     }
 
+
+    public int size() {
+        return folderWithDuplicates.keySet().size();
+    }
 
 }

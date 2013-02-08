@@ -56,13 +56,13 @@ public class Main {
 		if ("duplicate".equals(args[0])) {
 			DuplicateMediaFinder df = new DuplicateMediaFinder(tb);
 			// String source = args[1];
-			df.prettyPrintDuplicate(df.findDuplicateMedia());
+			//df.prettyPrintDuplicate(df.findDuplicateMedia());
 		}
 
         if ("duplicateFolder".equals(args[0])) {
             DuplicateMediaFinder df = new DuplicateMediaFinder(tb);
             // String source = args[1];
-            df.prettyPrintDuplicateFolder(df.findDuplicateMedia());
+            //df.prettyPrintDuplicateFolder(df.findDuplicateMedia());
         }
 
 	}

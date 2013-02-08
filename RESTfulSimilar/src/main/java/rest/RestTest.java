@@ -55,18 +55,22 @@ public class RestTest {
         File f = new File(dbFileName);
         if (f.exists()) {
             try {
+                //TODO : Loop over lines
                 BufferedReader fr = new BufferedReader(new FileReader(f));
-                bdName = fr.readLine();
+                while ((bdName = fr.readLine()) != null) {
+                    if (tb == null) {
+                        tb = new ThumbStore(bdName);
+                    } else {
+                        tb.addDB(bdName);
+                    }
+                }
             } catch (FileNotFoundException e) {
                 e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
             } catch (IOException e) {
-                e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+                e.printStackTrace();  //To chanfge body of catch statement use File | Settings | File Templates.
             }
-        }
-        if (bdName == null) {
-            tb = new ThumbStore();
         } else {
-            tb = new ThumbStore(bdName);
+            tb = new ThumbStore();
         }
 
         si = new SimilarImageFinder(tb);
@@ -74,13 +78,6 @@ public class RestTest {
 
     }
 
-    @GET
-    @Path("/{param}")
-    public Response getMsg(@PathParam("param") String msg) {
-        String output = "Jersey say : " + msg;
-        return Response.status(200).entity(output).build();
-
-    }
 
     @GET
     @Path("/db/{param}")
@@ -114,7 +111,7 @@ public class RestTest {
     @Produces({MediaType.APPLICATION_JSON})
     public Response getPaths() {
 //        System.out.println("status " + Status.getStatus());
-        System.out.println("Found the paths " + tb.getIndexedPaths());
+        //  System.out.println("Found the pathsOfDBOnDisk " + tb.getIndexedPaths());
         return Response.status(200).entity(tb.getIndexedPaths()).build();
 
     }
@@ -125,7 +122,9 @@ public class RestTest {
     @Produces({MediaType.APPLICATION_JSON})
     public Response getDuplicate(@QueryParam("max") String max, @QueryParam("folder") final java.util.List<String> obj) {
         System.out.println("RestTest.getDuplicate " + obj);
+        Status.getStatus().setStringStatus("Requesting duplicate media");
         Collection dc = (Collection) df.computeDuplicateSets(df.findDuplicateMedia()).toCollection(Integer.parseInt(max), obj.toArray(new String[]{}));
+        Status.getStatus().setStringStatus(Status.IDLE);
         return Response.status(200).entity(dc).build();
     }
 
@@ -135,7 +134,12 @@ public class RestTest {
     @Produces({MediaType.APPLICATION_JSON})
     public Response getDuplicateFolder(@QueryParam("folder") final java.util.List<String> obj) {
         System.out.println("RestTest.getDuplicateFolder " + obj);
-        Collection<DuplicateFolderGroup> col = getDuplicateFolderGroup().asSortedCollection(obj.toArray(new String[]{}));
+        Status.getStatus().setStringStatus("Requesting duplicate folder list");
+
+        Collection<DuplicateFolderGroup> col = getDuplicateFolderGroup().asSortedCollection(obj.toArray(new String[]{}), 300);
+        System.out.println("RestTest.getDuplicateFolder sending results of size " + col.size());
+        Status.getStatus().setStringStatus(Status.IDLE);
+
         return Response.status(200).entity(col).build();
     }
 
@@ -151,7 +155,6 @@ public class RestTest {
     @Path("/duplicateFolderDetails")
     @Produces({MediaType.APPLICATION_JSON})
     public Response getDuplicateFolderDetails(@QueryParam("folder1") String f1, @QueryParam("folder2") String f2) {
-
         DuplicateFolderGroup group = getDuplicateFolderGroup().getDetails(f1, f2);
         JSONObject json = new JSONObject();
 

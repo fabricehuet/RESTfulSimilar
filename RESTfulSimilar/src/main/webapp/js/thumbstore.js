@@ -81,6 +81,10 @@ function toFolderLink(path) {
 
 function toFolderAndFileLink(path) {
     var n = path.lastIndexOf('/');
+    if (n==-1) {
+        //ok, maybe it's a windows path
+        n = path.lastIndexOf('\\');
+    }
     //  var file = path.substring(n + 1);
     var folder = path.substring(0, n);
 
@@ -163,9 +167,10 @@ function getSelectedFolders() {
 
 function getDuplicateFolder() {
 
-    console.log("get duplicate folder");
+    //console.log("get duplicate folder");
     var folders = getSelectedFolders();
     $('#accordion-duplicate-folders').children().remove();
+    $('#duplicate-folders-details').children().remove();
     $.getJSON('rest/hello/duplicateFolder', {
         folder:folders
     }, function (data) {
@@ -175,8 +180,8 @@ function getDuplicateFolder() {
             val['totalSize'] = val['totalSize'] / 1024.0 / 1024;
             var template = '<h3>{{occurences}} ({{totalSize}})</h3>' +
                 '<div>' +
-                '<div>' + toFolderLink("{{folder1}}") + '</div> ' +
-                '<div>' + toFolderLink("{{folder2}}") + '</div> ' +
+                '<div id="folder1">' + toFolderLink("{{folder1}}") + '</div> ' +
+                '<div id="folder2">' + toFolderLink("{{folder2}}") + '</div> ' +
                 '</div>';
             var html = Mustache.to_html(template, val);
 
@@ -191,8 +196,15 @@ function getDuplicateFolder() {
                 // console.log("activated baby! " + ui);
                 // debugger;
                 if (ui.newHeader.length > 0) {
-                    folder1 = ui.newPanel.find('a')[0].text;
-                    folder2 = ui.newPanel.find('a')[1].text;
+                    folder1 = $("#folder1", ui.newPanel).contents()
+                        .filter(function() {
+                            return this.nodeType == Node.TEXT_NODE;
+                        }).text().trim(); //ui.newPanel.find('a')[0].text;
+                    folder2 = $("#folder2",ui.newPanel).contents()
+                        .filter(function() {
+                            return this.nodeType == Node.TEXT_NODE;
+                        }).text().trim();
+                    //ui.newPanel.find('a')[1].text;
                     getDuplicateFolderDetails(ui, folder1, folder2);
                 } else {
                     $('#duplicate-folders-details').children().remove();
