@@ -157,7 +157,8 @@ function getSelectedFolders() {
     var folders = [];
     for (i = 0; i < inputs.length; i++) {
         if (inputs[i].checked) {
-            folders[i] = inputs[i].value;
+            //folders[i] = inputs[i].value;
+            folders.push(inputs[i].value);
         }
 
     }
@@ -220,13 +221,15 @@ function getDuplicateFolder() {
 }
 
 function shrink() {
-    $.get("rest/hello/shrink", function (data) {
+    var folders = getSelectedFolders();
+    $.get("rest/hello/shrink", {  folder:folders}, function (data) {
         //alert("shrink done");
     });
 }
 
 function update() {
-    $.get("rest/hello/update", function (data) {
+    var folders = getSelectedFolders();
+    $.get("rest/hello/update", {folder:folders}, function (data) {
         //alert("shrink done");
     });
 }

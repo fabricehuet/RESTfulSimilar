@@ -12,6 +12,7 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
@@ -310,14 +311,20 @@ public class MediaIndexer {
 
 
     public void updateDB() {
-        ArrayList<String> al = ts.getIndexedPaths();
+        this.updateDB(ts.getIndexedPaths());
+    }
+
+    public void updateDB(List<String> al) {
+
         for (String s : al) {
+            System.out.println("MediaIndexer.updateDB updating " +s);
             Status.getStatus().setStringStatus("Updating folder " + s);
 
             processMTRoot(s);
         }
         Status.getStatus().setStringStatus(Status.IDLE);
     }
+
 
     protected void submit(RunnableProcess rp) {
 //		try {

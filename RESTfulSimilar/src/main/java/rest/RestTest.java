@@ -278,16 +278,16 @@ public class RestTest {
 
     @GET
     @Path("shrink/")
-    public Response shrink() {
-        tb.shrink();
+    public Response shrink(@QueryParam("folder") final java.util.List<String> obj) {
+        tb.shrink(obj);
         return Response.status(200).entity("Shrink done").build();
     }
 
 
     @GET
     @Path("update/")
-    public Response update() {
-        new MediaIndexer(tb).updateDB();
+    public Response update(@QueryParam("folder") final java.util.List<String> obj) {
+        new MediaIndexer(tb).updateDB(obj);
         return Response.status(200).entity("Update done").build();
     }
 
