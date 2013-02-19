@@ -53,31 +53,33 @@ public class SimilarImageFinder {
             int size = thumbstore.size();
 //            preloadedDescriptors=new ArrayList<MediaFileDescriptor>(size);
             bkTree = new BKTree<MediaFileDescriptor>(new RMSEDistance());
-            ResultSet res = thumbstore.getAllInDataBase();
-            try {
-                while (res.next()) {
-                    String path = res.getString("path");
-                    byte[] d = res.getBytes("data");
-                    if (d != null) {
-                        ObjectInputStream oi = new ObjectInputStream(new ByteArrayInputStream(d));
-                        int[] idata = (int[]) oi.readObject();
-                        if (idata != null) {
+            ArrayList<ResultSet> ares = thumbstore.getAllInDataBase();
+            for (ResultSet res : ares) {
+                try {
+                    while (res.next()) {
+                        String path = res.getString("path");
+                        byte[] d = res.getBytes("data");
+                        if (d != null) {
+                            ObjectInputStream oi = new ObjectInputStream(new ByteArrayInputStream(d));
+                            int[] idata = (int[]) oi.readObject();
+                            if (idata != null) {
 
-                            MediaFileDescriptor imd = new MediaFileDescriptor();
-                            imd.setPath(path);
-                            imd.setData(idata);
+                                MediaFileDescriptor imd = new MediaFileDescriptor();
+                                imd.setPath(path);
+                                imd.setData(idata);
 //                            preloadedDescriptors.add(imd);
-                            //System.out.println("SimilarImageFinder.getPreloadedDescriptors adding to tree " + imd.getPath());
-                            bkTree.add(imd);
+                                //System.out.println("SimilarImageFinder.getPreloadedDescriptors adding to tree " + imd.getPath());
+                                bkTree.add(imd);
+                            }
                         }
                     }
+                } catch (SQLException e) {
+                    e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+                } catch (ClassNotFoundException e) {
+                    e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+                } catch (IOException e) {
+                    e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
                 }
-            } catch (SQLException e) {
-                e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-            } catch (ClassNotFoundException e) {
-                e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-            } catch (IOException e) {
-                e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
             }
         }
         System.out.println("SimilarImageFinder.getPreloadedDescriptors records in BKTree : " + bkTree.size());
@@ -94,31 +96,33 @@ public class SimilarImageFinder {
             //VPTree tree = builder.buildVPTree(strings);
 
 
-            ResultSet res = thumbstore.getAllInDataBase();
-            try {
-                while (res.next()) {
-                    String path = res.getString("path");
-                    byte[] d = res.getBytes("data");
-                    if (d != null) {
-                        ObjectInputStream oi = new ObjectInputStream(new ByteArrayInputStream(d));
-                        int[] idata = (int[]) oi.readObject();
-                        if (idata != null) {
+            ArrayList<ResultSet> ares = thumbstore.getAllInDataBase();
+            for (ResultSet res : ares) {
+                try {
+                    while (res.next()) {
+                        String path = res.getString("path");
+                        byte[] d = res.getBytes("data");
+                        if (d != null) {
+                            ObjectInputStream oi = new ObjectInputStream(new ByteArrayInputStream(d));
+                            int[] idata = (int[]) oi.readObject();
+                            if (idata != null) {
 
-                            MediaFileDescriptor imd = new MediaFileDescriptor();
-                            imd.setPath(path);
-                            imd.setData(idata);
+                                MediaFileDescriptor imd = new MediaFileDescriptor();
+                                imd.setPath(path);
+                                imd.setData(idata);
 //                            preloadedDescriptors.add(imd);
-                            //System.out.println("SimilarImageFinder.getPreloadedDescriptors adding to tree " + imd.getPath());
-                            al.add(imd);
+                                //System.out.println("SimilarImageFinder.getPreloadedDescriptors adding to tree " + imd.getPath());
+                                al.add(imd);
+                            }
                         }
                     }
+                } catch (SQLException e) {
+                    e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+                } catch (ClassNotFoundException e) {
+                    e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+                } catch (IOException e) {
+                    e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
                 }
-            } catch (SQLException e) {
-                e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-            } catch (ClassNotFoundException e) {
-                e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-            } catch (IOException e) {
-                e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
             }
             System.out.println("SimilarImageFinder.getPreloadedDescriptors array list built , creating tree");
             vpTree = builder.buildVPTree(al);
@@ -147,40 +151,42 @@ public class SimilarImageFinder {
                 increment = 1;
             }
 
-            ResultSet res = thumbstore.getAllInDataBase();
-            try {
-                while (res.next()) {
-                    i++;
-                    if (i > increment) {
-                        i = 0;
-                        step++;
-                        if (pb != null) {
-                            pb.update(step, 20);
+            ArrayList<ResultSet> ares = thumbstore.getAllInDataBase();
+            for (ResultSet res : ares) {
+                try {
+                    while (res.next()) {
+                        i++;
+                        if (i > increment) {
+                            i = 0;
+                            step++;
+                            if (pb != null) {
+                                pb.update(step, 20);
+                            }
+                            Status.getStatus().setStringStatus("Building descriptors list " + ((step + 1) * 5) + "%");
                         }
-                        Status.getStatus().setStringStatus("Building descriptors list " + ((step+1)*5) + "%");
-                    }
-                    String path = res.getString("path");
-                    byte[] d = res.getBytes("data");
-                    if (d != null) {
-                        ObjectInputStream oi = new ObjectInputStream(new ByteArrayInputStream(d));
-                        int[] idata = (int[]) oi.readObject();
-                        if (idata != null) {
+                        String path = res.getString("path");
+                        byte[] d = res.getBytes("data");
+                        if (d != null) {
+                            ObjectInputStream oi = new ObjectInputStream(new ByteArrayInputStream(d));
+                            int[] idata = (int[]) oi.readObject();
+                            if (idata != null) {
 
-                            MediaFileDescriptor imd = new MediaFileDescriptor();
-                            imd.setPath(path);
-                            imd.setData(idata);
-                            preloadedDescriptors.add(imd);
-                            //System.out.println("SimilarImageFinder.getPreloadedDescriptors adding to tree " + imd.getPath());
+                                MediaFileDescriptor imd = new MediaFileDescriptor();
+                                imd.setPath(path);
+                                imd.setData(idata);
+                                preloadedDescriptors.add(imd);
+                                //System.out.println("SimilarImageFinder.getPreloadedDescriptors adding to tree " + imd.getPath());
 //                            al.add(imd);
+                            }
                         }
                     }
+                } catch (SQLException e) {
+                    e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+                } catch (ClassNotFoundException e) {
+                    e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+                } catch (IOException e) {
+                    e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
                 }
-            } catch (SQLException e) {
-                e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-            } catch (ClassNotFoundException e) {
-                e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-            } catch (IOException e) {
-                e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
             }
         }
 
@@ -223,7 +229,7 @@ public class SimilarImageFinder {
         int found = 0;
         Status.getStatus().setStringStatus(Status.FIND_SIMILAR);
         int size = getPreloadedDescriptors().size();
-        int processed =0;
+        int processed = 0;
         ProgressBar pb = new ProgressBar();
         int increment = size / 20;
         int i = 0;
@@ -245,7 +251,7 @@ public class SimilarImageFinder {
                 if (pb != null) {
                     pb.update(step, 20);
                 }
-                Status.getStatus().setStringStatus(Status.FIND_SIMILAR + " " + (processed*100/size) + "%");
+                Status.getStatus().setStringStatus(Status.FIND_SIMILAR + " " + (processed * 100 / size) + "%");
             }
             //System.out.println("Processed " + processed);
 
@@ -291,23 +297,27 @@ public class SimilarImageFinder {
         MediaIndexer tg = new MediaIndexer(null);
         MediaFileDescriptor id = tg.buildMediaDescriptor(new File(source)); // ImageDescriptor.readFromDisk(s);
         System.out.println(id.md5Digest);
-        ResultSet res = thumbstore.getDuplicatesMD5(id);
         ArrayList<MediaFileDescriptor> al = new ArrayList<MediaFileDescriptor>();
-        try {
-            while (res.next()) {
-                MediaFileDescriptor imd = new MediaFileDescriptor();
-                String path = res.getString("path");
-                String md5 = res.getString("md5");
-                long size = res.getLong("size");
-                imd.setPath(path);
-                imd.setMd5Digest(md5);
-                imd.setSize(size);
-                al.add(imd);
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return al;
+        return thumbstore.getDuplicatesMD5(id);
+//        for (ResultSet res : ares) {
+//
+//
+//            try {
+//                while (res.next()) {
+//                    MediaFileDescriptor imd = new MediaFileDescriptor();
+//                    String path = res.getString("path");
+//                    String md5 = res.getString("md5");
+//                    long size = res.getLong("size");
+//                    imd.setPath(path);
+//                    imd.setMd5Digest(md5);
+//                    imd.setSize(size);
+//                    al.add(imd);
+//                }
+//            } catch (SQLException e) {
+//                e.printStackTrace();
+//            }
+//        }
+//        return al;
     }
 
 
@@ -341,7 +351,7 @@ public class SimilarImageFinder {
 
         MediaIndexer tg = new MediaIndexer(null);
         id = tg.buildMediaDescriptor(new File(s)); // ImageDescriptor.readFromDisk(s);
-        this.prettyPrintSimilarResults(this.findSimilarImage(id,2), 2);
+        this.prettyPrintSimilarResults(this.findSimilarImage(id, 2), 2);
     }
 
     public static void main(String[] args) {

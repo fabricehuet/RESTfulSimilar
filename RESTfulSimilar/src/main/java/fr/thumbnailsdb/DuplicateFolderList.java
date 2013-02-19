@@ -54,18 +54,23 @@ public class DuplicateFolderList {
     }
 
     private String fileToDirectory(String n) {
-        File file = new File(n);
+        int folderIndex = n.lastIndexOf('/');
+        if (folderIndex <0) {
+            //it's probably a windows path
+            folderIndex = n.lastIndexOf('\\');
+        }
+       // File file = new File(n);
 //            //File parentDir = file.getParentFile(); // to get the parent dir
-        return file.getParent(); // to get the parent dir name
+        return n.substring(0,folderIndex);//file.getParent(); // to get the parent dir name
     }
 
 
-    public  DuplicateFolderGroup getDetails(String f1, String f2) {
+    public DuplicateFolderGroup getDetails(String f1, String f2) {
         String couple = f1 + " <-> " + f2;
         return folderWithDuplicates.get(couple);
     }
 
-    public Collection asSortedCollection() {
+    public Collection asSortedCollection(String[] filter, int max) {
         TreeSet<DuplicateFolderGroup> list = new TreeSet<DuplicateFolderGroup>(new Comparator<DuplicateFolderGroup>() {
             //	@Override
             public int compare(DuplicateFolderGroup o1, DuplicateFolderGroup o2) {
@@ -73,17 +78,33 @@ public class DuplicateFolderList {
             }
         });
         for (DuplicateFolderGroup d : folderWithDuplicates.values()) {
-            list.add(d);
+            if (match(d, filter)) {
+                list.add(d);
+            }
         }
         ArrayList<DuplicateFolderGroup> al = new ArrayList<DuplicateFolderGroup>(list.size());
         Iterator<DuplicateFolderGroup> it = list.iterator();
         int i = 0;
-        while (it.hasNext()) {
+        while (it.hasNext() && i<max) {
             al.add(it.next());
+            i++;
 
         }
         return al;
     }
 
+    private boolean match(DuplicateFolderGroup d, String[] filter) {
+        for (String s : filter) {
+            if (d.folder1.contains(s) || d.folder2.contains(s)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+
+    public int size() {
+        return folderWithDuplicates.keySet().size();
+    }
 
 }

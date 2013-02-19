@@ -37,6 +37,10 @@ import org.codehaus.jettison.json.JSONObject;
 @Singleton
 public class RestTest {
 
+    private final String dbFileName = "db.txt";
+
+    String bdName;
+
     protected ThumbStore tb;
     protected SimilarImageFinder si;
     protected DuplicateMediaFinder df;
@@ -44,21 +48,36 @@ public class RestTest {
 
     DuplicateFolderList dc = null;
 
+
     public RestTest() {
         System.out.println("RestTest.RestTest()");
-        tb = new ThumbStore();
+
+        File f = new File(dbFileName);
+        if (f.exists()) {
+            try {
+                //TODO : Loop over lines
+                BufferedReader fr = new BufferedReader(new FileReader(f));
+                while ((bdName = fr.readLine()) != null) {
+                    if (tb == null) {
+                        tb = new ThumbStore(bdName);
+                    } else {
+                        tb.addDB(bdName);
+                    }
+                }
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+            } catch (IOException e) {
+                e.printStackTrace();  //To chanfge body of catch statement use File | Settings | File Templates.
+            }
+        } else {
+            tb = new ThumbStore();
+        }
+
         si = new SimilarImageFinder(tb);
         df = new DuplicateMediaFinder(tb);
 
     }
 
-    @GET
-    @Path("/{param}")
-    public Response getMsg(@PathParam("param") String msg) {
-        String output = "Jersey say : " + msg;
-        return Response.status(200).entity(output).build();
-
-    }
 
     @GET
     @Path("/db/{param}")
@@ -92,7 +111,7 @@ public class RestTest {
     @Produces({MediaType.APPLICATION_JSON})
     public Response getPaths() {
 //        System.out.println("status " + Status.getStatus());
-        System.out.println("Found the paths " + tb.getIndexedPaths());
+        //  System.out.println("Found the pathsOfDBOnDisk " + tb.getIndexedPaths());
         return Response.status(200).entity(tb.getIndexedPaths()).build();
 
     }
@@ -101,8 +120,11 @@ public class RestTest {
     @GET
     @Path("/identical")
     @Produces({MediaType.APPLICATION_JSON})
-    public Response getDuplicate(@QueryParam("max") String max) {
-        Collection dc = (Collection) df.computeDuplicateSets(df.findDuplicateMedia()).toCollection(Integer.parseInt(max));
+    public Response getDuplicate(@QueryParam("max") String max, @QueryParam("folder") final java.util.List<String> obj) {
+        System.out.println("RestTest.getDuplicate " + obj);
+        Status.getStatus().setStringStatus("Requesting duplicate media");
+        Collection dc = (Collection) df.computeDuplicateSets(df.findDuplicateMedia()).toCollection(Integer.parseInt(max), obj.toArray(new String[]{}));
+        Status.getStatus().setStringStatus(Status.IDLE);
         return Response.status(200).entity(dc).build();
     }
 
@@ -110,12 +132,14 @@ public class RestTest {
     @GET
     @Path("/duplicateFolder")
     @Produces({MediaType.APPLICATION_JSON})
-    public Response getDuplicateFolder() {
-        System.out.println("RestTest.getDuplicateFolder ");
-        Collection<DuplicateFolderGroup> col =getDuplicateFolderGroup().asSortedCollection();
-//        for (DuplicateFolderGroup dfg : dc) {
-//            System.out.println(dfg);
-//        }
+    public Response getDuplicateFolder(@QueryParam("folder") final java.util.List<String> obj) {
+        System.out.println("RestTest.getDuplicateFolder " + obj);
+        Status.getStatus().setStringStatus("Requesting duplicate folder list");
+
+        Collection<DuplicateFolderGroup> col = getDuplicateFolderGroup().asSortedCollection(obj.toArray(new String[]{}), 300);
+        System.out.println("RestTest.getDuplicateFolder sending results of size " + col.size());
+        Status.getStatus().setStringStatus(Status.IDLE);
+
         return Response.status(200).entity(col).build();
     }
 
@@ -131,9 +155,8 @@ public class RestTest {
     @Path("/duplicateFolderDetails")
     @Produces({MediaType.APPLICATION_JSON})
     public Response getDuplicateFolderDetails(@QueryParam("folder1") String f1, @QueryParam("folder2") String f2) {
-
-      DuplicateFolderGroup group = getDuplicateFolderGroup().getDetails(f1,f2);
-      JSONObject json = new JSONObject();
+        DuplicateFolderGroup group = getDuplicateFolderGroup().getDetails(f1, f2);
+        JSONObject json = new JSONObject();
 
         try {
             json.put("file1", group.getFile1());
@@ -161,44 +184,44 @@ public class RestTest {
 //        return Response.status(200).entity(img).build();
 //    }
 
-    @GET
-    @Path("getImage/")
-    @Produces("image/jpg")
-    public Response getImage(@QueryParam("path") String imageId) {
-        //    String img = null;
-        //System.out.println("imageID " + imageId);
-        // img = getImageAsHTMLImg(imageId);
-        //   BufferedImage img = null;
-        BufferedInputStream source = null;
-        ByteArrayOutputStream out = null;
-        try {
-            source = new BufferedInputStream(new FileInputStream(new File(imageId)));
-            out = new ByteArrayOutputStream();
-            byte[] buffer = new byte[8 * 1024];
-
-            int total = 0;
-            try {
-                int bytesRead;
-                while ((bytesRead = source.read(buffer)) != -1) {
-                    out.write(buffer, 0, bytesRead);
-                    total += bytesRead;
-                }
-            } catch (IOException e) {
-                e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-            } finally {
-                source.close();
-            }
-            final byte[] imgData = out.toByteArray();
-            final InputStream bigInputStream =
-                    new ByteArrayInputStream(imgData);
-            return Response.status(200).entity(bigInputStream).type("image/jpg").build();
-        } catch (IOException e) {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-        }
-
-        return Response.status(404).build();
-
-    }
+//    @GET
+//    @Path("getImage/")
+//    @Produces("image/jpg")
+//    public Response getImage(@QueryParam("path") String imageId) {
+//        //    String img = null;
+//        //System.out.println("imageID " + imageId);
+//        // img = getImageAsHTMLImg(imageId);
+//        //   BufferedImage img = null;
+//        BufferedInputStream source = null;
+//        ByteArrayOutputStream out = null;
+//        try {
+//            source = new BufferedInputStream(new FileInputStream(new File(imageId)));
+//            out = new ByteArrayOutputStream();
+//            byte[] buffer = new byte[8 * 1024];
+//
+//            int total = 0;
+//            try {
+//                int bytesRead;
+//                while ((bytesRead = source.read(buffer)) != -1) {
+//                    out.write(buffer, 0, bytesRead);
+//                    total += bytesRead;
+//                }
+//            } catch (IOException e) {
+//                e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+//            } finally {
+//                source.close();
+//            }
+//            final byte[] imgData = out.toByteArray();
+//            final InputStream bigInputStream =
+//                    new ByteArrayInputStream(imgData);
+//            return Response.status(200).entity(bigInputStream).type("image/jpg").build();
+//        } catch (IOException e) {
+//            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+//        }
+//
+//        return Response.status(404).build();
+//
+//    }
 
 
     @GET
@@ -206,7 +229,7 @@ public class RestTest {
     @Produces("image/jpg")
     public Response getThumbnail(@QueryParam("path") String imageId) {
         //    String img = null;
-        // System.out.println("Thubnail : imageID " + imageId);
+        System.out.println("Thubnail : imageID " + imageId);
         // img = getImageAsHTMLImg(imageId);
         //   BufferedImage img = null;
         BufferedInputStream source = null;
@@ -255,16 +278,16 @@ public class RestTest {
 
     @GET
     @Path("shrink/")
-    public Response shrink() {
-        tb.shrink();
+    public Response shrink(@QueryParam("folder") final java.util.List<String> obj) {
+        tb.shrink(obj);
         return Response.status(200).entity("Shrink done").build();
     }
 
 
     @GET
     @Path("update/")
-    public Response update() {
-        new MediaIndexer(tb).updateDB();
+    public Response update(@QueryParam("folder") final java.util.List<String> obj) {
+        new MediaIndexer(tb).updateDB(obj);
         return Response.status(200).entity("Update done").build();
     }
 
@@ -332,11 +355,16 @@ public class RestTest {
 
             String data = null;
             try {
-                BufferedImage bf =  tg.downScaleImage(ImageIO.read(new FileInputStream(new File(path))),200,200);
-                ByteArrayOutputStream out = new ByteArrayOutputStream();
-                ImageIO.write(bf,"JPEG", out);
-                data = Base64.encodeBase64String(out.toByteArray());
-              //  Base64.encodeBase64String(FileUtils.readFileToByteArray(new File(path)));
+                FileInputStream f = new FileInputStream(new File(path));
+                try {
+                    BufferedImage bf = tg.downScaleImage(ImageIO.read(f), 200, 200);
+                    ByteArrayOutputStream out = new ByteArrayOutputStream();
+                    ImageIO.write(bf, "JPEG", out);
+                    data = Base64.encodeBase64String(out.toByteArray());
+                } finally {
+                    f.close();
+                }
+                //  Base64.encodeBase64String(FileUtils.readFileToByteArray(new File(path)));
             } catch (IOException e) {
                 System.err.println("Err: File " + path + " not found");
             }
@@ -344,6 +372,7 @@ public class RestTest {
             SimilarImage si = new SimilarImage(path, data, mdf.getRmse());
             al.add(si);
             System.out.println(si);
+
         }
         System.out.println("RestTest.findSimilar sending " + al.size() + " elements");
 
