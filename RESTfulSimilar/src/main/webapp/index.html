@@ -29,12 +29,24 @@
     <script type="text/javascript" src="galleriffic-2.0/js/jquery.galleriffic.js"></script>
     <link rel="stylesheet" href="galleriffic-2.0/css/galleriffic-1.css" type="text/css" />
 
-    <!--&lt;!&ndash;for google maps&ndash;&gt;-->
-    <!--<style type="text/css">-->
-    <!--html { height: 100% }-->
-    <!--body { height: 100%; margin: 0; padding: 0 }-->
-    <!--#map_canvas { height: 100% }-->
-    <!--</style>-->
+   <script src="js/jquery.ay-table-sort.js"></script>
+    <style>
+        table { table-layout: fixed; border-collapse: collapse; width: 100%; }
+        thead { background: #b9c9fe; }
+        td,th { padding: 5px; }
+        tbody tr { border-top: 1px solid #fff; background: #e8edff; }
+
+        th.name { width: 200px; }
+        .authorship { margin-top: 20px; }
+
+        tbody { border-top: 5px solid #fff; }
+
+        thead th { text-align: left; cursor: pointer; }
+        thead th.ay-sort-asc:after { content: 'asc'; color: #666; margin-left: 5px; font-weight: normal; }
+        thead th.ay-sort-desc:after { content: 'desc'; color: #666; margin-left: 5px; font-weight: normal; }
+    </style>
+
+
     <script type="text/javascript"
             src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCJYZeuZ4jmifhLj-u4YrBIFv8X7K7dHe8&sensor=false">
     </script>
@@ -178,6 +190,7 @@
         <li><a href="drag.html">Drag'n'Drop</a></li>
         <!--<li><a href="#tabs-gps">GPS</a></li>-->
         <li><a href="grid.html">GPS</a></li>
+        <li><a href="table.html">Table</a></li>
         <!--<li><a href="gallery.html">GPS</a></li>-->
         <!--<li><a href="drag2.html">Drag'n'Drop-2</li>-->
     </ul>
@@ -194,8 +207,6 @@
 
         <div id="accordion"></div>
         <span id="duplicate_result"></span>
-
-
     </div>
 
     <div id="tabs-folder">
@@ -208,6 +219,9 @@
         </form>
         <div id="accordion-duplicate-folders" style="width:800px;float:left"></div>
         <div id="duplicate-folders-details" style="width:400px;float:left"></div>
+        <div  style="width:800px;float:left">
+        <table id="duplicate-folder-table" ></table>
+        </div>
     </div>
 
     <!--<div id="tabs-gps">-->

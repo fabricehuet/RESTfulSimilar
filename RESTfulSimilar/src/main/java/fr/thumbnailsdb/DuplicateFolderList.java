@@ -71,17 +71,22 @@ public class DuplicateFolderList {
     }
 
     public Collection asSortedCollection(String[] filter, int max) {
-        TreeSet<DuplicateFolderGroup> list = new TreeSet<DuplicateFolderGroup>(new Comparator<DuplicateFolderGroup>() {
-            //	@Override
-            public int compare(DuplicateFolderGroup o1, DuplicateFolderGroup o2) {
-                return Double.compare(o2.totalSize, o1.totalSize);
-            }
-        });
+//        TreeSet<DuplicateFolderGroup> list = new TreeSet<DuplicateFolderGroup>(new Comparator<DuplicateFolderGroup>() {
+//            //	@Override
+//            public int compare(DuplicateFolderGroup o1, DuplicateFolderGroup o2) {
+//                return Double.compare(o2.totalSize, o1.totalSize);
+//            }
+//        });
+
+        ArrayList<DuplicateFolderGroup> list = new ArrayList<DuplicateFolderGroup>();
+     //   System.out.println("DuplicateFolderList.asSortedCollection testing  " + folderWithDuplicates.values().size() + " duplicate folders");
         for (DuplicateFolderGroup d : folderWithDuplicates.values()) {
             if (match(d, filter)) {
                 list.add(d);
             }
         }
+     //   System.out.println("DuplicateFolderList.asSortedCollection found " + list.size() + " elements");
+
         ArrayList<DuplicateFolderGroup> al = new ArrayList<DuplicateFolderGroup>(list.size());
         Iterator<DuplicateFolderGroup> it = list.iterator();
         int i = 0;
@@ -90,15 +95,24 @@ public class DuplicateFolderList {
             i++;
 
         }
+        Collections.sort(al,new Comparator<DuplicateFolderGroup>() {
+            //	@Override
+            public int compare(DuplicateFolderGroup o1, DuplicateFolderGroup o2) {
+                return Double.compare(o2.totalSize, o1.totalSize);
+            }
+        });
+    //    System.out.println("DuplicateFolderList.asSortedCollection returning " + al.size() + " elements");
         return al;
     }
 
     private boolean match(DuplicateFolderGroup d, String[] filter) {
         for (String s : filter) {
             if (d.folder1.contains(s) || d.folder2.contains(s)) {
+                System.out.println("DuplicateFolderList.match " + d.folder1 + " OR " + d.folder2 + " matches " + s);
                 return true;
             }
         }
+        System.out.println("DuplicateFolderList.match " + d.folder1 + " OR " + d.folder2 + " no match");
         return false;
     }
 

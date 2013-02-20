@@ -27,6 +27,8 @@ function getIndexedPaths(div) {
             val++;
             cbh.appendChild(document.createElement('br'));
         }
+
+
     });
 }
 
@@ -60,7 +62,7 @@ function getDuplicate() {
                 output += data[i].fileSize / 1024.0 / 1024;
                 output += "</h3>";
                 output += "<div>";
-               // console.log(data[i]);
+                // console.log(data[i]);
                 for (f in data[i].al) {
                     // <p>" + i + "</p>"" +
                     //console.log(data[i].al[f]);
@@ -81,7 +83,7 @@ function toFolderLink(path) {
 
 function toFolderAndFileLink(path) {
     var n = path.lastIndexOf('/');
-    if (n==-1) {
+    if (n == -1) {
         //ok, maybe it's a windows path
         n = path.lastIndexOf('\\');
     }
@@ -124,7 +126,7 @@ function updateAccordion(output) {
 }
 
 
-function getDuplicateFolderDetails(ui, folder1, folder2) {
+function getDuplicateFolderDetails( folder1, folder2) {
     // alert('' + folder1 + "\n" + folder2);
 
 
@@ -133,7 +135,7 @@ function getDuplicateFolderDetails(ui, folder1, folder2) {
             folder2:folder2
         },
         function (data) {
-           // console.log(data);
+            // console.log(data);
             var tab = { files:[ ] };
             //debugger;
             for (var i = 0; i < data.file1.length; ++i)
@@ -172,12 +174,15 @@ function getDuplicateFolder() {
     var folders = getSelectedFolders();
     $('#accordion-duplicate-folders').children().remove();
     $('#duplicate-folders-details').children().remove();
+    $('#duplicate-folder-table').children().remove();
+    $('#duplicate-folder-table').append('<thead> <tr> <th class="name ay-sort sorted-asc">Total Size</th> <th class="ay-sort">#Files</th>  </tr></thead> <tbody>')
+
     $.getJSON('rest/hello/duplicateFolder', {
         folder:folders
     }, function (data) {
         $.each(data, function (key, val) {
-           // console.log("data is back");
-           // console.log(val);
+            // console.log("data is back");
+            // console.log(val);
             val['totalSize'] = val['totalSize'] / 1024.0 / 1024;
             var template = '<h3>{{occurences}} ({{totalSize}})</h3>' +
                 '<div>' +
@@ -186,27 +191,41 @@ function getDuplicateFolder() {
                 '</div>';
             var html = Mustache.to_html(template, val);
 
-            $('#accordion-duplicate-folders').append(html);
-        });
+            var template_table = ' <tr>'
+            +'<td><a href="javascript: getDuplicateFolderDetails(\"{{folder1}}\",\"{{folder2}}\");">{{totalSize}} </a></td>'
+                +'<td>{{occurences}}</td>'
+                +'</tr> ';
+           var html_table = Mustache.to_html(template_table, val);
 
+            var html_table=   ' <tr>'
+                +'<td><a href="#"  onclick="getDuplicateFolderDetails(\''+ val['folder1'] + '\',\''  + val['folder2'] + '\')"'+ '>' + val['totalSize'] + '</a></td>'
+                +'<td>'+ val['occurences'] + '</td>'
+                +'</tr> ';
+
+            $('#accordion-duplicate-folders').append(html);
+           // debugger;
+            $('#duplicate-folder-table').append(html_table);
+        });
+        $('#duplicate-folder-table').append('</tbody>');
+        $(function(){
+            $.ay.tableSort({target: $('table'), debug: false});
+        });
         $('#accordion-duplicate-folders').accordion('destroy').accordion({
             collapsible:true,
             autoHeight:false,
             active:false,
             activate:function (event, ui) {
-                // console.log("activated baby! " + ui);
-                // debugger;
                 if (ui.newHeader.length > 0) {
                     folder1 = $("#folder1", ui.newPanel).contents()
-                        .filter(function() {
+                        .filter(function () {
                             return this.nodeType == Node.TEXT_NODE;
                         }).text().trim(); //ui.newPanel.find('a')[0].text;
-                    folder2 = $("#folder2",ui.newPanel).contents()
-                        .filter(function() {
+                    folder2 = $("#folder2", ui.newPanel).contents()
+                        .filter(function () {
                             return this.nodeType == Node.TEXT_NODE;
                         }).text().trim();
                     //ui.newPanel.find('a')[1].text;
-                    getDuplicateFolderDetails(ui, folder1, folder2);
+                    getDuplicateFolderDetails( folder1, folder2);
                 } else {
                     $('#duplicate-folders-details').children().remove();
                 }
@@ -242,14 +261,14 @@ function index(currentForm) {
 //	val = currentForm[0]; // document.getElementById("index_path").value;
     val = document.getElementById("index_path").value;
 
-  //  console.log(val);
+    //  console.log(val);
 
     // prettyPrint(val);
     // prettyPrint(currentForm);
     $.get("rest/hello/index", {
         path:val
     }, function (data) {
-   //     console.log("index done on  ");
+        //     console.log("index done on  ");
         // prettyPrint(currentForm.index_path.value);
     });
 }
