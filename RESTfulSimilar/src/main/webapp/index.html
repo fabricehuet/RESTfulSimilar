@@ -36,14 +36,30 @@
         td,th { padding: 5px; }
         tbody tr { border-top: 1px solid #fff; background: #e8edff; }
 
-        th.name { width: 200px; }
+        th.size { width: 10%; }
         .authorship { margin-top: 20px; }
+
+        th.files { width: 10%; }
+
+        .paths {font-size: 12px;}
+
+
 
         tbody { border-top: 5px solid #fff; }
 
         thead th { text-align: left; cursor: pointer; }
-        thead th.ay-sort-asc:after { content: 'asc'; color: #666; margin-left: 5px; font-weight: normal; }
-        thead th.ay-sort-desc:after { content: 'desc'; color: #666; margin-left: 5px; font-weight: normal; }
+        th.ay-sort-asc span {
+            background: url("images/sort_up.png") right center no-repeat;
+            padding-right: 25px;
+            background-size: 15px 15px;
+        }
+
+        th.ay-sort-desc span {
+            background: url("images/sort_down.png") right center no-repeat;
+            padding-right: 25px;
+            background-size: 15px 15px;
+        }
+
     </style>
 
 
@@ -190,9 +206,7 @@
         <li><a href="drag.html">Drag'n'Drop</a></li>
         <!--<li><a href="#tabs-gps">GPS</a></li>-->
         <li><a href="grid.html">GPS</a></li>
-        <li><a href="table.html">Table</a></li>
-        <!--<li><a href="gallery.html">GPS</a></li>-->
-        <!--<li><a href="drag2.html">Drag'n'Drop-2</li>-->
+
     </ul>
 
 
@@ -217,11 +231,12 @@
 
             <input type="submit" value="get Folders">
         </form>
-        <div id="accordion-duplicate-folders" style="width:800px;float:left"></div>
-        <div id="duplicate-folders-details" style="width:400px;float:left"></div>
-        <div  style="width:800px;float:left">
-        <table id="duplicate-folder-table" ></table>
+     <!--   <div id="accordion-duplicate-folders" style="width:800px;float:left"></div> -->
+        <div  style="width:70%;float:left">
+            <table id="duplicate-folder-table" ></table>
         </div>
+        <div id="duplicate-folders-details" style="width: 30% ; float:left"></div>
+
     </div>
 
     <!--<div id="tabs-gps">-->

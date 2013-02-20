@@ -143,7 +143,7 @@ function getDuplicateFolderDetails( folder1, folder2) {
                     f1:data.file1[i],
                     f2:data.file2[i]
                 });
-            var templateFiles = ' {{#files}} ' + '<div>{{f1}}   <a href="explorer://rest/hello/folder/?path={{f1}}">[file]</a><br>' +
+            var templateFiles = ' {{#files}} ' + '<div class="paths">{{f1}}   <a href="explorer://rest/hello/folder/?path={{f1}}">[file]</a><br>' +
                 '{{f2}}   <a href="explorer://rest/hello/folder/?path={{f2}}">[file]</a></div><br>' +
                 '{{/files}}';
             var htmlFiles = Mustache.to_html(templateFiles, tab);
@@ -175,7 +175,8 @@ function getDuplicateFolder() {
     $('#accordion-duplicate-folders').children().remove();
     $('#duplicate-folders-details').children().remove();
     $('#duplicate-folder-table').children().remove();
-    $('#duplicate-folder-table').append('<thead> <tr> <th class="name ay-sort sorted-asc">Total Size</th> <th class="ay-sort">#Files</th>  </tr></thead> <tbody>')
+
+    var html_table='<thead> <tr> <th class="size ay-sort sorted-asc"><span>Size</span></th> <th class="files ay-sort"><span>#Files</span></th>  <th class="paths ay-sort"><span>Paths</span></th></tr></thead> <tbody>';
 
     $.getJSON('rest/hello/duplicateFolder', {
         folder:folders
@@ -184,54 +185,60 @@ function getDuplicateFolder() {
             // console.log("data is back");
             // console.log(val);
             val['totalSize'] = val['totalSize'] / 1024.0 / 1024;
-            var template = '<h3>{{occurences}} ({{totalSize}})</h3>' +
-                '<div>' +
-                '<div id="folder1">' + toFolderLink("{{folder1}}") + '</div> ' +
-                '<div id="folder2">' + toFolderLink("{{folder2}}") + '</div> ' +
-                '</div>';
-            var html = Mustache.to_html(template, val);
+         //   val['folder1'] =  val['folder1'].replace(/\\/g, "\\\\");
+          //  val['folder2'] =  val['folder2'].replace(/\\/g, "\\\\");
+//            var template = '<h3>{{occurences}} ({{totalSize}})</h3>' +
+//                '<div>' +
+//                '<div id="folder1">' + toFolderLink("{{folder1}}") + '</div> ' +
+//                '<div id="folder2">' + toFolderLink("{{folder2}}") + '</div> ' +
+//                '</div>';
+//            var html = Mustache.to_html(template, val);
 
-            var template_table = ' <tr>'
-            +'<td><a href="javascript: getDuplicateFolderDetails(\"{{folder1}}\",\"{{folder2}}\");">{{totalSize}} </a></td>'
-                +'<td>{{occurences}}</td>'
+//            var template_table = ' <tr>'
+//            +'<td><a href="javascript: getDuplicateFolderDetails(\"{{folder1}}\",\"{{folder2}}\");">{{totalSize}} </a></td>'
+//                +'<td>{{occurences}}</td>'
+//                +'</tr> ';
+//           var html_table = Mustache.to_html(template_table, val);
+
+             html_table +=   ' <tr>'
+                +'<td class="size"><a href="#"  onclick="getDuplicateFolderDetails(\''+ val['folder1'].replace(/\\/g, "\\\\") + '\',\''  + val['folder2'].replace(/\\/g, "\\\\") + '\')"'+ '>'
+                 + val['totalSize'].toFixed(4) + '</a></td>'
+                +'<td class="files"> '+ val['occurences'] + '</td>'
+                 + '<td class="paths"> <div id="folder1">' + toFolderLink(val['folder1']) + '</div> ' +
+                '<div id="folder2">' + toFolderLink(val['folder2']) + '</div> </td>'
                 +'</tr> ';
-           var html_table = Mustache.to_html(template_table, val);
 
-            var html_table=   ' <tr>'
-                +'<td><a href="#"  onclick="getDuplicateFolderDetails(\''+ val['folder1'] + '\',\''  + val['folder2'] + '\')"'+ '>' + val['totalSize'] + '</a></td>'
-                +'<td>'+ val['occurences'] + '</td>'
-                +'</tr> ';
-
-            $('#accordion-duplicate-folders').append(html);
+        //    $('#accordion-duplicate-folders').append(html);
            // debugger;
-            $('#duplicate-folder-table').append(html_table);
+          //  $('#duplicate-folder-table').append(html_table);
         });
-        $('#duplicate-folder-table').append('</tbody>');
+        html_table+='</tbody>';
+        $('#duplicate-folder-table').append(html_table);
         $(function(){
             $.ay.tableSort({target: $('table'), debug: false});
         });
-        $('#accordion-duplicate-folders').accordion('destroy').accordion({
-            collapsible:true,
-            autoHeight:false,
-            active:false,
-            activate:function (event, ui) {
-                if (ui.newHeader.length > 0) {
-                    folder1 = $("#folder1", ui.newPanel).contents()
-                        .filter(function () {
-                            return this.nodeType == Node.TEXT_NODE;
-                        }).text().trim(); //ui.newPanel.find('a')[0].text;
-                    folder2 = $("#folder2", ui.newPanel).contents()
-                        .filter(function () {
-                            return this.nodeType == Node.TEXT_NODE;
-                        }).text().trim();
-                    //ui.newPanel.find('a')[1].text;
-                    getDuplicateFolderDetails( folder1, folder2);
-                } else {
-                    $('#duplicate-folders-details').children().remove();
-                }
-
-            }
-        });
+//        $('#accordion-duplicate-folders').accordion('destroy').accordion({
+//            collapsible:true,
+//            autoHeight:false,
+//            active:false,
+//            activate:function (event, ui) {
+//                if (ui.newHeader.length > 0) {
+//                    folder1 = $("#folder1", ui.newPanel).contents()
+//                        .filter(function () {
+//                            return this.nodeType == Node.TEXT_NODE;
+//                        }).text().trim(); //ui.newPanel.find('a')[0].text;
+//                    folder2 = $("#folder2", ui.newPanel).contents()
+//                        .filter(function () {
+//                            return this.nodeType == Node.TEXT_NODE;
+//                        }).text().trim();
+//                    //ui.newPanel.find('a')[1].text;
+//                    getDuplicateFolderDetails( folder1, folder2);
+//                } else {
+//                    $('#duplicate-folders-details').children().remove();
+//                }
+//
+//            }
+//        });
         // updateAccortion();
         //$('#accordion-duplicate-folders').html(html);
 
