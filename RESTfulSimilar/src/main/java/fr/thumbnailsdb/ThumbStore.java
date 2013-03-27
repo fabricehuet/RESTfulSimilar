@@ -19,6 +19,9 @@ import javax.swing.JLabel;
 public class ThumbStore {
 
     protected static String DEFAULT_DB = "localDB";
+    protected static int CURRENT_VERSION=1;
+
+
     protected HashMap<String, Connection> connexions = new HashMap<String, Connection>();
     protected ArrayList<String> pathsOfDBOnDisk = new ArrayList<String>();
 
@@ -95,7 +98,7 @@ public class ThumbStore {
             // Table exists
         } else {
             System.out.println("ThumbStore.checkAndCreateTables() table IMAGES does not exist, should create it");
-            String table = "CREATE TABLE IMAGES(path varchar(256), size long, mtime long, md5 varchar(256), data blob,  lat double, lon double,  PRIMARY KEY ( path ))";
+            String table = "CREATE TABLE IMAGES(id  bigint identity(1,1),path varchar(256), size long, mtime long, md5 varchar(256), data blob,  lat double, lon double)";
             Statement st = connexion.createStatement();
             st.execute(table);
             System.out.println("ThumbStore.checkAndCreateTables() table created!");
@@ -113,9 +116,43 @@ public class ThumbStore {
             st.execute(table);
             System.out.println("ThumbStore.checkAndCreateTables() table created!");
         }
+        //and  the version table
+        tables = dbm.getTables(null, null, "VERSION", null);
+        if (tables.next()) {
+            System.out.println("ThumbStore.checkAndCreateTables() table VERSION exists!");
+            // Table exists
+        } else {
+            System.out.println("ThumbStore.checkAndCreateTables() table VERSION does not exist, should create it");
+            // Table does not exist
+            String table = "CREATE TABLE VERSION(version int)";
+            Statement st = connexion.createStatement();
+            st.execute(table);
+            table="INSERT into VERSION VALUES(0)";
+            st.execute(table);
+            System.out.println("ThumbStore.checkAndCreateTables() table created with version 0");
+        }
+
+        // now we check for version number and decides if an upgrade is required
+        String version = "SELECT * FROM VERSION";
+        Statement st = connexion.createStatement();
+        ResultSet res = st.executeQuery(version);
+        int v = -1;
+        while (res.next()) {
+            v = res.getInt("version");
+        }
+
+        System.out.println("Database version is " + v);
+        upgradeDatabase(connexion,v);
     }
 
     private void checkOrAddColumns(DatabaseMetaData dbm) throws SQLException {
+        //ALTER TABLE IMAGES DROP PRIMARY KEY ;
+        //ALTER TABLE IMAGES ADD  id  BIGINT IDENTITY;
+        //CREATE TABLE IMAGES_tmp(path varchar(256), size long, mtime long, md5 varchar(256), data blob,  lat double, lon double,  id  bigint identity(1,1))
+        //INSERT INTO  IMAGES_TMP  (path,size,mtime,md5,data, lat, lon)  SELECT * from IMAGES
+        //DROP table IMAGES
+        //ALTER table images_tmp rename to IMAGES
+
         ResultSet rs = dbm.getColumns(null, null, "IMAGES", "LAT");
         if (!rs.next()) {
             //Column in table exist
@@ -130,7 +167,41 @@ public class ThumbStore {
             Statement st = dbm.getConnection().createStatement();
             st.executeUpdate("ALTER TABLE IMAGES ADD lon double");
         }
+    }
 
+    private void upgradeDatabase(Connection connection, int dbVersion) throws SQLException {
+        System.out.println("ThumbStore.upgradeDatabase started" );
+
+        if (dbVersion<CURRENT_VERSION) {
+          //ok we need to upgrade the DB to the next version
+            //CREATE TABLE IMAGES_tmp(path varchar(256), size long, mtime long, md5 varchar(256), data blob,  lat double, lon double,  id  bigint identity(1,1))
+            //INSERT INTO  IMAGES_TMP  (path,size,mtime,md5,data, lat, lon)  SELECT * from IMAGES
+            //DROP table IMAGES
+            //ALTER table images_tmp rename to IMAGES
+            Statement st = connection.createStatement();
+            String action = "ALTER TABLE IMAGES DROP PRIMARY KEY ";
+            st.execute(action);
+            action = "CREATE TABLE IMAGES_tmp(id  bigint identity(1,1), path varchar(256), size long, mtime long, md5 varchar(256), data blob,  lat double, lon double)";
+            st.execute(action);
+            action="INSERT INTO  IMAGES_TMP  (path,size,mtime,md5,data, lat, lon)  SELECT * from IMAGES";
+            System.out.println("ThumbStore.upgradeDatabase moving data to new table" );
+            st.execute(action);
+            System.out.println("ThumbStore.upgradeDatabase droping old table" );
+
+            action="DROP table IMAGES";
+            st.execute(action);
+            action="ALTER table images_tmp rename to IMAGES";
+            st.execute(action);
+
+            action="UPDATE VERSION SET version=1 WHERE version=0";
+            st.execute(action);
+
+            action="Shutdown compact";
+            st.execute(action);
+            System.out.println("ThumbStore.upgradeDatabase upgrade done please restart" );
+            System.exit(0);
+
+        }
     }
 
     /**
@@ -173,7 +244,7 @@ public class ThumbStore {
             while (res.next()) {
                 String s = res.getString("path");
                 paths.add(s);
-                System.out.println("getIndexedPaths(connexion) path found " + s);
+             //   System.out.println("getIndexedPaths(connexion) path found " + s);
 
             }
         } catch (SQLException e) {
@@ -197,7 +268,7 @@ public class ThumbStore {
                 while (res.next()) {
                     String s = res.getString("path");
                     paths.add(s);
-                    System.out.println("getIndexedPaths() path found " + s);
+             //       System.out.println("getIndexedPaths() path found " + s);
                 }
             } catch (SQLException e) {
                 e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
@@ -220,7 +291,7 @@ public class ThumbStore {
         for (String s : connexions.keySet()) {
             if (mediaFile.contains(s)) {
                 result = connexions.get(s);
-                System.out.println("ThumbStore.findResponsibleDB found " + result);
+            //    System.out.println("ThumbStore.findResponsibleDB found " + result);
                 return result;
             }
         }
@@ -350,7 +421,7 @@ public class ThumbStore {
                 res = sta.executeQuery("SELECT * FROM IMAGES WHERE lat <> 0 OR lon <>0");
 
                 while (res.next()) {
-                    System.out.println("getAllWithGPS adding  " + res.getString("path"));
+                   // System.out.println("getAllWithGPS adding  " + res.getString("path"));
                     al.add(res.getString("path").replaceAll("\\\\", "\\\\\\\\"));
                 }
 
@@ -456,6 +527,41 @@ public class ThumbStore {
 
         return mf;
     }
+
+
+     public String getPath(int[] data) {
+         Statement sta;
+         ResultSet res = null;
+         String p=null;
+         for (Connection connexion : getConnections()) {
+             try {
+                 sta = connexion.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
+
+
+                     PreparedStatement psmnt;
+                     psmnt = connexion.prepareStatement("SELECT path from IMAGES WHERE data=(?)");
+
+                 // convert the int[] array to byte[] array
+                 ByteArrayOutputStream ba = new ByteArrayOutputStream();
+                 ObjectOutputStream oi = new ObjectOutputStream(ba);
+                 oi.writeObject(data);
+                 oi.close();
+
+                     psmnt.setBytes(1, ba.toByteArray());
+                     psmnt.execute();
+                 res = psmnt.getResultSet();
+
+                 while (res.next()) {
+                     p= res.getString("path");
+                 }
+             } catch (SQLException e) {
+                 e.printStackTrace();
+             } catch (IOException e) {
+                 e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+             }
+         }
+         return p;
+     }
 
 
     public ArrayList<MediaFileDescriptor> getDuplicatesMD5(MediaFileDescriptor mfd) {

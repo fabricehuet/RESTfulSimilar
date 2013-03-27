@@ -87,17 +87,6 @@ protected double lat;
 		this.md5Digest = md5;
 	}
 
-	// public ImageDescriptor(String path, long size, long mtime, byte[]data,
-	// byte[] md5) {
-	// super();
-	// this.path = path;
-	// this.size = size;
-	// this.mtime = mtime;
-	//
-	// this.data=data;
-	// this.md5Digest= md5;
-	// }
-
 	protected byte[] convertToARGB(int[] data) {
 		byte[] rgba = new byte[data.length * 4];
 		// int j = 0;

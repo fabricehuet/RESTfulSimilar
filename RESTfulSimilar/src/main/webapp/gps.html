@@ -42,14 +42,10 @@
     }
 
     function localFinished(id, name, json) {
-        // uploadFinished(json.images);
-        //debugger
         $(".qq-upload-list").children().remove();
         if (!jQuery.isEmptyObject(json)) {
-            //   console.log(json);
             lat = json[0];
             lon = json[1];
-            // initialize();
             var marker = new google.maps.Marker({
                 position:new google.maps.LatLng(lat, lon),
                 title:"{" + lat + ", " + lon + "}",
@@ -83,19 +79,16 @@
                 mapOptions);
         google.maps.event.addListener(map, 'tilesloaded', function () {
             google.maps.event.trigger(map, 'resize');
-            //map.setCenter(mapOptions.center);
         });
     }
 
 
     function getAllGPS() {
         $.get("rest/hello/getAllGPS", function (data) {
-            //alert("shrink done");
             console.log(data);
             var output = '<ul class="thumbs noscript">';
             for (i in data) {
                 output += '<li>'
-//           output+=data[i]+'<br>'
                 output += '<a class="thumb"  href="rest/hello/getImage?path=' + data[i] + '">';
                 output += '<img src="rest/hello/getThumbnail?path=' + data[i] + '" alt="Title #1"/>';
                 output += '</a>';
@@ -108,35 +101,11 @@
 
             $('#thumbs').children().remove();
             $('#thumbs').append(output);
-//            $(document).ready(function () {
-//                // Initialize Minimal Galleriffic Gallery
-//                $('#thumbs').galleriffic({
-//                    numThumbs:3 ,
-//                    enableTopPager:            true,
-//                    enableBottomPager:         true,
-//                    maxPagesToShow:            7,
-//                    imageContainerSel:         '#slideshow',
-//                    controlsContainerSel:      '#controls',
-//                    captionContainerSel:       '#caption',
-//                    loadingContainerSel:       '#loading',
-//                    renderSSControls:          true,
-//                    renderNavControls:         true,
-//                    playLinkText:              'Play Slideshow',
-//                    pauseLinkText:             'Pause Slideshow',
-//                    prevLinkText:              '&lsaquo; Previous Photo',
-//                    nextLinkText:              'Next Photo &rsaquo;',
-//                    nextPageLinkText:          'Next &rsaquo;',
-//                    prevPageLinkText:          '&lsaquo; Prev',
-//                    enableHistory:             true
-//                });
-//            });
             jQuery(document).ready(function ($) {
                 // We only want these styles applied when javascript is enabled
                 $('div.navigation').css({'width':'300px', 'float':'left'});
                 $('div.content').css('display', 'block');
-                //debugger
                 $('a.advance-link img').prop('height','200')
-               // $('a.advance-link img').attr('height').text("500");
 
                 // Initially set opacity on thumbs and add
                 // additional styling for hover effect on thumbs

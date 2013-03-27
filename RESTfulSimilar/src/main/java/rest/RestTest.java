@@ -169,71 +169,12 @@ public class RestTest {
         return Response.status(200).entity(json).build();
     }
 
-
-//    @POST
-////	@Path("getImage/{imageId}")
-//    @Path("getImage/")
-//    //@Produces("image/jpg")
-//    @Produces({MediaType.APPLICATION_JSON})
-////	public Response getPostImage(@PathParam(value = "imageId") String imageId) {
-//    public Response getPostImage(String imageId) {
-//      //  String result = null;
-//        String img = null;
-//        System.out.println("imageID " + imageId);
-//        img = getImageAsHTMLImg(imageId);
-//        return Response.status(200).entity(img).build();
-//    }
-
-//    @GET
-//    @Path("getImage/")
-//    @Produces("image/jpg")
-//    public Response getImage(@QueryParam("path") String imageId) {
-//        //    String img = null;
-//        //System.out.println("imageID " + imageId);
-//        // img = getImageAsHTMLImg(imageId);
-//        //   BufferedImage img = null;
-//        BufferedInputStream source = null;
-//        ByteArrayOutputStream out = null;
-//        try {
-//            source = new BufferedInputStream(new FileInputStream(new File(imageId)));
-//            out = new ByteArrayOutputStream();
-//            byte[] buffer = new byte[8 * 1024];
-//
-//            int total = 0;
-//            try {
-//                int bytesRead;
-//                while ((bytesRead = source.read(buffer)) != -1) {
-//                    out.write(buffer, 0, bytesRead);
-//                    total += bytesRead;
-//                }
-//            } catch (IOException e) {
-//                e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-//            } finally {
-//                source.close();
-//            }
-//            final byte[] imgData = out.toByteArray();
-//            final InputStream bigInputStream =
-//                    new ByteArrayInputStream(imgData);
-//            return Response.status(200).entity(bigInputStream).type("image/jpg").build();
-//        } catch (IOException e) {
-//            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-//        }
-//
-//        return Response.status(404).build();
-//
-//    }
-
-
     @GET
     @Path("getThumbnail/")
     @Produces("image/jpg")
     public Response getThumbnail(@QueryParam("path") String imageId) {
-        //    String img = null;
         System.out.println("Thubnail : imageID " + imageId);
-        // img = getImageAsHTMLImg(imageId);
-        //   BufferedImage img = null;
         BufferedInputStream source = null;
-        // ByteArrayOutputStream out = null;
         try {
 
             BufferedImage bf = ImageIO.read(new FileInputStream(new File(imageId)));
@@ -311,7 +252,6 @@ public class RestTest {
     @Consumes(MediaType.MULTIPART_FORM_DATA)
     @Produces({MediaType.APPLICATION_JSON})
     public Response findSimilar(FormDataMultiPart multipart) {
-
         ThumbnailGenerator tg = new ThumbnailGenerator(null);
         BodyPartEntity bpe = (BodyPartEntity) multipart.getBodyParts().get(0).getEntity();
         Collection<MediaFileDescriptor> c = null;
@@ -344,7 +284,7 @@ public class RestTest {
         }
 
         long t1 = System.currentTimeMillis();
-        c = si.findSimilarMedia(temp.getAbsolutePath());
+        c = si.findSimilarMedia(temp.getAbsolutePath(), 10);
         long t2 = System.currentTimeMillis();
         System.out.println("Found similar files " + c.size() + " took " + (t2 - t1) + "ms");
 
@@ -412,7 +352,6 @@ public class RestTest {
         try {
             InputStream source = bpe.getInputStream();
             System.out.println("RestTest.findGPS() received " + source);
-            //BufferedImage bi = ImageIO.read(source);
 
             temp = File.createTempFile("tempImage", ".jpg");
             FileOutputStream fo = new FileOutputStream(temp);
@@ -431,7 +370,6 @@ public class RestTest {
             }
             System.out.println("RestTest.findGPS()  written to " + temp + " with size " + total);
         } catch (Exception e) {
-            // message = e.getMessage();
             e.printStackTrace();
         }
 

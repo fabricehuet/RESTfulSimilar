@@ -87,20 +87,14 @@ public class DuplicateMediaFinder {
         //The table to maintain the tree of folder-couples and the
         //the number of common files they have
         DuplicateFolderList dfl = new DuplicateFolderList();
-//        try {
         Iterator<MediaFileDescriptor> it = r.iterator();
         while (it.hasNext()) {
             MediaFileDescriptor mfd = it.next();
             String md5 = mfd.getMD5();
-            //System.out.println("DuplicateMediaFinder.computeDuplicateFolderSets " + md5);
-            //   if (md5 != null) {
             if (md5.equals(currentMd5)) {
-                // add to current group
-              //  System.out.println("DuplicateMediaFinder.computeDuplicateFolderSets  adding " + mfd.getPath());
                 dg.add(mfd.getSize(), mfd.getPath());
             } else {
                 if (dg.size() > 1) {
-//                        list.add(dg);
                     dfl.addOrIncrement(dg);
                 }
                 dg = new DuplicateFileGroup();
@@ -108,7 +102,6 @@ public class DuplicateMediaFinder {
                 currentMd5 = md5;
 
             }
-            // }
         }
         if (dg.size() > 1) {
             //ok we have found a tree of duplicate files
@@ -116,9 +109,6 @@ public class DuplicateMediaFinder {
             //first compute the tree of folders
             dfl.addOrIncrement(dg);
         }
-//        } catch (SQLException e) {
-//            e.printStackTrace();
-//        }
         System.out.println("DuplicateMediaFinder.computeDuplicateFolderSets has " + dfl.size() + " entries");
         return dfl;
     }

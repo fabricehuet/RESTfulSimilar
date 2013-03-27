@@ -112,12 +112,27 @@
             border: none;
         }
 
-            /*#wrap {min-height: 100%;}*/
 
-            /*#footer {position: relative;*/
-            /*margin-top: -150px; *//* negative value of footer height */
-            /*height: 150px;*/
-            /*clear:both;}*/
+        /* selected row input table*/
+        table#duplicate-folder-table {
+            border-collapse: collapse;
+        }
+        #duplicate-folder-table tr {
+            background-color: #eee;
+            border-top: 1px solid #fff;
+        }
+        #duplicate-folder-table tr:hover {
+            background-color: #ccc;
+        }
+        #duplicate-folder-table th {
+            background-color: #fff;
+        }
+        #duplicate-folder-table th, #example td {
+            padding: 3px 5px;
+        }
+        #duplicate-folder-table td:hover {
+            cursor: pointer;
+        }
 
     </style>
 
@@ -131,14 +146,9 @@
             $("#tabs").tabs({     cache:true,
                         show:function (event, ui) {
                             if (ui.index == 4) {
-                          //      if (map == null) {
-                                //we recreate the map each time
                                     initialize();
-                           //     }
-                                //needed for displaying correct map
                                 google.maps.event.trigger(map, 'resize');
                             }
-                            //debugger
                         }
                     }
             );
@@ -166,8 +176,6 @@
                     for (i in data) {
                         console.log("-" + i + " " + data[i]);
                     }
-//
-
                 },
                 hideDropzones:false,
                 done:function (e, data) {
@@ -176,13 +184,6 @@
 
             });
         });
-
-
-
-
-        //    jQuery(document).ready(function () {
-        //        drawRegionOnMap();
-        //    });
 
 
     </script>
@@ -202,9 +203,7 @@
         <li><a href="thumbstore.html">ThumbStore controle</a></li>
         <li><a href="#tabs-2">Duplicate media</a></li>
         <li><a href="#tabs-folder">Duplicate folders</a></li>
-        <!--<li><a href="#tabs-3">Similar image</a></li>-->
         <li><a href="drag.html">Drag'n'Drop</a></li>
-        <!--<li><a href="#tabs-gps">GPS</a></li>-->
         <li><a href="grid.html">GPS</a></li>
 
     </ul>
@@ -231,7 +230,6 @@
 
             <input type="submit" value="get Folders">
         </form>
-     <!--   <div id="accordion-duplicate-folders" style="width:800px;float:left"></div> -->
         <div  style="width:70%;float:left">
             <table id="duplicate-folder-table" ></table>
         </div>
@@ -239,18 +237,6 @@
 
     </div>
 
-    <!--<div id="tabs-gps">-->
-        <!--<div id="map_canvas" style="width:500px; height:500px"></div>-->
-    <!--</div>-->
-
-    <!-- v id="tabs-3">-->
-
-    <!--<form id="fileupload" action="rest/hello/findSimilar" method="POST" enctype="multipart/form-data">-->
-    <!--&lt;!&ndash;<form id="fileupload" onsubmit="uploadTest()"&ndash;&gt;-->
-    <!--<input id="file_upload" type="file" name="files[]" multiple>-->
-    <!--</form>-->
-    <!---->
-    <!--</div>-->
 </div>
 
 
