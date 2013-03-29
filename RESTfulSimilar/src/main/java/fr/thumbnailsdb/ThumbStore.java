@@ -411,6 +411,9 @@ public class ThumbStore {
     }
 
 
+
+
+
     public ArrayList<String> getAllWithGPS() {
         Statement sta;
         ResultSet res = null;

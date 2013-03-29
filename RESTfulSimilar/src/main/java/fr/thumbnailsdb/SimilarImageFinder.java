@@ -141,12 +141,14 @@ public class SimilarImageFinder {
                         }
                         String path = res.getString("path");
                         byte[] d = res.getBytes("data");
+                        int id = res.getInt("id");
                         if (d != null) {
                             ObjectInputStream oi = new ObjectInputStream(new ByteArrayInputStream(d));
                             int[] idata = (int[]) oi.readObject();
                             if (idata != null) {
                                 MediaFileDescriptor imd = new MediaFileDescriptor();
                                 imd.setPath(path);
+                                imd.setId(id);
                                 imd.setData(idata);
                                 preloadedDescriptors.add(imd);
                             }

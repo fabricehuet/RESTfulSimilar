@@ -16,6 +16,9 @@ public class MediaFileDescriptor implements Serializable {
 protected double lat;
     protected double lon;
 
+    //id in the database
+    protected int id;
+
     @XmlElement
 	protected double rmse;
 
@@ -48,7 +51,16 @@ protected double lat;
 
 	}
 
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public int getId() {
+        return id;
+    }
+
     public void setLat(double lat) {
+
         this.lat = lat;
     }
 
