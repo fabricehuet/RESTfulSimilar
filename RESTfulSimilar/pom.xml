@@ -8,6 +8,7 @@
     <name>RESTfulSimilar Maven Webapp</name>
     <url>http://maven.apache.org</url>
 
+
     <repositories>
         <repository>
             <id>maven2-repository.java.net</id>
@@ -72,17 +73,66 @@
             <version>1.6</version>
         </dependency>
         <dependency>
-	<groupId>com.drewnoakes</groupId>
-	<artifactId>metadata-extractor</artifactId>
-	<version>2.6.2</version>
-</dependency>
-            
+            <groupId>com.drewnoakes</groupId>
+            <artifactId>metadata-extractor</artifactId>
+            <version>2.6.2</version>
+        </dependency>
+        <dependency>
+            <groupId>org.codehaus.jettison</groupId>
+            <artifactId>jettison</artifactId>
+            <version>1.3.3</version>
+        </dependency>
+
 
     </dependencies>
 
 
     <build>
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+                <filtering>true</filtering>
+            </resource>
+        </resources>
+
+        <filters>
+            <filter>${basedir}/target/filter.properties</filter>
+        </filters>
+
+
         <plugins>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-antrun-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <phase>generate-resources</phase>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                        <configuration>
+                            <tasks>
+                                <!-- Safety -->
+                                <mkdir dir="${project.build.directory}"/>
+
+                                <tstamp>
+                                    <format property="last.updated" pattern="yyyy-MM-dd hh:mm:ss"/>
+                                </tstamp>
+                                <echo file="${basedir}/target/filter.properties" message="build.time=${last.updated}"/>
+                            </tasks>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <configuration>
+                    <useDefaultManifestFile>true</useDefaultManifestFile>
+                </configuration>
+            </plugin>
+
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
@@ -108,7 +158,13 @@
                     <archive>
                         <manifest>
                             <mainClass>fr.thumbnailsdb.Main</mainClass>
+
                         </manifest>
+                        <manifestEntries>
+                            <Build-Time>
+                                ${build.time}
+                            </Build-Time>
+                        </manifestEntries>
                     </archive>
                     <descriptorRefs>
                         <descriptorRef>jar-with-dependencies</descriptorRef>
@@ -127,7 +183,7 @@
                         </goals>
                         <phase>package</phase>
                         <configuration>
-                            <finalName> restThumbstore.jar</finalName>
+                            <finalName>restThumbstore.jar</finalName>
                             <!-- optional only if you want to use a preconfigured server.xml file -->
                             <!--
                             <serverXml>src/main/tomcatconf/server.xml</serverXml>
@@ -157,5 +213,7 @@
 
         <finalName>RESTfulSimilar</finalName>
     </build>
+
+
 </project>
 

@@ -19,7 +19,7 @@ import javax.swing.JLabel;
 public class ThumbStore {
 
     protected static String DEFAULT_DB = "localDB";
-    protected static int CURRENT_VERSION = 1;
+    protected static int CURRENT_VERSION = 2;
 
 
     protected HashMap<String, Connection> connexions = new HashMap<String, Connection>();
